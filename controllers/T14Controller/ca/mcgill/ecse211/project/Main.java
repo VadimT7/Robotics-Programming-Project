@@ -8,8 +8,19 @@ import simlejos.hardware.ev3.LocalEV3;
 
 /**
  * Main class of the program.
+ * @author: Vadim Tuchila, Delia Bretan, George Garxenaj, Félix Bédard, Viet Tran, Anandamoyi Saha.
  * 
- * TODO Describe your project overview in detail here (in this Javadoc comment).
+ * The Main class of the program represents the entity responsible for launching the application
+ * including all of the necessary threads (odometer and the main threads) used during navigation and robot manipulation.
+ * The main goal fulfilled by the project's software is to make the robot model, which was built in LeoCAD modelling software 
+ * and implemented in the Webots simulator, navigate through a Webots simulated world by avoiding any static or dynamic (moving)
+ * obstacles present on its way and to move objects to a corresponding location while being completely aware of its position in the world.
+ * The flow of execution consists of the robot starting on an island, directing itself towards the main island by passing through a narrow bridge, 
+ * then, while avoiding all objects perceived as obstacles on its trajectory, push the appropriate box objects into the bins located on a small ramp that
+ * the robot must be able to locate and climb. Finally, after pushing all the boxes into the bin, the robot is required to return to its starting position
+ * on the initial island it was spawned on at the beginning of the simulation. Throughout the whole process, concepts such as odometry, sensor localization 
+ * (e.g. ultrasonic & light localizations) and obstacle avoidance ought to be used in order to allow the robot to execute correctly its tasks.
+ * 
  */
 public class Main {
   
