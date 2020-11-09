@@ -268,3 +268,91 @@ DPM-Block {
   dimension 0.1
   mass 2
 }
+DPM-Robot {
+  hidden translation_2 7.310746443902886e-07 2.3867276392001886e-05 2.1341215387376243e-05
+  hidden rotation_2 -0.7188103111976706 0.6859369269827482 -0.11314711095459778 4.7528062771503885
+  hidden translation_9 0 0 0
+  hidden rotation_9 -1 0 0 0
+  hidden translation_20 0 0 0
+  hidden rotation_20 -1 0 0 0.10415115831442752
+  hidden translation_23 0 0 0
+  hidden rotation_23 -1 0 0 0.07130594546661426
+  translation 4.42851 0.0608079 2.57336
+  rotation -0.9999249985896738 0.010817199984743077 0.00574328999189948 -0.057045307179586224
+  children [
+    BallCaster {
+      translation 0 -0.05 0.09
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+    }
+    EV3-ColorSensor {
+      name "S4"
+      translation 0.0045 -0.0265 -0.0725
+      rotation 9.58976e-09 -1 -9.58979e-09 -1.5707953071795862
+    }
+    robot_container-solid {
+      translation -0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    robot_container-solid {
+      name "robot_container-solid2"
+      translation 0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-LargeMotor {
+      name "B"
+      translation 0.0083 0.0385 0.0347
+      rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
+      position -3.2019923390758173e-09
+      children [
+        EV3-Ultrasonic {
+          name "S1"
+          translation -0.036 0.029 -2.03347e-07
+          rotation -0.7071062811861697 -7.851293122126192e-08 0.7071072811865674 -3.1415853071795863
+        }
+        robot_us_support-solid {
+          translation -0.028 0.012 -2.1684e-19
+          rotation -6.979789999956479e-07 -0.9999999999937648 3.4617099999784156e-06 1.5708
+        }
+      ]
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation -0.04 -0.034 0.102
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation 0.04 -0.034 0.102
+    }
+    EV3-LargeMotor {
+      name "D"
+      translation 0.056 -0.025 0.025
+      rotation 1 0 0 -1.5707953071795862
+      position 25.236892387032775
+      children [
+        Wheel {
+          translation 0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    EV3-LargeMotor {
+      name "A"
+      translation -0.0555 -0.025 0.026
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+      position 25.20404717418496
+      children [
+        Wheel {
+          translation -0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    robot_body-solid {
+      translation 0 0.002 0.005
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3 {
+      rotation 1 0 0 -1.5708
+    }
+  ]
+}

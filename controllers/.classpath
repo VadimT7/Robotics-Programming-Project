@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="T14Controller"/>
+	<classpathentry kind="lib" path="lib/EV3WiFiClient.jar"/>
+	<classpathentry kind="lib" path="lib/junit-platform-console-standalone-1.7.0-all.jar"/>
+	<classpathentry kind="lib" path="lib/junit-platform-runner-1.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/junit-platform-suite-api-1.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/simlejos.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
