@@ -2,6 +2,8 @@ package ca.mcgill.ecse211.project;
 
 // importing necessary libraries
 import static ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.playingfield.Region;
+import simlejos.hardware.ev3.LocalEV3;
 import simlejos.robotics.SampleProvider;
 
 /**
@@ -56,12 +58,12 @@ public class LightLocalizer {
 
     // when reached, turn 90 degrees away from the wall with set rotation speed.
     Driver.setSpeed(ROTATE_SPEED);
-    
+
     double turningAngle = 90.0;
-    if((x == TILE_SIZE && angle == 180) || (x == 14 * TILE_SIZE && angle == 0)) {
+    if ((x == TILE_SIZE && angle == 180) || (x == 14 * TILE_SIZE && angle == 0)) {
       turningAngle = -turningAngle;
     }
-    
+
     Driver.turnBy(turningAngle);
 
     /* updating current reading and storing in arrays */
@@ -95,7 +97,7 @@ public class LightLocalizer {
 
     Driver.setSpeed(ROTATE_SPEED);
     // Have the robot move back half a tile to compensate for sensor positioning
-    
+
 
     Driver.turnBy(-turningAngle);
 
@@ -184,7 +186,7 @@ public class LightLocalizer {
     colorSensor2.fetchSample(lightBuffer2, 0);
 
     while (!(lightBuffer[0] <= X) || !(lightBuffer2[0] <= X)) {
-      Driver.setSpeed(FORWARD_SPEED/2);
+      Driver.setSpeed(FORWARD_SPEED / 2);
       if (lightBuffer[0] <= X) {
         leftMotor.stop();
       } else {
@@ -203,30 +205,46 @@ public class LightLocalizer {
   }
 
   public static void startLocalize() {
-     STARTING_COLOR = detectStartingColor();
+    STARTING_COLOR = detectStartingColor();
+    Region startingRegion;
+    double angle = 0;
+    double initialX = 1;
+    double initialY = 1;
+    // TODO implement logic to determine the starting localization coordinates
+    // To implement we need to check if the parameters given by the server are at the bounds of x/y
+    // If either bound is equal to Y max then the robot will localize towards 180
+    // Otherwise localize towards 0
     
-    //TODO implement logic to determine the starting localization coordinates
-    //To implement we need to check if the parameters given by the server are at the bounds of x/y
-    //If either bound is equal to Y max then the robot will localize towards 180
-    //Otherwise localize towards 0
-    
-    //Hard coded for now
-    if(STARTING_COLOR.equals("red")) {
-      //Use parameters given by server
+    if (STARTING_COLOR.equals("red")) {
+      // Use red corner parameters
       // UPPER BOUND - 1, hard coded for now
-      localize(1*TILE_SIZE, 8 * TILE_SIZE, 180);
-      odometer.printPositionInTileLengths();
-    }else {
-      //Use green corner parameters
-      //UPPER RIGHT - 1 = X
-      localize(14*TILE_SIZE, 1 * TILE_SIZE, 0);
-      odometer.printPositionInTileLengths();
+      startingRegion = red;
+    } else {
+      // Use green corner parameters
+      // UPPER RIGHT - 1 = X
+      startingRegion = green;
     }
-      
+    
+    if(startingRegion.ur.y == 15) {
+      initialY = 14;
+      angle = 180;
+    }
+    
+    if(startingRegion.ur.x == 15) {
+      initialX = 14;
+    }
+    
+    localize(initialX * TILE_SIZE, initialY * TILE_SIZE, angle);
+    odometer.printPositionInTileLengths();
+
+    //Beep 3 times 
+    for (int i = 0; i < 3; i++) {
+      LocalEV3.getAudio().beep();
+    }
   }
+
   public static String detectStartingColor() {
     colorSensor.fetchSample(lightBuffer, 0);
-    System.out.println(lightBuffer[0]);
     if (lightBuffer[0] > 200) {
       return "red";
     }

@@ -12,7 +12,7 @@ WorldInfo {
       softERP 0.1
       bumpSound ""
       rollSound ""
-      SlideSound ""
+      slideSound ""
     }
     ContactProperties {
       material1 "DPM-Tile"
@@ -23,7 +23,7 @@ WorldInfo {
       softCFM 1e-05
       bumpSound ""
       rollSound ""
-      SlideSound ""
+      slideSound ""
     }
   ]
 }

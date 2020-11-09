@@ -22,27 +22,22 @@ public class Navigation {
 
   public static void travelAcrossTunnel() {
 
-    // Hard coded for now
     Point ll;
     Point up;
 
-
     // Pick depending on starting color
-    // TODO incorporate wifi coordinates
     if (STARTING_COLOR.equals("red")) {
-      ll = new Point(4, 7);
-      up = new Point(6, 8);
+      ll = tnr.ll;
+      up = tnr.ur;
     } else {
-      ll = new Point(10, 3);
-      up = new Point(11, 5);
+      ll = tng.ll;
+      up = tng.ur;
     }
 
     // If there is a difference of more than 1 between the x of the LL AND UP coordinates
-    Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     Point p2;
     Point p3;
 
-    // TODO implement with wifi coordinates
     if (Math.abs(ll.x - up.x) > 1) {
       p2 = new Point(ll.x - 1, ll.y + 0.4);
       p3 = new Point(up.x, ll.y + 0.4);
@@ -51,11 +46,10 @@ public class Navigation {
       p3 = new Point(ll.x + 0.5, up.y);
     }
 
-
     // find magnitude of length across grid that the robot will travel from initial point to dest.
     travelWithObjDetect(p2);
 
-    // Travel across tunnel
+    // Travel across tunnel in a straight line with line detection
     double disToTravel = distanceBetween(p2, p3) * TILE_SIZE;
     double angle = getDestinationAngle(p2, p3);
     Driver.turnBy(angle);
@@ -70,11 +64,13 @@ public class Navigation {
     double angle = getDestinationAngle(p1, destination);
     turnTo(angle);
 
-    // Consider an object if it is within
+    // Consider an object if it is within 2 tiles
     if (ObjectDetection.detectObjInPath()) {
       // Need to know the initial position of the robot
       travelTo(new Point(destination.x, p1.y));
       travelTo(new Point(destination.x, destination.y));
+    }else {
+      travelTo(destination);
     }
 
   }
