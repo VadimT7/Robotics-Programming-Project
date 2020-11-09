@@ -21,15 +21,14 @@ public class ObjectDetection {
   public static HashMap<Double, Integer> findObjects() {
     angleMap = new HashMap<>();
     // TODO wrap the whole method in a loop while the robot is rotating
-    usMotor.rotate(360, true);
-
-    int startTacho = usMotor.getTachoCount();
-    int prevTacho = 0;
-
-    while (prevTacho != startTacho && prevTacho != 0) {
+    //usMotor.rotate(360, true);
+    
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.backward();
+    int startTacho = 0;
+    while (startTacho > -360) {
       // Save the previous tacho count
-      prevTacho = startTacho;
-      double angle = odometer.getXyt()[2];
+      double angle = -usMotor.getTachoCount();
       int objDist = readUsDistance();
       // Throw out objects over 2 tile distances away
       if (detectObjInPath()) {
@@ -39,7 +38,7 @@ public class ObjectDetection {
       // Get the current tachocount
       startTacho = usMotor.getTachoCount();
     }
-
+    usMotor.stop();
     usMotor.resetTachoCount();
     return angleMap;
   }
@@ -120,7 +119,14 @@ public class ObjectDetection {
     }
     return true;
   }
-
+  
+  //Print values
+  public static void printMap() {
+    System.out.println(angleMap.size());
+    for(Map.Entry<Double, Integer> x :angleMap.entrySet()) {
+      System.out.println("Distance " + x.getKey() + " angle " + x.getValue());
+    }
+  }
 
   // Sort the hashmap by its values
   public static HashMap<Double, Integer> sortMapByValue() {

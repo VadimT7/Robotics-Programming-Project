@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.playingfield.Region;
 
 /**
  *
@@ -31,10 +32,35 @@ public class UltrasonicLocalizer {
   private static float[] usData = new float[usSensor.sampleSize()];
 
   /**
-   * If facing the wall the method detects a rising edge and a falling edge and calculates the heading.
-   * When facing away from the wall the same principle is applied except it detects 2 falling edges
+   * If facing the wall the method detects a rising edge and a falling edge and calculates the heading. When facing away
+   * from the wall the same principle is applied except it detects 2 falling edges
    */
   public static void localize() {
+
+    // Change heading calculation based on the corner of the robot
+
+    STARTING_COLOR = LightLocalizer.detectStartingColor();
+    Region startingRegion;
+
+    if (STARTING_COLOR.equals("red")) {
+      // Use red corner parameters
+      // UPPER BOUND - 1, hard coded for now
+      startingRegion = red;
+    } else {
+      // Use green corner parameters
+      // UPPER RIGHT - 1 = X
+      startingRegion = green;
+    }
+
+    double wallHeading = 315;
+    double noWallHeading = 135;
+
+    if ((startingRegion.ll.x == 0 && startingRegion.ur.y == 15)
+        || (startingRegion.ll.y == 0 && startingRegion.ur.x == 15)) {
+      wallHeading = 45;
+      noWallHeading = 225;
+    }
+
     double alpha;
     double beta;
     // Determine if we are facing a wall
@@ -48,8 +74,8 @@ public class UltrasonicLocalizer {
         detected = readUsDistance() < (DIST + K);
       }
       Driver.stopMotors();
-      
-      //Save the first detected angle
+
+      // Save the first detected angle
       alpha = odometer.getXyt()[2];
 
       // Restart rotation
@@ -59,23 +85,23 @@ public class UltrasonicLocalizer {
         detected = readUsDistance() <= (DIST - K);
       }
       Driver.stopMotors();
-      
-      //Save the second detected angle
+
+      // Save the second detected angle
       beta = odometer.getXyt()[2];
-      //Caculate the heading
-      heading = 315 - (odometer.getXyt()[2] - (alpha + beta) / 2);
+      // Caculate the heading
+      heading = wallHeading - (odometer.getXyt()[2] - (alpha + beta) / 2);
     }
     // Otherwise detect two falling edges
     else {
       // Start Rotation
       Driver.rotateClk();
-      
+
       // Find falling edge
       while (!detected) {
         detected = readUsDistance() <= (DIST - K);
       }
       Driver.stopMotors();
-      //Save the first detected angle
+      // Save the first detected angle
       alpha = odometer.getXyt()[2];
 
 
@@ -86,13 +112,13 @@ public class UltrasonicLocalizer {
       }
       Driver.stopMotors();
       beta = odometer.getXyt()[2];
-      
-      //Save the second detected angle
-      heading = 135 - (odometer.getXyt()[2] - (alpha + beta) / 2);
+
+      // Save the second detected angle
+      heading = noWallHeading - (odometer.getXyt()[2] - (alpha + beta) / 2);
     }
     Driver.turnBy(heading);
-    
-    //Reset odometer
+
+    // Reset odometer
     odometer.setXyt(0, 0, 0);
   }
 
@@ -126,7 +152,7 @@ public class UltrasonicLocalizer {
         invalidSampleCount = 0; // reset filter and remember the input distance.
       }
 
-      if(prevDistance - distance > 150) {
+      if (prevDistance - distance > 150) {
         return prevDistance;
       }
       prevDistance = distance;
