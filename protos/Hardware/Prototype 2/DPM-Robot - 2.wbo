@@ -1,0 +1,87 @@
+#VRML_OBJ R2020b utf8
+DPM-Robot {
+  hidden rotation_10 1 0 0 4.860611686199943e-07
+  translation 4.413548958756666 0.061686212246544275 2.5877167910966707
+  rotation -0.001556043833064359 0.9999972332267407 0.0017641616856023316 1.5535162093347794
+  children [
+    robot_counter_weight-solid {
+      translation 0 -0.0334 0.09
+      rotation 1 0 0 1.5708
+    }
+    BallCaster {
+      translation 0 -0.05 0.09
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+    }
+    EV3-ColorSensor {
+      name "S4"
+      translation 0.0045 -0.0265 -0.0725
+      rotation 9.58976e-09 -1 -9.58979e-09 -1.5707953071795862
+    }
+    robot_container-solid {
+      translation -0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    robot_container-solid {
+      name "robot_container-solid2"
+      translation 0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-LargeMotor {
+      name "B"
+      translation 0.0083 0.0385 0.0347
+      rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
+      position -6.282776392205098
+      children [
+        robot_us-solid {
+          translation -0.04 0 -1.01962e-08
+          rotation 0 1 0 -1.5707953071795862
+        }
+        EV3-Ultrasonic {
+          name "S1"
+          translation -0.051 0.018 2.26263e-07
+          rotation -0.6970783932918078 1.7274832191992749e-18 -0.7169949188144307 -3
+        }
+      ]
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation -0.04 -0.034 0.102
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation 0.04 -0.034 0.102
+    }
+    EV3-LargeMotor {
+      name "D"
+      translation 0.056 -0.025 0.025
+      rotation 1 0 0 -1.5707953071795862
+      position 31.05184306013277
+      children [
+        Wheel {
+          translation 0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    EV3-LargeMotor {
+      name "A"
+      translation -0.0555 -0.025 0.026
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+      position 19.389116928508344
+      children [
+        Wheel {
+          translation -0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    robot_body-solid {
+      translation 0 0.002 0.005
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3 {
+      rotation 1 0 0 -1.5708
+    }
+  ]
+  controller "T14Controller"
+}

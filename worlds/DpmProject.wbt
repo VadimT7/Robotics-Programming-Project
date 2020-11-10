@@ -28,8 +28,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.9903347398085606 -0.10925058897038194 -0.08544829979546346 1.3369371333254843
-  position 4.252219124232538 1.0235620256421136 2.818339204301373
+  orientation -0.02170868410107313 -0.9759394285493913 -0.21695844034581244 2.94690651858195
+  position 3.952024981292526 0.5281905448185079 1.7477019323978877
 }
 TexturedBackground {
 }
@@ -241,8 +241,6 @@ DEF ARENA DPM-CompetitionArena {
   tileColor_14_8 0.5 1 0.5
 }
 DPM-Block {
-  hidden linearVelocity_0 -7.247906919627595e-16 -5.684341886080802e-17 6.6475538871471e-16
-  hidden angularVelocity_0 1.3411994564235227e-14 4.649255425476156e-17 1.4593765289275138e-14
   name "block1"
   translation 3.2322399999999645 0.049869199999924646 0.597939000000038
   rotation 0.7073804503729741 -2.5182822548880954e-05 0.7068330055932261 -1.737629290695614e-06
@@ -250,8 +248,6 @@ DPM-Block {
   mass 2
 }
 DPM-Block {
-  hidden linearVelocity_0 -6.730829896559414e-16 8.526512829121202e-17 6.938930502688016e-16
-  hidden angularVelocity_0 1.3839623377906328e-14 6.759872576086794e-17 1.3462163164462244e-14
   name "block2"
   translation 4.12963069597169 0.04986919999992463 0.4601659312422845
   rotation 0.7073804503129086 -2.997415746785569e-05 0.7068330054663949 -1.7376292912610648e-06
@@ -259,8 +255,6 @@ DPM-Block {
   mass 2
 }
 DPM-Block {
-  hidden linearVelocity_0 -6.784521522146809e-16 1.1368683772161603e-16 7.186165248641762e-16
-  hidden angularVelocity_0 1.4267252181239286e-14 -4.8603243900441345e-17 1.3657266994807014e-14
   name "block3"
   translation 2.3155600613921927 0.04986919999992463 0.765152944471971
   rotation 0.707380450363202 -2.7360656527645354e-05 0.7068330055220595 -1.7376292909952477e-06
@@ -268,12 +262,95 @@ DPM-Block {
   mass 2
 }
 DPM-Block {
-  hidden linearVelocity_0 2.6847271064188258e-15 0 -2.663074254251077e-15
-  hidden angularVelocity_0 -5.3142598737990194e-14 -3.361795296252268e-17 -5.369256963734695e-14
   name "block4"
   translation 3.0603500560610226 0.049869199999924646 0.9061739430153863
   rotation 0.7073651338176227 0.00657950697574101 0.706817711681826 -1.7376850335287128e-06
   dimension 0.1
   mass 2
 }
-
+DPM-Robot {
+  hidden rotation_10 1 0 0 4.860611686199943e-07
+  translation 4.413548958756666 0.061686212246544275 2.5877167910966707
+  rotation -0.001556043833064359 0.9999972332267407 0.0017641616856023316 1.5535162093347794
+  children [
+    robot_counter_weight-solid {
+      translation 0 -0.0334 0.09
+      rotation 1 0 0 1.5708
+    }
+    BallCaster {
+      translation 0 -0.05 0.09
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+    }
+    EV3-ColorSensor {
+      name "S4"
+      translation 0.0045 -0.0265 -0.0725
+      rotation 9.58976e-09 -1 -9.58979e-09 -1.5707953071795862
+    }
+    robot_container-solid {
+      translation -0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    robot_container-solid {
+      name "robot_container-solid2"
+      translation 0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-LargeMotor {
+      name "B"
+      translation 0.0083 0.0385 0.0347
+      rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
+      position -6.282776392205098
+      children [
+        robot_us-solid {
+          translation -0.04 0 -1.01962e-08
+          rotation 0 1 0 -1.5707953071795862
+        }
+        EV3-Ultrasonic {
+          name "S1"
+          translation -0.051 0.018 2.26263e-07
+          rotation -0.6970783932918078 1.7274832191992749e-18 -0.7169949188144307 -3
+        }
+      ]
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation -0.04 -0.034 0.102
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation 0.04 -0.034 0.102
+    }
+    EV3-LargeMotor {
+      name "D"
+      translation 0.056 -0.025 0.025
+      rotation 1 0 0 -1.5707953071795862
+      position 31.05184306013277
+      children [
+        Wheel {
+          translation 0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    EV3-LargeMotor {
+      name "A"
+      translation -0.0555 -0.025 0.026
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+      position 19.389116928508344
+      children [
+        Wheel {
+          translation -0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    robot_body-solid {
+      translation 0 0.002 0.005
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3 {
+      rotation 1 0 0 -1.5708
+    }
+  ]
+  controller "T14Controller"
+}

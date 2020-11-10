@@ -10,6 +10,6 @@ PROTO robot_us-boundingbox [
 ]
 {
 		Box {
-			size 0.054855 0.049052 0.056048
+			size 0.041141 0.009341 0.056048
 		}
 }
