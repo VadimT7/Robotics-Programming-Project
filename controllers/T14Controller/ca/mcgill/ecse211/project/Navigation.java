@@ -50,11 +50,11 @@ public class Navigation {
     travelWithObjDetect(p2);
 
     // Travel across tunnel in a straight line with line detection
-    double disToTravel = distanceBetween(p2, p3) * TILE_SIZE;
+    double disToTravel = distanceBetween(p2, p3);
     double angle = getDestinationAngle(p2, p3);
     Driver.turnBy(angle);
-    LightLocalizer.lineDetect();
-    Driver.moveStraightFor(Driver.convertDistance(disToTravel));
+    //LightLocalizer.lineDetect();
+    travelTo(p3);
   }
 
   public static void travelWithObjDetect(Point destination) {

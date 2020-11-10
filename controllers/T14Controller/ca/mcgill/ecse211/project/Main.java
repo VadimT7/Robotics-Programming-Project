@@ -44,6 +44,8 @@ public class Main {
     // LocalEV3.getAudio().beep(); // beeps once
     // wifiExample();
     UltrasonicLocalizer.localize();
+    LightLocalizer.startLocalize();
+    Navigation.travelAcrossTunnel();
     // ObjectDetection.findObjects();
     // ObjectDetection.printMap();
   }
