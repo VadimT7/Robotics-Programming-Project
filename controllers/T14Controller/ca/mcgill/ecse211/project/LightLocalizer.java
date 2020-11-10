@@ -222,8 +222,8 @@ public class LightLocalizer {
       startingRegion = green;
     }
     
-    if(startingRegion.ur.y == 15) {
-      initialY = 14;
+    if(startingRegion.ur.y == 9) {
+      initialY = 8;
       angle = 180;
     }
     

@@ -46,6 +46,8 @@ public class Main {
     UltrasonicLocalizer.localize();
     LightLocalizer.startLocalize();
     Navigation.travelAcrossTunnel();
+    LightLocalizer.localize();
+    odometer.printPositionInTileLengths();
     // ObjectDetection.findObjects();
     // ObjectDetection.printMap();
   }

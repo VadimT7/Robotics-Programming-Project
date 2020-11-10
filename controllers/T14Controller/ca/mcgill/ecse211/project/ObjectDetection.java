@@ -21,14 +21,31 @@ public class ObjectDetection {
   public static HashMap<Double, Integer> findObjects() {
     angleMap = new HashMap<>();
     // TODO wrap the whole method in a loop while the robot is rotating
-    //usMotor.rotate(360, true);
-    
+    // usMotor.rotate(360, true);
+
     usMotor.setSpeed(ROTATE_SPEED);
     usMotor.backward();
     int startTacho = 0;
-    while (startTacho > -360) {
-      // Save the previous tacho count
+    while (startTacho > -90) {
       double angle = -usMotor.getTachoCount();
+      int objDist = readUsDistance();
+      // Throw out objects over 2 tile distances away
+      if (detectObjInPath()) {
+        angleMap.put(angle, objDist);
+      //  break;
+      }
+
+      // Get the current tachocount
+      startTacho = usMotor.getTachoCount();
+    }
+    usMotor.rotate(90, false);
+    usMotor.resetTachoCount();
+    usMotor.forward();
+    while (startTacho < 90) {
+      double angle = usMotor.getTachoCount();
+      
+      angle = 360 - angle;
+      
       int objDist = readUsDistance();
       // Throw out objects over 2 tile distances away
       if (detectObjInPath()) {
@@ -38,6 +55,8 @@ public class ObjectDetection {
       // Get the current tachocount
       startTacho = usMotor.getTachoCount();
     }
+
+
     usMotor.stop();
     usMotor.resetTachoCount();
     return angleMap;
@@ -74,6 +93,7 @@ public class ObjectDetection {
   public static boolean detectObjInPath() {
 
     int objDist = readUsDistance();
+    // System.out.println(objDist);
     double X = odometer.getXyt()[0];
     double Y = odometer.getXyt()[1];
     double angle = odometer.getXyt()[2];
@@ -84,6 +104,9 @@ public class ObjectDetection {
     // Calculate final point coordinates based on distance
     double XF = X + Math.sin(angle) * objDist;
     double YF = Y + Math.cos(angle) * objDist;
+
+    //System.out.println("XF " + XF + " YF " + YF);
+
     /*
      * ========= ALL CASES WHERE THE READ VALUE SHOULD BE DISCARDED =========
      * 
@@ -103,28 +126,28 @@ public class ObjectDetection {
      * 
      */
 
-    //Detected a wall
-    if(XF >= 15 || XF <= 0 || YF >= 15 || YF <= 0) {
+    // Detected a wall
+    if (XF >= 15 * (TILE_SIZE * 100) || XF <= 0 || (YF >= 9 * TILE_SIZE * 100) || YF <= 0) {
       return false;
     }
 
-    //Check if any points are bin/tunnel coordinates
-    Point p = new Point(Math.round(XF),Math.round(YF));
-    
-    
-    
-    //Object out of detection range
+    // Check if any points are bin/tunnel coordinates
+    Point p = new Point(Math.round(XF), Math.round(YF));
+
+
+
+    // Object out of detection range
     if (objDist > DETECTION_THRESHOLD) {
       return false;
     }
     return true;
   }
-  
-  //Print values
+
+  // Print values
   public static void printMap() {
-    System.out.println(angleMap.size());
-    for(Map.Entry<Double, Integer> x :angleMap.entrySet()) {
-      System.out.println("Distance " + x.getKey() + " angle " + x.getValue());
+    //sortMapByValue();
+    for (Map.Entry<Double, Integer> x : angleMap.entrySet()) {
+      System.out.println("Angle " + x.getKey() + " Distance " + x.getValue());
     }
   }
 

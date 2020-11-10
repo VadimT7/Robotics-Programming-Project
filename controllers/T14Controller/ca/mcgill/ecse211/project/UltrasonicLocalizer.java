@@ -55,7 +55,7 @@ public class UltrasonicLocalizer {
     double wallHeading = 315;
     double noWallHeading = 135;
 
-    if ((startingRegion.ll.x == 0 && startingRegion.ur.y == 15)
+    if ((startingRegion.ll.x == 0 && startingRegion.ur.y == 9)
         || (startingRegion.ll.y == 0 && startingRegion.ur.x == 15)) {
       wallHeading = 45;
       noWallHeading = 225;
