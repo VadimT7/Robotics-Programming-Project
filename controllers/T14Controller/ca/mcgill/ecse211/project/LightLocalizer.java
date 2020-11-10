@@ -52,10 +52,8 @@ public class LightLocalizer {
       // System.out.println(lightBuffer[0]);
     }
     Driver.stopMotors();
-    int rotate = Driver.convertDistance(COLOR_SENSOR_TO_WHEEL_DIST);
     Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-rotate);
-
+    Driver.moveStraightFor(-COLOR_SENSOR_TO_WHEEL_DIST/TILE_SIZE);
     // when reached, turn 90 degrees away from the wall with set rotation speed.
     Driver.setSpeed(ROTATE_SPEED);
 
@@ -92,7 +90,7 @@ public class LightLocalizer {
     }
     Driver.stopMotors();
     Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-rotate);
+    Driver.moveStraightFor(-COLOR_SENSOR_TO_WHEEL_DIST/TILE_SIZE);
 
 
     Driver.setSpeed(ROTATE_SPEED);
@@ -136,9 +134,8 @@ public class LightLocalizer {
       // System.out.println(lightBuffer[0]);
     }
     Driver.stopMotors();
-    int rotate = Driver.convertDistance(COLOR_SENSOR_TO_WHEEL_DIST);
     Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-rotate);
+    Driver.moveStraightFor(-COLOR_SENSOR_TO_WHEEL_DIST/TILE_SIZE);
 
     // when reached, turn 90 degrees away from the wall with set rotation speed.
     Driver.setSpeed(ROTATE_SPEED);
@@ -170,7 +167,7 @@ public class LightLocalizer {
     }
     Driver.stopMotors();
     Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-rotate);
+    Driver.moveStraightFor(-COLOR_SENSOR_TO_WHEEL_DIST/TILE_SIZE);
 
 
     Driver.setSpeed(ROTATE_SPEED);
