@@ -6,8 +6,8 @@
 # LeoCAD is distributed under the GNU General Public License (GPL) version 2.
 # The Parts Library used by LeoCAD is a copy of LDraw's Library, which is distributed under the LDraw License Agreement and based on the Creative Commons 2 License.
 # LEGO(R) is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this file.
-PROTO robot_container-solid [
-	field SFString   name     "robot_container-solid"
+PROTO robot_us_support-solid [
+	field SFString   name     "robot_us_support-solid"
 	field SFVec3f    translation   0 0 0
 	field SFRotation rotation      0 0 1 0
 ]
@@ -17,14 +17,14 @@ PROTO robot_container-solid [
 		rotation IS rotation
 		translation IS translation
 		children [
-			robot_container-shape{
+			robot_us_support-shape{
 			}
 		]
-		boundingObject robot_container-boundingbox {
+		boundingObject robot_us_support-boundingbox {
 		}
 		physics Physics {
 			density -1
-			mass 0.001
+			mass 0.0001
 		}
 	}
 }
