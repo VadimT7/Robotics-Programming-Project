@@ -1,0 +1,101 @@
+#VRML_OBJ R2020b utf8
+DPM-Robot {
+  hidden linearVelocity_0 -1.8389013393874808e-07 8.774839070420469e-08 4.908745674585895e-06
+  hidden angularVelocity_0 -6.576019424158012e-07 -0.0001368828573965062 2.493861454282467e-06
+  hidden position_2_0 8.50866811080221
+  hidden translation_3 4.894626925988632e-10 -9.986612070633782e-08 7.538660834144513e-05
+  hidden rotation_3 0.5388986595342787 -0.18062615201337692 0.8227772650973032 2.8361969578584083
+  hidden linearVelocity_3 -1.002508724984924e-07 2.1311099383633837e-07 1.1882444316923273e-05
+  hidden angularVelocity_3 0.0012456007939961643 -0.007827301603691954 1.4888321196724884e-05
+  hidden linearVelocity_10 -1.198592046844411e-06 -7.186435994472122e-08 -4.125011963925734e-06
+  hidden angularVelocity_10 -6.576006823187722e-07 -0.00013688285658873046 2.4938609849041775e-06
+  hidden rotation_21 -1 0 0 5.784433006689484
+  hidden linearVelocity_21 8.927821433857084e-06 -7.132454171495607e-08 -1.3402370764730505e-05
+  hidden angularVelocity_21 1.6143250206274134e-05 -0.0001370529447491159 -0.0006362804019909999
+  hidden rotation_24 1 0 0 5.784410430298946
+  hidden linearVelocity_24 -8.826201459077061e-06 -1.6249693421348848e-08 8.132999582253538e-06
+  hidden angularVelocity_24 -1.7461567590762288e-05 -0.00013707704170007315 0.0006413544020932217
+  translation 4.4136849944338366 0.061769333914807684 2.587893333112183
+  rotation -0.0007576388484628505 0.9999994268487226 0.0007564956057226517 1.546108249599629
+  children [
+    robot_counter_weight-solid {
+      translation 0 -0.0334 0.09
+      rotation 1 0 0 1.5708
+    }
+    BallCaster {
+      translation 0 -0.05 0.09
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+    }
+    EV3-ColorSensor {
+      name "S4"
+      translation 0.0045 -0.0265 -0.0725
+      rotation 9.58976e-09 -1 -9.58979e-09 -1.5707953071795862
+    }
+    robot_container-solid {
+      translation -0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    robot_container-solid {
+      name "robot_container-solid2"
+      translation 0.0838 -0.001 -0.103
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-LargeMotor {
+      name "B"
+      translation 0.0083 0.0385 0.0347
+      rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
+      position -6.282775903793613
+      children [
+        EV3-Ultrasonic {
+          name "S1"
+          translation -0.036 0.029 -2.03347e-07
+          rotation 0.7071072811817993 3.673211460655597e-06 0.7071062811814016 3.14159
+        }
+        robot_us_support-solid {
+          translation -0.028 0.012 -2.1684e-19
+          rotation -6.979789999956479e-07 -0.9999999999937648 3.4617099999784156e-06 1.5708
+        }
+      ]
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation -0.04 -0.034 0.102
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation 0.04 -0.034 0.102
+    }
+    EV3-LargeMotor {
+      name "D"
+      translation 0.056 -0.025 0.025
+      rotation 1 0 0 -1.5707953071795862
+      position 31.021326029882754
+      children [
+        Wheel {
+          translation 0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    EV3-LargeMotor {
+      name "A"
+      translation -0.0555 -0.025 0.026
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+      position 19.419633962531307
+      children [
+        Wheel {
+          translation -0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    robot_body-solid {
+      translation 0 0.002 0.005
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3 {
+      rotation 1 0 0 -1.5708
+    }
+  ]
+  controller "T14Controller"
+}
