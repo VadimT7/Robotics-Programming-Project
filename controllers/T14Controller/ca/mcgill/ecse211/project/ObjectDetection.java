@@ -37,7 +37,7 @@ public class ObjectDetection {
       // Throw out objects over 2 tile distances away
       if (detectObjInPath(objDist) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
-        System.out.println("Angle " + angle + " PrevAngle " + prevAngle);
+        //System.out.println("Angle " + angle + " PrevAngle " + prevAngle);
         usMotor.stop();
         boolean isBlock = detectBlock();
         if (isBlock) {
@@ -53,6 +53,7 @@ public class ObjectDetection {
       startTacho = usMotor.getTachoCount();
     }
 
+    System.out.println(usMotor.getTachoCount());
     usMotor.stop();
     usMotor.resetTachoCount();
     return angleMap;
@@ -100,10 +101,18 @@ public class ObjectDetection {
 
     
     // Rotate back to initial position
-    int tachoDiff = startTacho - endTacho;
+    
+    
+    
+    int tachoDiff = 0;
+    if(startTacho < 0) {
+      startTacho = (startTacho > 0)? startTacho:-startTacho;
+      tachoDiff = startTacho;
+    }
+    
+    
     usMotor.setSpeed(ROTATE_SPEED);
     usMotor.rotate(tachoDiff, false);
-
     if (Math.abs(angle1 - angle2) > THRESHOLD) {
       return false;
     }
