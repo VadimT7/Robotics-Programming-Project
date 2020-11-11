@@ -1,5 +1,4 @@
 package ca.mcgill.ecse211.project;
-
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
 import java.util.Collections;
@@ -101,13 +100,12 @@ public class ObjectDetection {
 
     
     // Rotate back to initial position
-    
-    
-    
     int tachoDiff = 0;
     if(startTacho < 0) {
       startTacho = (startTacho > 0)? startTacho:-startTacho;
       tachoDiff = startTacho;
+    }else {
+      tachoDiff = startTacho - endTacho;
     }
     
     
