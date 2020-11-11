@@ -214,7 +214,6 @@ public class LightLocalizer {
     
     if (STARTING_COLOR.equals("red")) {
       // Use red corner parameters
-      // UPPER BOUND - 1, hard coded for now
       startingRegion = red;
     } else {
       // Use green corner parameters

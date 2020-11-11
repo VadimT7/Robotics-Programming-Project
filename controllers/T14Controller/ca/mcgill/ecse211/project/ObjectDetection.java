@@ -22,40 +22,36 @@ public class ObjectDetection {
     angleMap = new HashMap<>();
     // TODO wrap the whole method in a loop while the robot is rotating
     // usMotor.rotate(360, true);
-
     usMotor.setSpeed(ROTATE_SPEED);
-    usMotor.backward();
-    int startTacho = 0;
-    while (startTacho > -90) {
-      double angle = -usMotor.getTachoCount();
-      int objDist = readUsDistance();
-      // Throw out objects over 2 tile distances away
-      if (detectObjInPath()) {
-        angleMap.put(angle, objDist);
-      //  break;
-      }
-
-      // Get the current tachocount
-      startTacho = usMotor.getTachoCount();
-    }
-    usMotor.rotate(90, false);
-    usMotor.resetTachoCount();
+    usMotor.rotate(-90, false);
     usMotor.forward();
-    while (startTacho < 90) {
-      double angle = usMotor.getTachoCount();
-      
-      angle = 360 - angle;
-      
+    double startTacho = usMotor.getTachoCount();
+    
+    //arbitrary prev angle to prevent from double reading
+    double prevAngle = -10;
+    
+    while (startTacho <= 90) {
+      double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
+
       int objDist = readUsDistance();
       // Throw out objects over 2 tile distances away
-      if (detectObjInPath()) {
-        angleMap.put(angle, objDist);
+      if (detectObjInPath(objDist) && angle != prevAngle) {
+        // Stop rotation and latch onto object, determine width
+        System.out.println("Angle " + angle + " PrevAngle " + prevAngle);
+        usMotor.stop();
+        boolean isBlock = detectBlock();
+        if (isBlock) {
+          angleMap.put(angle, objDist);
+        }
+        usMotor.setSpeed(ROTATE_SPEED);
+        usMotor.forward();
       }
 
+      prevAngle = angle;
+      
       // Get the current tachocount
       startTacho = usMotor.getTachoCount();
     }
-
 
     usMotor.stop();
     usMotor.resetTachoCount();
@@ -67,22 +63,48 @@ public class ObjectDetection {
    * @return is the object a block
    */
   public static boolean detectBlock() {
-
-
+    
+    //System.out.println("Tacho start" + startTacho);
     /*
      * if not in a certain threshold then the object is not a block
      */
     int objDist = readUsDistance();
 
-    double THRESHOLD = 20;
+    double THRESHOLD = 30;
+    
+    
+    // TODO ROTATE OPPOSITE DIRECTION TO FIND OTHER EDGE
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.forward();
+    while ((objDist <= 2 * TILE_SIZE * 100 && usMotor.getTachoCount() <= 90)
+        ) {
+      objDist = readUsDistance();
+    }
 
+    int startTacho = usMotor.getTachoCount();
+    usMotor.stop();
+    double angle2 = (-usMotor.getTachoCount() + 360) % 360;
+    
     // TODO ROTATE TO FIND EDGE
-    double angle1 = odometer.getXyt()[2];
+    double tempTacho = usMotor.getTachoCount();
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.backward();
+    while (objDist <= 2 * TILE_SIZE * 100||  usMotor.getTachoCount() > tempTacho - 10) {
+      objDist = readUsDistance();
+    }
+    usMotor.stop();
+    double angle1 = (-usMotor.getTachoCount() + 360) % 360;
+    
 
-    // TODO ROTATE OPPOSITED DIRECTION TO FIND OTHER EDGE
-    double angle2 = odometer.getXyt()[2];
+    int endTacho = usMotor.getTachoCount();
 
-    if (360 - angle1 - angle2 > THRESHOLD) {
+    
+    // Rotate back to initial position
+    int tachoDiff = startTacho - endTacho;
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.rotate(tachoDiff, false);
+
+    if (Math.abs(angle1 - angle2) > THRESHOLD) {
       return false;
     }
 
@@ -90,22 +112,24 @@ public class ObjectDetection {
   }
 
 
-  public static boolean detectObjInPath() {
-
-    int objDist = readUsDistance();
+  public static boolean detectObjInPath(int objDist) {
+    // Object out of detection range
+    if (objDist > DETECTION_THRESHOLD) {
+      return false;
+    }
     // System.out.println(objDist);
     double X = odometer.getXyt()[0];
     double Y = odometer.getXyt()[1];
-    double angle = odometer.getXyt()[2];
+    double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
+
 
     // Throw out false positives (eg: walls, bins, tunnel)
     // TODO determine the bounds of the map
 
     // Calculate final point coordinates based on distance
-    double XF = X + Math.sin(angle) * objDist;
-    double YF = Y + Math.cos(angle) * objDist;
-
-    //System.out.println("XF " + XF + " YF " + YF);
+    double XF = X + Math.sin(angle) * objDist / 100.0;
+    double YF = Y + Math.cos(angle) * objDist / 100.0;
+    // System.out.println("XF " + XF + " YF " + YF);
 
     /*
      * ========= ALL CASES WHERE THE READ VALUE SHOULD BE DISCARDED =========
@@ -127,25 +151,19 @@ public class ObjectDetection {
      */
 
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE * 100) || XF <= 0 || (YF >= 9 * TILE_SIZE * 100) || YF <= 0) {
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
       return false;
     }
 
     // Check if any points are bin/tunnel coordinates
     Point p = new Point(Math.round(XF), Math.round(YF));
 
-
-
-    // Object out of detection range
-    if (objDist > DETECTION_THRESHOLD) {
-      return false;
-    }
     return true;
   }
 
   // Print values
   public static void printMap() {
-    //sortMapByValue();
+    // sortMapByValue();
     for (Map.Entry<Double, Integer> x : angleMap.entrySet()) {
       System.out.println("Angle " + x.getKey() + " Distance " + x.getValue());
     }

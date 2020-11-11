@@ -20,6 +20,7 @@ public class Navigation {
     Driver.moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
+  /** travels across the tunnel based on the given coordinates. */
   public static void travelAcrossTunnel() {
 
     Point ll;
@@ -33,7 +34,9 @@ public class Navigation {
       ll = tng.ll;
       up = tng.ur;
     }
-
+    //TODO think about 2 other cases for the tunnel
+    
+    
     // If there is a difference of more than 1 between the x of the LL AND UP coordinates
     Point p2;
     Point p3;
@@ -62,8 +65,9 @@ public class Navigation {
 
     double angle = getDestinationAngle(p1, destination);
     turnTo(angle);
+    int objDist = UltrasonicLocalizer.readUsDistance();
     // Consider an object if it is within 2 tiles
-    if (ObjectDetection.detectObjInPath()) {
+    if (ObjectDetection.detectObjInPath(objDist)) {
       // Need to know the initial position of the robot
       travelTo(new Point(destination.x, p1.y));
       travelTo(new Point(destination.x, destination.y));
@@ -73,7 +77,28 @@ public class Navigation {
 
   }
 
+  public static void travelToSearchZone(){
+    Point ll;
+    Point ur;
 
+    // Pick depending on starting color
+    if (STARTING_COLOR.equals("red")) {
+      ll = szr.ll;
+      ur = szr.ur;
+    } else {
+      ll = szg.ll;
+      ur = szg.ur;
+    }
+    
+    double curX = odometer.getXyt()[0];
+    double curY = odometer.getXyt()[1];
+    
+    if(!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
+      
+    }
+    
+    
+  }
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
   public static double getDestinationAngle(Point current, Point destination) {
     return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;
