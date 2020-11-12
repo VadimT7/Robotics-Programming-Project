@@ -48,7 +48,7 @@ public class Main {
 //    Navigation.travelAcrossTunnel();
 //    LightLocalizer.localize();
 //    odometer.printPositionInTileLengths();
-    odometer.setXyt(7*TILE_SIZE,  8* TILE_SIZE, 90);
+    odometer.setXyt(7*TILE_SIZE,  7* TILE_SIZE, 90);
     ObjectDetection.findObjects();
     ObjectDetection.printMap();
   }

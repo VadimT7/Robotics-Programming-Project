@@ -1,6 +1,8 @@
 package ca.mcgill.ecse211.project;
+
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,18 +27,19 @@ public class ObjectDetection {
     usMotor.rotate(-90, false);
     usMotor.forward();
     double startTacho = usMotor.getTachoCount();
-    
-    //arbitrary prev angle to prevent from double reading
+
+    // arbitrary prev angle to prevent from double reading
     double prevAngle = -10;
-    
-    while (startTacho <= 90) {
+
+    while (startTacho < 90) {
       double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
+
 
       int objDist = readUsDistance();
       // Throw out objects over 2 tile distances away
-      if (detectObjInPath(objDist) && angle != prevAngle) {
+      if (detectObjInPath() && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
-        //System.out.println("Angle " + angle + " PrevAngle " + prevAngle);
+        // System.out.println("Angle " + angle + " PrevAngle " + prevAngle);
         usMotor.stop();
         boolean isBlock = detectBlock();
         if (isBlock) {
@@ -47,12 +50,11 @@ public class ObjectDetection {
       }
 
       prevAngle = angle;
-      
+
       // Get the current tachocount
       startTacho = usMotor.getTachoCount();
     }
 
-    System.out.println(usMotor.getTachoCount());
     usMotor.stop();
     usMotor.resetTachoCount();
     return angleMap;
@@ -63,63 +65,64 @@ public class ObjectDetection {
    * @return is the object a block
    */
   public static boolean detectBlock() {
-    
-    //System.out.println("Tacho start" + startTacho);
+
+    // System.out.println("Tacho start" + startTacho);
     /*
      * if not in a certain threshold then the object is not a block
      */
     int objDist = readUsDistance();
 
     double THRESHOLD = 30;
+
+    int startTacho = usMotor.getTachoCount();
+
+
+    // TODO ROTATE TO FIND EDGE
     
-    
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.backward();
+    while (objDist <= 2 * TILE_SIZE * 100 ) {
+      objDist = readUsDistance();
+    }
+    usMotor.stop();
+    double angle1 = -usMotor.getTachoCount();
+
+    double tempTacho = usMotor.getTachoCount();
     // TODO ROTATE OPPOSITE DIRECTION TO FIND OTHER EDGE
     usMotor.setSpeed(ROTATE_SPEED);
     usMotor.forward();
-    while ((objDist <= 2 * TILE_SIZE * 100 && usMotor.getTachoCount() <= 90)
-        ) {
-      objDist = readUsDistance();
-    }
-
-    int startTacho = usMotor.getTachoCount();
-    usMotor.stop();
-    double angle2 = (-usMotor.getTachoCount() + 360) % 360;
-    
-    // TODO ROTATE TO FIND EDGE
-    double tempTacho = usMotor.getTachoCount();
-    usMotor.setSpeed(ROTATE_SPEED);
-    usMotor.backward();
-    while (objDist <= 2 * TILE_SIZE * 100||  usMotor.getTachoCount() > tempTacho - 10) {
+    while (((objDist <= 2 * TILE_SIZE * 100 && usMotor.getTachoCount() < 90)|| usMotor.getTachoCount() < tempTacho + 5)) {
       objDist = readUsDistance();
     }
     usMotor.stop();
-    double angle1 = (-usMotor.getTachoCount() + 360) % 360;
-    
-
+    double angle2 = -usMotor.getTachoCount();
     int endTacho = usMotor.getTachoCount();
 
-    
     // Rotate back to initial position
-    int tachoDiff = 0;
-    if(startTacho < 0) {
-      startTacho = (startTacho > 0)? startTacho:-startTacho;
-      tachoDiff = startTacho;
-    }else {
-      tachoDiff = startTacho - endTacho;
-    }
+    // int tachoDiff = 0;
+    // if(startTacho < 0) {
+    // startTacho = (startTacho > 0)? startTacho:-startTacho;
+    // tachoDiff = startTacho;
+    // }else {
+    // tachoDiff = startTacho - endTacho;
+    // }
+
+
+    //usMotor.setSpeed(ROTATE_SPEED);
+//    usMotor.rotate(tachoDiff, false);
     
-    
-    usMotor.setSpeed(ROTATE_SPEED);
-    usMotor.rotate(tachoDiff, false);
-    if (Math.abs(angle1 - angle2) > THRESHOLD) {
+    System.out.println("theta 1 " + angle1 + " theta 2 " + angle2);
+    if (Math.abs(angle1 - angle2) > THRESHOLD && Math.abs(angle1 - angle2) > 10) {
       return false;
     }
-
+    
+    
     return true;
   }
 
 
-  public static boolean detectObjInPath(int objDist) {
+  public static boolean detectObjInPath() {
+    int objDist = readUsDistance();
     // Object out of detection range
     if (objDist > DETECTION_THRESHOLD) {
       return false;
@@ -127,8 +130,7 @@ public class ObjectDetection {
     // System.out.println(objDist);
     double X = odometer.getXyt()[0];
     double Y = odometer.getXyt()[1];
-    double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
-
+    double angle = Math.toRadians((odometer.getXyt()[2] - usMotor.getTachoCount()));
 
     // Throw out false positives (eg: walls, bins, tunnel)
     // TODO determine the bounds of the map
@@ -136,7 +138,11 @@ public class ObjectDetection {
     // Calculate final point coordinates based on distance
     double XF = X + Math.sin(angle) * objDist / 100.0;
     double YF = Y + Math.cos(angle) * objDist / 100.0;
-    // System.out.println("XF " + XF + " YF " + YF);
+    angle = Math.toDegrees(angle);
+//    System.out.println(angle);
+//    System.out.println(objDist);
+//    System.out.println("X " + X + " Y " + Y);
+//    System.out.println("XF " + XF + " YF " + YF);
 
     /*
      * ========= ALL CASES WHERE THE READ VALUE SHOULD BE DISCARDED =========
