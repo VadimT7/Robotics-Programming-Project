@@ -47,6 +47,12 @@ public class Main {
      LightLocalizer.startLocalize();
      Navigation.travelAcrossTunnel();
      LightLocalizer.localize();
+     //Beep 3 times 
+     LocalEV3.getAudio().beep();
+     LocalEV3.getAudio().beep();
+     LocalEV3.getAudio().beep();
+     
+     
      odometer.printPositionInTileLengths();
      ObjectDetection.findObjects();
      ObjectDetection.printMap();

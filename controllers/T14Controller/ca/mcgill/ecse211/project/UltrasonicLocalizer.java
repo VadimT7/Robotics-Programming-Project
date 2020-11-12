@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import java.util.Arrays;
 import ca.mcgill.ecse211.playingfield.Region;
 
 /**
@@ -119,7 +120,7 @@ public class UltrasonicLocalizer {
     Driver.turnBy(heading);
 
     // Reset odometer
-    odometer.setXyt(0, 0, 0);
+    //odometer.setXyt(0, 0, 0);
   }
 
   /**
@@ -128,11 +129,16 @@ public class UltrasonicLocalizer {
    * @Author method taken from lab1
    */
   public static int readUsDistance() {
-    usSensor.fetchSample(usData, 0);
+    
     // extract from buffer, cast to int, and filter
-    return filter((int) (usData[0] * 100.0));
+    int[] window = new int[3];
+    for (int i = 0; i < 2; i ++) {
+      usSensor.fetchSample(usData, 0);
+      window [i] = filter((int) (usData[0] * 100.0));
+    }
+    Arrays.sort(window);
+    return window[1];
   }
-
 
   /**
    * Rudimentary filter - toss out invalid samples corresponding to null signal.
@@ -152,9 +158,6 @@ public class UltrasonicLocalizer {
         invalidSampleCount = 0; // reset filter and remember the input distance.
       }
 
-      if (prevDistance - distance > 200) {
-        return prevDistance;
-      }
       prevDistance = distance;
       return distance;
     }

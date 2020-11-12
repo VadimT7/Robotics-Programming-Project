@@ -178,6 +178,9 @@ public class LightLocalizer {
     Driver.stopMotors();
   }
 
+  /** 
+   * Travel in a straight line until the two back sensors are both on a line
+   */
   public static void lineDetect() {
     colorSensor.fetchSample(lightBuffer, 0);
     colorSensor2.fetchSample(lightBuffer2, 0);
@@ -201,6 +204,9 @@ public class LightLocalizer {
     Driver.stopMotors();
   }
 
+  /**
+   * Localize based on color and parameters given by the wifi server
+   */
   public static void startLocalize() {
     STARTING_COLOR = detectStartingColor();
     Region startingRegion;
@@ -208,11 +214,8 @@ public class LightLocalizer {
     int corner = 0;
     double initialX = 1;
     double initialY = 1;
-    // TODO implement logic to determine the starting localization coordinates
-    // To implement we need to check if the parameters given by the server are at the bounds of x/y
-    // If either bound is equal to Y max then the robot will localize towards 180
-    // Otherwise localize towards 0
     
+    //Determine starting corner based on parameters
     if (STARTING_COLOR.equals("red")) {
       // Use red corner parameters
       startingRegion = red;
@@ -224,6 +227,7 @@ public class LightLocalizer {
       corner = greenCorner;
     }
     
+    //Change y/x coordinates according to which corner the robot is located in
     if(corner == 3 || corner  == 2) {
       initialY = startingRegion.ur.y-1;
       angle = 180;
@@ -234,12 +238,6 @@ public class LightLocalizer {
     }
     
     localize(initialX * TILE_SIZE, initialY * TILE_SIZE, angle);
-    odometer.printPositionInTileLengths();
-
-    //Beep 3 times 
-    for (int i = 0; i < 3; i++) {
-      LocalEV3.getAudio().beep();
-    }
   }
 
   public static String detectStartingColor() {
