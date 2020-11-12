@@ -241,7 +241,8 @@ public class LightLocalizer {
 
   public static String detectStartingColor() {
     colorSensor.fetchSample(lightBuffer, 0);
-    if (lightBuffer[0] > 200) {
+    colorSensor2.fetchSample(lightBuffer2, 0);
+    if (lightBuffer[0] > 200 || lightBuffer2[0] > 200) {
       return "red";
     }
     return "green";
