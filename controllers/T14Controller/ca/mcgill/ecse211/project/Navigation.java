@@ -42,8 +42,8 @@ public class Navigation {
     Point p3;
 
     if (Math.abs(ll.x - up.x) > 1) {
-      p2 = new Point(ll.x - 1, ll.y + 0.4);
-      p3 = new Point(up.x + 1, ll.y + 0.4);
+      p2 = new Point(ll.x - 1, ll.y + 0.5);
+      p3 = new Point(up.x + 1, ll.y + 0.5);
     } else {
       p2 = new Point(ll.x + 0.4, ll.y - 1);
       p3 = new Point(ll.x + 0.4, up.y + 1);
@@ -53,10 +53,9 @@ public class Navigation {
     travelWithObjDetect(p2);
 
     // Travel across tunnel in a straight line with line detection
-    double disToTravel = distanceBetween(p2, p3);
     double angle = getDestinationAngle(p2, p3);
     turnTo(angle);
-    //LightLocalizer.lineDetect();
+    LightLocalizer.lineDetect();
     travelTo(p3);
   }
 
@@ -67,7 +66,7 @@ public class Navigation {
     turnTo(angle);
     int objDist = UltrasonicLocalizer.readUsDistance();
     // Consider an object if it is within 2 tiles
-    if (ObjectDetection.detectObjInPath(objDist)) {
+    if (ObjectDetection.detectObjInPath()) {
       // Need to know the initial position of the robot
       travelTo(new Point(destination.x, p1.y));
       travelTo(new Point(destination.x, destination.y));

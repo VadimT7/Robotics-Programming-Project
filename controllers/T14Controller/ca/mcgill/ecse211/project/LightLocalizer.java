@@ -18,7 +18,7 @@ public class LightLocalizer {
   static float[] lightBuffer = new float[colorSensor.sampleSize()];
   static float[] lightBuffer2 = new float[colorSensor2.sampleSize()];
   /* Arbitrary boundary condition (choice was made through testing) */
-  private static float X = 70;// 35.0f;
+  private static float X = 70;
 
   /**
    * performs localization with the steps seen in video tutorial+slides **\
@@ -183,7 +183,7 @@ public class LightLocalizer {
     colorSensor2.fetchSample(lightBuffer2, 0);
 
     while (!(lightBuffer[0] <= X) || !(lightBuffer2[0] <= X)) {
-      Driver.setSpeed(FORWARD_SPEED / 2);
+      Driver.setSpeed(FORWARD_SPEED);
       if (lightBuffer[0] <= X) {
         leftMotor.stop();
       } else {
@@ -205,6 +205,7 @@ public class LightLocalizer {
     STARTING_COLOR = detectStartingColor();
     Region startingRegion;
     double angle = 0;
+    int corner = 0;
     double initialX = 1;
     double initialY = 1;
     // TODO implement logic to determine the starting localization coordinates
@@ -215,19 +216,21 @@ public class LightLocalizer {
     if (STARTING_COLOR.equals("red")) {
       // Use red corner parameters
       startingRegion = red;
+      corner = redCorner;
     } else {
       // Use green corner parameters
       // UPPER RIGHT - 1 = X
       startingRegion = green;
+      corner = greenCorner;
     }
     
-    if(startingRegion.ur.y == 9) {
-      initialY = 8;
+    if(corner == 3 || corner  == 2) {
+      initialY = startingRegion.ur.y-1;
       angle = 180;
     }
     
-    if(startingRegion.ur.x == 15) {
-      initialX = 14;
+    if(corner == 2 || corner == 1) {
+      initialX = startingRegion.ur.x-1;
     }
     
     localize(initialX * TILE_SIZE, initialY * TILE_SIZE, angle);

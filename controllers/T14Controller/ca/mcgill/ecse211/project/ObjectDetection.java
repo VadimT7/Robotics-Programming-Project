@@ -1,11 +1,15 @@
 package ca.mcgill.ecse211.project;
 
-import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.Resources.DETECTION_THRESHOLD;
+import static ca.mcgill.ecse211.project.Resources.ROTATE_SPEED;
+import static ca.mcgill.ecse211.project.Resources.TILE_SIZE;
+import static ca.mcgill.ecse211.project.Resources.odometer;
+import static ca.mcgill.ecse211.project.Resources.usMotor;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +20,17 @@ import ca.mcgill.ecse211.playingfield.Point;
 
 public class ObjectDetection {
 
-  public static final double TWO_TILE_DIST = 60.96;
-  private static HashMap<Double, Integer> angleMap;
+  private static LinkedHashMap<Double, Integer> angleMap;
+  private static boolean isBlock;
+  private static double[] prevAngles = new double[2];
 
-  public static HashMap<Double, Integer> findObjects() {
-    angleMap = new HashMap<>();
+  public static LinkedHashMap<Double, Integer> findObjects() {
+    angleMap = new LinkedHashMap<>();
+    
+    //Set random prevangle
+    prevAngles[0] = 300;
+    prevAngles[1] = 300;
+    
     // TODO wrap the whole method in a loop while the robot is rotating
     // usMotor.rotate(360, true);
     usMotor.setSpeed(ROTATE_SPEED);
@@ -28,20 +38,23 @@ public class ObjectDetection {
     usMotor.forward();
     double startTacho = usMotor.getTachoCount();
 
+    
     // arbitrary prev angle to prevent from double reading
     double prevAngle = -10;
 
     while (startTacho < 90) {
       double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
 
-
       int objDist = readUsDistance();
       // Throw out objects over 2 tile distances away
+      //System.out.println(objDist);
       if (detectObjInPath() && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
         // System.out.println("Angle " + angle + " PrevAngle " + prevAngle);
+        // Detect objects in a 1 tile radius
         usMotor.stop();
-        boolean isBlock = detectBlock();
+        isBlock = detectBlock(objDist);
+        
         if (isBlock) {
           angleMap.put(angle, objDist);
         }
@@ -54,9 +67,12 @@ public class ObjectDetection {
       // Get the current tachocount
       startTacho = usMotor.getTachoCount();
     }
-
+    usMotor.stop();
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.rotate(-90, false);
     usMotor.stop();
     usMotor.resetTachoCount();
+
     return angleMap;
   }
 
@@ -64,26 +80,23 @@ public class ObjectDetection {
    * 
    * @return is the object a block
    */
-  public static boolean detectBlock() {
-
-    // System.out.println("Tacho start" + startTacho);
+  public static boolean detectBlock(double objDist) {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    int objDist = readUsDistance();
-
-    double THRESHOLD = 30;
-
-    int startTacho = usMotor.getTachoCount();
-
-
-    // TODO ROTATE TO FIND EDGE
+    double THRESHOLD = 15;
     
+    double maxTreshold  = objDist;
+    
+    
+    // TODO ROTATE TO FIND EDGE
     usMotor.setSpeed(ROTATE_SPEED);
     usMotor.backward();
-    while (objDist <= 2 * TILE_SIZE * 100 ) {
+    while (objDist <= DETECTION_THRESHOLD) {
       objDist = readUsDistance();
     }
+    
+    maxTreshold =objDist;
     usMotor.stop();
     double angle1 = -usMotor.getTachoCount();
 
@@ -91,32 +104,42 @@ public class ObjectDetection {
     // TODO ROTATE OPPOSITE DIRECTION TO FIND OTHER EDGE
     usMotor.setSpeed(ROTATE_SPEED);
     usMotor.forward();
-    while (((objDist <= 2 * TILE_SIZE * 100 && usMotor.getTachoCount() < 90)|| usMotor.getTachoCount() < tempTacho + 5)) {
+    while (((objDist <= maxTreshold && usMotor.getTachoCount() < 90)
+        || usMotor.getTachoCount() < tempTacho + 10)) {
       objDist = readUsDistance();
     }
     usMotor.stop();
     double angle2 = -usMotor.getTachoCount();
-    int endTacho = usMotor.getTachoCount();
-
-    // Rotate back to initial position
-    // int tachoDiff = 0;
-    // if(startTacho < 0) {
-    // startTacho = (startTacho > 0)? startTacho:-startTacho;
-    // tachoDiff = startTacho;
-    // }else {
-    // tachoDiff = startTacho - endTacho;
-    // }
 
 
-    //usMotor.setSpeed(ROTATE_SPEED);
-//    usMotor.rotate(tachoDiff, false);
+//    // Throw out last value
+//    if (prevAngles[1] == angle1 && isBlock) {
+//      angle1 = prevAngles[0];
+//      ArrayList<Double> keyList = new ArrayList<>(angleMap.keySet());
+//      angleMap.remove(keyList.get(keyList.size() - 1));
+//    }
     
-    System.out.println("theta 1 " + angle1 + " theta 2 " + angle2);
-    if (Math.abs(angle1 - angle2) > THRESHOLD && Math.abs(angle1 - angle2) > 10) {
+    if(prevAngles[1] == angle2) {
       return false;
     }
     
+    if(angle1 >= prevAngles[1]) {
+      angle1 = prevAngles[0];
+      if(isBlock) {
+        ArrayList<Double> keyList = new ArrayList<>(angleMap.keySet());
+        angleMap.remove(keyList.get(keyList.size() - 1));
+      }
+    }
     
+    System.out.println("theta 1 " + angle1 + " theta 2 " + angle2 + "previous angle 2  " + prevAngles[1] + "  " + isBlock);
+    prevAngles[0] = angle1;
+    prevAngles[1] = angle2;
+    if (Math.abs(angle1 - angle2) > THRESHOLD) {
+      return false;
+    }
+
+   
+
     return true;
   }
 
@@ -139,10 +162,10 @@ public class ObjectDetection {
     double XF = X + Math.sin(angle) * objDist / 100.0;
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
-//    System.out.println(angle);
-//    System.out.println(objDist);
-//    System.out.println("X " + X + " Y " + Y);
-//    System.out.println("XF " + XF + " YF " + YF);
+    // System.out.println(angle);
+    // System.out.println(objDist);
+    // System.out.println("X " + X + " Y " + Y);
+    // System.out.println("XF " + XF + " YF " + YF);
 
     /*
      * ========= ALL CASES WHERE THE READ VALUE SHOULD BE DISCARDED =========
@@ -183,7 +206,7 @@ public class ObjectDetection {
   }
 
   // Sort the hashmap by its values
-  public static HashMap<Double, Integer> sortMapByValue() {
+  public static LinkedHashMap<Double, Integer> sortMapByValue() {
     List<Map.Entry<Double, Integer>> list = new LinkedList<Map.Entry<Double, Integer>>(angleMap.entrySet());
 
     Collections.sort(list, new Comparator<Map.Entry<Double, Integer>>() {

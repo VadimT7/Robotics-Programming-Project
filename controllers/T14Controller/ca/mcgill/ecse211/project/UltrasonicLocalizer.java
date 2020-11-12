@@ -152,7 +152,7 @@ public class UltrasonicLocalizer {
         invalidSampleCount = 0; // reset filter and remember the input distance.
       }
 
-      if (prevDistance - distance > 150) {
+      if (prevDistance - distance > 200) {
         return prevDistance;
       }
       prevDistance = distance;
