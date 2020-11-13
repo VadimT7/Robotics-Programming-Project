@@ -131,13 +131,13 @@ public class UltrasonicLocalizer {
   public static int readUsDistance() {
     
     // extract from buffer, cast to int, and filter
-    int[] window = new int[3];
-    for (int i = 0; i < 2; i ++) {
+    int[] window = new int[7];
+    for (int i = 0; i < 6; i ++) {
       usSensor.fetchSample(usData, 0);
       window [i] = filter((int) (usData[0] * 100.0));
     }
     Arrays.sort(window);
-    return window[1];
+    return window[3];
   }
 
   /**

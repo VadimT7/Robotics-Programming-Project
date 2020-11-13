@@ -10,6 +10,6 @@ PROTO robot_body2-boundingbox [
 ]
 {
 		Box {
-			size 0.174900 0.177682 0.095003
+			size 0.174900 0.177682 0.096195
 		}
 }

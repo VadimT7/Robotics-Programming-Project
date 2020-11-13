@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project;
 
 // importing necessary libraries
 import static ca.mcgill.ecse211.project.Resources.*;
+import static simlejos.ExecutionController.sleepFor;
 import ca.mcgill.ecse211.playingfield.Region;
 import simlejos.hardware.ev3.LocalEV3;
 import simlejos.robotics.SampleProvider;
@@ -33,7 +34,6 @@ public class LightLocalizer {
     // moving forward while both sensors are not on the line
     while (!(lightBuffer[0] <= X) || !(lightBuffer2[0] <= X)) {
       Driver.setSpeed(FORWARD_SPEED);
-      Driver.setAcceleration(ACCELERATION);
 
       // Stop the corresponding motor once it reaches a line
       if (lightBuffer[0] <= X) {
@@ -249,5 +249,19 @@ public class LightLocalizer {
     return "green";
   }
 
+  /**
+   * 
+   * @param number of times the robot needs to beep
+   */
+  public static void robotBeep(int n) {
+    for(int i = 0; i < n; i++) {
+      LocalEV3.getAudio().beep();
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
 
 }
