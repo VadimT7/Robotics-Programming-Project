@@ -44,13 +44,7 @@ public class Main {
      LightLocalizer.startLocalize();
      LightLocalizer.robotBeep(3);
      Navigation.travelAcrossTunnel();
-     LightLocalizer.localize();
-    
- 
-     
-     odometer.printPositionInTileLengths();
      ObjectDetection.findObjects();
-     ObjectDetection.printMap();
   }
 
   /**

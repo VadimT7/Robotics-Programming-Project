@@ -135,8 +135,6 @@ public class ObjectDetection {
       }
     }
     
-    System.out.println("theta 1 " + angle1 + " theta 2 " + angle2 + "previous angle 2  " + prevAngles[1] + "  " + isBlock);
-    
     //Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
