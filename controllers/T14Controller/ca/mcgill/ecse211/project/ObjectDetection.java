@@ -87,7 +87,7 @@ public class ObjectDetection {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    double THRESHOLD = 15;
+    double THRESHOLD = 12;
 
     double maxTreshold = objDist;
 
