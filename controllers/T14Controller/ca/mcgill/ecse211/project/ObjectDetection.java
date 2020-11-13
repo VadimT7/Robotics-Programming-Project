@@ -1,12 +1,7 @@
 package ca.mcgill.ecse211.project;
 
-import static ca.mcgill.ecse211.project.Resources.DETECTION_THRESHOLD;
-import static ca.mcgill.ecse211.project.Resources.ROTATE_SPEED;
-import static ca.mcgill.ecse211.project.Resources.TILE_SIZE;
-import static ca.mcgill.ecse211.project.Resources.odometer;
-import static ca.mcgill.ecse211.project.Resources.tng;
-import static ca.mcgill.ecse211.project.Resources.tnr;
-import static ca.mcgill.ecse211.project.Resources.usMotor;
+import static ca.mcgill.ecse211.project.Resources.*;
+
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,10 +128,6 @@ public class ObjectDetection {
         angleMap.remove(keyList.get(keyList.size() - 1));
       }
     }
-
-    System.out
-        .println("theta 1 " + angle1 + " theta 2 " + angle2 + "previous angle 2  " + prevAngles[1] + "  " + isBlock);
-
     // Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
@@ -195,52 +186,97 @@ public class ObjectDetection {
    * algorithm and put back facing to original path once obstacle dealt with. This is specifically for avoidance outside
    * the search zone.
    */
-  public static void OutobjectAvoider() {
+  public static void OutobjectAvoider(Point destination) {
+    Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    int objDist = readUsDistance();
 
-    // trivial rotation angle, determine through testing
-    double rotAngle = 30;
+    Point bounds = island.ll;
 
-    // trajectory to search zone commences
-    Navigation.travelToSearchZone();
-
-    // robot behaviour should the robot detect an object (including blocks) throughout navigation
-    if (detectObjInPath(readUsDistance())) {
-
-      // distance object will move by once object no longer detected
-      int distToObj = readUsDistance();
-
-      while (distToObj <= DETECTION_THRESHOLD) {
-        // robot rotates by arbitrary angle deemed fit through testing
-        Driver.turnBy(rotAngle);
-        
-        // if object is no longer detected, proceed
-        if (!detectObjInPath(readUsDistance())) {
-
-          // robot moves straight to bypass object
-          Driver.moveStraightFor(distToObj);
-
-          // intermediate point noted
-          Point initial = new Point(odometer.getXyt()[0], odometer.getXyt()[2]);
-
-          Navigation.travelToSearchZone();
-
-          // current point continuously updated throughout trajectory
-          Point current = new Point(odometer.getXyt()[1], odometer.getXyt()[2]);
-          // for every two tiles, conduct object detection
-          if (Navigation.distanceBetween(initial, current) == DETECTION_THRESHOLD) {
-
-            detectObjInPath(readUsDistance());
-          }
-        }
-
-        // if object still detected, rotate another 30 degrees.
-        else {
-
-          Driver.turnBy(rotAngle);
+    System.out.println(objDist);
+    if (readUsDistance() < 40) {
+      Driver.moveStraightFor(0.2* -TILE_SIZE);
+      // Rotate until we stop detecting it
+      while (readUsDistance() < 40) {
+        if (p1.y <= bounds.y + 0.4) {
+          Driver.turnBy(-35);
+        } else {
+          Driver.turnBy(35);
         }
       }
 
+      while (readUsDistance() > 45) {
+        Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+        Driver.setSpeed(FORWARD_SPEED);
+        Driver.forward();
+        if (current.y <= bounds.y + 0.4) {
+          Driver.stopMotors();
+          Navigation.turnTo(90);
+          break;
+        }
+      }
+      Driver.stopMotors();
+      OutobjectAvoider(destination);
+    } else if (Navigation.distanceBetween(p1, destination) < 1) {
+      Navigation.travelTo(destination);
+    } else {
+      int tempdist = readUsDistance();
+      while (tempdist > 40) {
+        System.out.println(tempdist);
+        Driver.setSpeed(FORWARD_SPEED);
+        Driver.forward();
+        tempdist = readUsDistance();
+      }
+      Driver.stopMotors();
+      OutobjectAvoider(destination);
     }
+
+
+
+    // // trivial rotation angle, determine through testing
+    // double rotAngle = 30;
+    //
+    // // trajectory to search zone commences
+    // Navigation.travelToSearchZone();
+    //
+    // // robot behaviour should the robot detect an object (including blocks) throughout navigation
+    // if (detectObjInPath(readUsDistance())) {
+    //
+    // // distance object will move by once object no longer detected
+    // int distToObj = readUsDistance();
+    // int initDist = distToObj;
+    //
+    // while (distToObj <= DETECTION_THRESHOLD) {
+    // // robot rotates by arbitrary angle deemed fit through testing
+    // Driver.turnBy(rotAngle);
+    // // if object is no longer detected, proceed
+    // if (!detectObjInPath(readUsDistance())) {
+    //
+    // // robot moves straight to bypass object
+    // leftMotor.rotate(Driver.convertDistance(initDist* TILE_SIZE), true);
+    // rightMotor.rotate(Driver.convertDistance(initDist * TILE_SIZE), true);
+    // // intermediate point noted
+    // Point initial = new Point(odometer.getXyt()[0], odometer.getXyt()[2]);
+    //
+    // Navigation.travelToSearchZone();
+    //
+    // // current point continuously updated throughout trajectory
+    // Point current = new Point(odometer.getXyt()[1], odometer.getXyt()[2]);
+    // // for every two tiles, conduct object detection
+    // if (Navigation.distanceBetween(initial, current) == DETECTION_THRESHOLD) {
+    // detectObjInPath(readUsDistance());
+    // }
+    // distToObj = readUsDistance();
+    // }
+    //
+    // // if object still detected, rotate another 30 degrees.
+    // else {
+    //
+    // Driver.turnBy(rotAngle);
+    // }
+    // System.out.println(distToObj);
+    // }
+    // Driver.stopMotors();
+    // }
 
   }
 

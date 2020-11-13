@@ -88,29 +88,23 @@ public class Navigation {
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
-
     // Pick depending on starting color
-    if (STARTING_COLOR.equals("red")) {
-      
-      ll = szg.ll;
-      ur = szg.ur;
-    } else {
-      ll = szr.ll;
-      ur = szr.ur;
-    }
-
+    // if (STARTING_COLOR.equals("red")) {
+//     ll = szr.ll;
+//     ur = szr.ur;
+    // } else {
+    ll = szg.ll;
+    ur = szg.ur;
+    // }
+    Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     double curX = odometer.getXyt()[0];
     double curY = odometer.getXyt()[1];
 
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
-       
-      travelTo(ll);
+      double angle = Navigation.getDestinationAngle(p1, new Point(szg.ll.x +2, szg.ll.y + 1));
+      Navigation.turnTo(angle);
+      ObjectDetection.OutobjectAvoider(new Point(szg.ll.x +2, szg.ll.y + 1));
     }
-    
-    else {
-           
-    }
-
   }
 
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
