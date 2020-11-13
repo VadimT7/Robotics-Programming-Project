@@ -42,11 +42,11 @@ public class Navigation {
     // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
       if (up.x == island.ll.x) {
-        p2 = new Point(ll.x - 1, ll.y + 0.45);
-        p3 = new Point(up.x + 1, ll.y + 0.45);
+        p2 = new Point(ll.x - 1, ll.y + 0.5);
+        p3 = new Point(up.x + 1, ll.y + 0.5);
       } else {
-        p2 = new Point(up.x - 1, up.y - 0.45);
-        p3 = new Point(ll.x + 1, up.y - 0.45);
+        p2 = new Point(up.x - 1, up.y - 0.5);
+        p3 = new Point(ll.x + 1, up.y - 0.5);
       }
     } else {
       if (up.y == island.ll.y) {
@@ -75,7 +75,7 @@ public class Navigation {
     turnTo(angle);
     int objDist = UltrasonicLocalizer.readUsDistance();
     // Consider an object if it is within 2 tiles
-    if (ObjectDetection.detectObjInPath()) {
+    if (objDist <= DETECTION_THRESHOLD) {
       // Need to know the initial position of the robot
       travelTo(new Point(destination.x, p1.y));
       travelTo(new Point(destination.x, destination.y));
@@ -91,20 +91,25 @@ public class Navigation {
 
     // Pick depending on starting color
     if (STARTING_COLOR.equals("red")) {
-      ll = szr.ll;
-      ur = szr.ur;
-    } else {
+      
       ll = szg.ll;
       ur = szg.ur;
+    } else {
+      ll = szr.ll;
+      ur = szr.ur;
     }
 
     double curX = odometer.getXyt()[0];
     double curY = odometer.getXyt()[1];
 
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
-
+       
+      travelTo(ll);
     }
-
+    
+    else {
+           
+    }
 
   }
 

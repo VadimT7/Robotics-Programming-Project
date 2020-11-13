@@ -80,16 +80,16 @@ public class Resources {
   public static final double WHEEL_RAD = 0.021465;
   
   /** The robot width in meters. */
-  public static final double BASE_WIDTH = 0.1645;
+  public static final double BASE_WIDTH = 0.1646;
   
   /** The distance between the color sensors and the wheels in meters. */
-  public static final double COLOR_SENSOR_TO_WHEEL_DIST = 0.128;
+  public static final double COLOR_SENSOR_TO_WHEEL_DIST = 0.132;
   
   /** The speed at which the robot moves forward in degrees per second. */
   public static final int FORWARD_SPEED = 280;
   
   /** The speed at which the robot rotates in degrees per second. */
-  public static final int ROTATE_SPEED = 125;
+  public static final int ROTATE_SPEED = 100;
   
   /** The motor acceleration in degrees per second squared. */
   public static final int ACCELERATION = 3000;

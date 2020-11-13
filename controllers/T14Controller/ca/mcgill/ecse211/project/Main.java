@@ -40,17 +40,23 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
+    // TODO Replace these method calls with your own logic
+    // LocalEV3.getAudio().beep(); // beeps once
+    // wifiExample();
      UltrasonicLocalizer.localize();
      LightLocalizer.startLocalize();
-     LightLocalizer.robotBeep(3);
      Navigation.travelAcrossTunnel();
      LightLocalizer.localize();
-    
- 
+     //Beep 3 times 
+     LocalEV3.getAudio().beep();
+     LocalEV3.getAudio().beep();
+     LocalEV3.getAudio().beep();
+     
      
      odometer.printPositionInTileLengths();
      ObjectDetection.findObjects();
      ObjectDetection.printMap();
+     ObjectDetection.OutobjectAvoider();
   }
 
   /**
