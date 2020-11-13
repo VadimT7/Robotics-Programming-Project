@@ -1,10 +1,3 @@
 # ECSE211 Project: Team 14 - PANZERS
 
-```diff
-- For student instructions, see the STUDENT_README.md file.
-
-- Use this file (README.md) to describe the contents of your repo
-- (delete all this text shown in red and replace it with your own).
-
-- Also update the title above to include your team number and name.
-```
+Engineering Design Project with a goal to create a functional robot model that can travel to waypoints, avoid objects, push objects and come back to its final position all in the simulated Webots software environment.
