@@ -24,7 +24,7 @@ PROTO robot_body2-solid [
 		}
 		physics Physics {
 			density -1
-			mass 30.962860
+			mass 29.087580
 		}
 	}
 }

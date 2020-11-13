@@ -132,7 +132,7 @@ public class UltrasonicLocalizer {
     
     // extract from buffer, cast to int, and filter
     int[] window = new int[7];
-    for (int i = 0; i < 6; i ++) {
+    for (int i = 0; i < 7; i ++) {
       usSensor.fetchSample(usData, 0);
       window [i] = filter((int) (usData[0] * 100.0));
     }
