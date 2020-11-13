@@ -43,14 +43,19 @@ public class Main {
     // TODO Replace these method calls with your own logic
     // LocalEV3.getAudio().beep(); // beeps once
     // wifiExample();
-//    UltrasonicLocalizer.localize();
-//    LightLocalizer.startLocalize();
-//    Navigation.travelAcrossTunnel();
-//    LightLocalizer.localize();
-//    odometer.printPositionInTileLengths();
-    odometer.setXyt(7*TILE_SIZE,  7* TILE_SIZE, 90);
-    ObjectDetection.findObjects();
-    ObjectDetection.printMap();
+     UltrasonicLocalizer.localize();
+     LightLocalizer.startLocalize();
+     Navigation.travelAcrossTunnel();
+     LightLocalizer.localize();
+     //Beep 3 times 
+     LocalEV3.getAudio().beep();
+     LocalEV3.getAudio().beep();
+     LocalEV3.getAudio().beep();
+     
+     
+     odometer.printPositionInTileLengths();
+     ObjectDetection.findObjects();
+     ObjectDetection.printMap();
   }
 
   /**

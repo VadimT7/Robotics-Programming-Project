@@ -34,29 +34,37 @@ public class Navigation {
       ll = tng.ll;
       up = tng.ur;
     }
-    //TODO think about 2 other cases for the tunnel
-    
-    
-    // If there is a difference of more than 1 between the x of the LL AND UP coordinates
+
     Point p2;
     Point p3;
 
+    // Travel to the tunnel based on the location of the island
+    // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
-      p2 = new Point(ll.x - 1, ll.y + 0.4);
-      p3 = new Point(up.x + 1, ll.y + 0.4);
+      if (up.x == island.ll.x) {
+        p2 = new Point(ll.x - 1, ll.y + 0.5);
+        p3 = new Point(up.x + 1, ll.y + 0.5);
+      } else {
+        p2 = new Point(up.x - 1, up.y - 0.5);
+        p3 = new Point(ll.x + 1, up.y - 0.5);
+      }
     } else {
-      p2 = new Point(ll.x + 0.4, ll.y - 1);
-      p3 = new Point(ll.x + 0.4, up.y + 1);
+      if (up.y == island.ll.y) {
+        p2 = new Point(ll.x + 0.4, ll.y - 1);
+        p3 = new Point(ll.x + 0.4, up.y + 1);
+      } else {
+        p2 = new Point(ll.x + 0.4, up.y + 1);
+        p3 = new Point(ll.x + 0.4, ll.y - 1);
+      }
     }
 
     // find magnitude of length across grid that the robot will travel from initial point to dest.
     travelWithObjDetect(p2);
 
     // Travel across tunnel in a straight line with line detection
-    double disToTravel = distanceBetween(p2, p3);
     double angle = getDestinationAngle(p2, p3);
     turnTo(angle);
-    //LightLocalizer.lineDetect();
+    LightLocalizer.lineDetect();
     travelTo(p3);
   }
 
@@ -67,17 +75,17 @@ public class Navigation {
     turnTo(angle);
     int objDist = UltrasonicLocalizer.readUsDistance();
     // Consider an object if it is within 2 tiles
-    if (ObjectDetection.detectObjInPath(objDist)) {
+    if (ObjectDetection.detectObjInPath()) {
       // Need to know the initial position of the robot
       travelTo(new Point(destination.x, p1.y));
       travelTo(new Point(destination.x, destination.y));
-    }else {
+    } else {
       travelTo(destination);
     }
 
   }
 
-  public static void travelToSearchZone(){
+  public static void travelToSearchZone() {
     Point ll;
     Point ur;
 
@@ -89,16 +97,17 @@ public class Navigation {
       ll = szg.ll;
       ur = szg.ur;
     }
-    
+
     double curX = odometer.getXyt()[0];
     double curY = odometer.getXyt()[1];
-    
-    if(!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
-      
+
+    if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
+
     }
-    
-    
+
+
   }
+
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
   public static double getDestinationAngle(Point current, Point destination) {
     return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;
