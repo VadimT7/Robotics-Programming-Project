@@ -249,5 +249,19 @@ public class LightLocalizer {
     return "green";
   }
 
+  /**   
+   *    
+   * @param number of times the robot needs to beep 
+   */   
+  public static void robotBeep(int n) { 
+    for(int i = 0; i < n; i++) {    
+      LocalEV3.getAudio().beep();   
+      try { 
+        Thread.sleep(500);  
+      } catch (InterruptedException e) {    
+        e.printStackTrace();    
+      } 
+    }   
+  }
 
 }

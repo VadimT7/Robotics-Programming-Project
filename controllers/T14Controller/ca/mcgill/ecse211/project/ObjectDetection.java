@@ -25,8 +25,8 @@ public class ObjectDetection {
     angleMap = new LinkedHashMap<>();
 
     // Set random prevangle
-    prevAngles[0] = 300;
-    prevAngles[1] = 300;
+    prevAngles[0] = 360;
+    prevAngles[1] = 360;
 
     // Rotate to 90 degrees to begin the 180 degree sweep
     usMotor.setSpeed(ROTATE_SPEED);
@@ -53,6 +53,7 @@ public class ObjectDetection {
         // If the object detected is a block then add it to the map
         if (isBlock) {
           angleMap.put(angle, objDist);
+          break;
         }
         // Continue the rotation
         usMotor.setSpeed(ROTATE_SPEED);
@@ -68,11 +69,11 @@ public class ObjectDetection {
 
     // Stop the rotation
     usMotor.stop();
-
+    LightLocalizer.robotBeep(3);
     // Have the motor rotate back to 0 degrees (where the robot is facing)
-    usMotor.setSpeed(ROTATE_SPEED);
-    usMotor.rotate(-90, false);
-    usMotor.stop();
+//    usMotor.setSpeed(ROTATE_SPEED);
+//    usMotor.rotate(-90, false);
+//    usMotor.stop();
     usMotor.resetTachoCount();
 
     return angleMap;
@@ -135,9 +136,10 @@ public class ObjectDetection {
 
     // Verify that the width is under a certain threshold
     if (Math.abs(angle1 - angle2) > THRESHOLD) {
+     
       return false;
     }
-
+    System.out.println(angle1 + "  " + angle2);
     return true;
   }
 

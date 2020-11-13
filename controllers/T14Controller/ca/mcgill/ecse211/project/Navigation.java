@@ -42,11 +42,11 @@ public class Navigation {
     // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
       if (up.x == island.ll.x) {
-        p2 = new Point(ll.x - 1, ll.y + 0.5);
-        p3 = new Point(up.x + 1, ll.y + 0.5);
+        p2 = new Point(ll.x - 1, ll.y + 0.45);
+        p3 = new Point(up.x + 1, ll.y + 0.45);
       } else {
-        p2 = new Point(up.x - 1, up.y - 0.5);
-        p3 = new Point(ll.x + 1, up.y - 0.5);
+        p2 = new Point(up.x - 1, up.y - 0.45);
+        p3 = new Point(ll.x + 1, up.y - 0.45);
       }
     } else {
       if (up.y == island.ll.y) {
@@ -88,23 +88,23 @@ public class Navigation {
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
-    // Pick depending on starting color
-    // if (STARTING_COLOR.equals("red")) {
-//     ll = szr.ll;
-//     ur = szr.ur;
-    // } else {
-    ll = szg.ll;
-    ur = szg.ur;
-    // }
-    Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    double curX = odometer.getXyt()[0];
-    double curY = odometer.getXyt()[1];
-
-    if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
-      double angle = Navigation.getDestinationAngle(p1, new Point(szg.ll.x +2, szg.ll.y + 1));
-      Navigation.turnTo(angle);
-      ObjectDetection.OutobjectAvoider(new Point(szg.ll.x +2, szg.ll.y + 1));
+    if (STARTING_COLOR.equals("red")) {
+      ll = szr.ll;
+      ur = szr.ur;
+    } else {
+      ll = szg.ll;
+      ur = szg.ur;
     }
+    Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    double curX = odometer.getXyt()[0]/TILE_SIZE;
+    double curY = odometer.getXyt()[1]/TILE_SIZE;
+    
+    if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
+      double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, szg.ll.y + 1));
+      Navigation.turnTo(angle);
+      ObjectDetection.OutobjectAvoider(new Point(ll.x + 2, szg.ll.y + 1));
+    }
+    LightLocalizer.robotBeep(3);
   }
 
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
