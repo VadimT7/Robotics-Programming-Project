@@ -128,7 +128,8 @@ public class ObjectDetection {
         angleMap.remove(keyList.get(keyList.size() - 1));
       }
     }
-    // Save the angles
+
+    //Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
 
