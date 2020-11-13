@@ -139,7 +139,6 @@ public class ObjectDetection {
      
       return false;
     }
-    System.out.println(angle1 + "  " + angle2);
     return true;
   }
 
