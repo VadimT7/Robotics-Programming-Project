@@ -87,7 +87,7 @@ public class ObjectDetection {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    double THRESHOLD = 12;
+    double THRESHOLD = 15;
 
     double maxTreshold = objDist;
 
@@ -136,9 +136,10 @@ public class ObjectDetection {
 
     // Verify that the width is under a certain threshold
     if (Math.abs(angle1 - angle2) > THRESHOLD) {
+     
       return false;
     }
-
+    System.out.println(angle1 + "  " + angle2);
     return true;
   }
 

@@ -44,6 +44,7 @@ public class Main {
     LightLocalizer.startLocalize();
     LightLocalizer.robotBeep(3);
     Navigation.travelAcrossTunnel();
+    LightLocalizer.robotBeep(3);
     Navigation.travelToSearchZone();
     ObjectDetection.findObjects();
     
