@@ -105,6 +105,7 @@ public class Navigation {
       Navigation.turnTo(angle);
       ObjectDetection.OutobjectAvoider(new Point(szg.ll.x +2, szg.ll.y + 1));
     }
+    LightLocalizer.robotBeep(3);
   }
 
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
