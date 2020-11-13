@@ -24,7 +24,7 @@ PROTO T14robot_us_sensor_support-solid [
 		}
 		physics Physics {
 			density -1
-			mass 3.671624
+			mass 0.0001
 		}
 	}
 }
