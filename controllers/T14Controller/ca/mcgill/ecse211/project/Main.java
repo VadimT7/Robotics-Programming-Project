@@ -31,12 +31,14 @@ public class Main {
   /**
    * The number of threads used in the program (main, odometer), other than the one used to perform physics steps.
    */
-  public static final int NUMBER_OF_THREADS = 2;
+  public static final int NUMBER_OF_THREADS = 1;
 
   /** Main entry point. */
   public static void main(String[] args) {
     initialize();
     
+    Driver.forward();
+    /*
     // Start the odometer thread
     new Thread(odometer).start();
 
@@ -46,7 +48,7 @@ public class Main {
     Navigation.travelAcrossTunnel();
     LightLocalizer.robotBeep(3);
     Navigation.travelToSearchZone();
-    ObjectDetection.findObjects();
+    ObjectDetection.findObjects();*/
     
   }
 

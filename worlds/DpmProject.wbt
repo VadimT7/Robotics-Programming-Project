@@ -21,6 +21,8 @@ WorldInfo {
       coulombFriction [
         1000
       ]
+      softERP 0.4
+      softCFM 0.00025
       bumpSound ""
       rollSound ""
       slideSound ""
@@ -28,8 +30,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.52481536210097 0.6103559356460774 0.5933249257568987 4.131673121453119
-  position 0.21149426440443425 2.1707855573376955 0.2599158589837647
+  orientation -0.16811759477683189 0.9706034157857096 0.17223670802580263 1.6248133981923236
+  position 3.4763339589537017 0.27581186899383237 0.7078219872124684
 }
 TexturedBackground {
 }
@@ -243,54 +245,50 @@ DEF ARENA DPM-CompetitionArena {
 DPM-Block {
   name "block1"
   translation 3.6522399999999977 0.049869199999924646 0.9179390000000043
-  rotation 0.7073804504428333 -2.5182067991385783e-05 0.7068330055233398 -1.737629154691957e-06
+  rotation 0.7073804504184479 -2.518206765761272e-05 0.7068330055477443 -1.737629154896064e-06
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block2"
   translation 4.129630695971688 0.04986919999992463 0.4601659312422889
-  rotation 0.70738045038332 -2.997794379621705e-05 0.7068330053957683 -1.7376291551347232e-06
+  rotation 0.70738045035161 -2.9977986083283825e-05 0.7068330054275013 -1.7376291551158935e-06
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block3"
   translation 2.4555599999999784 0.049869199999924646 0.6044380000000088
-  rotation 0.7073804348321522 -0.0002124234435851572 0.7068329896750407 -1.7376292135275758e-06
+  rotation 0.7073804347982402 -0.00021242344135719796 0.7068329897089796 -1.7376292131747423e-06
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block4"
-  translation 3.06035 0.04986919999992465 1.05617
-  rotation 0.7073651337518942 0.006579505394588169 0.7068177117623239 -1.7376855558594012e-06
+  translation 3.06035 0.0498692 1.12617
+  rotation 0.7073651337786929 0.0065795053984264084 0.7068177117354686 -1.7376855559351402e-06
   dimension 0.1
   mass 2
 }
 DPM-Robot {
-  hidden translation_2 5.4952185557504636e-05 5.1567245675904414e-05 -2.0938304472832887e-06
-  hidden rotation_2 0.9112083338220647 -0.11613102438964354 0.39523784933559775 0.9923721058416787
-  hidden translation_12 0 0 0
-  hidden rotation_12 -1 0 0 0
-  hidden translation_23 0 0 0
-  hidden rotation_23 -1 0 0 0
-  hidden translation_26 0 0 0
-  hidden rotation_26 -1 0 0 1.5520115573754148e-06
   name "T14Robot"
-  translation 0.198404 0.0618172 0.139575
-  rotation 0.0005598868343914175 0.9999997042107023 0.0005273568440134433 2.65417
+  translation 2.93011 0.105254 0.810915
+  rotation 0 1 0 0
   children [
+    T14_body3_ls_support-solid {
+      translation 0.0078 -0.0181 -0.0561
+      rotation 0.9999999999929585 2.653589999981315e-06 2.653589999981315e-06 -1.5707953071795862
+    }
+    T14_body3_back-solid {
+      translation 0 0.002 0.021
+      rotation 1 0 0 -1.5707953071795862
+    }
     BallCaster {
-      translation 0 -0.05 0.09
+      translation 0 -0.0411 0.098
       rotation -0.9999999999999999 0 0 1.5707953071795862
     }
     T14_robot_body_horizontal_ls_front-solid {
       translation 0 -0.002 -0.052
-      rotation 1 0 0 -1.5707953071795862
-    }
-    T14_robot_body_horizontal_ls_back-solid {
-      translation 0 0.002 0.021
       rotation 1 0 0 -1.5707953071795862
     }
     T14robot_counter_weight-solid {
@@ -299,23 +297,23 @@ DPM-Robot {
     }
     EV3-ColorSensor {
       name "S4"
-      translation 0.00409392 -0.0341 -0.0432736
-      rotation 0.5773489358556708 0.5773509358554485 0.5773509358554485 2.0944
+      translation -0.00430005 -0.0164 -0.072
+      rotation -3.3977899999752476e-06 0.9999999999927152 -1.73923999998733e-06 -1.5707953071795862
     }
     T14robot_container-solid {
-      translation -0.0838 -0.001 -0.103
+      translation -0.0838 -0.01 -0.096
       rotation 1 0 0 -1.5707953071795862
     }
     T14robot_container-solid {
       name "T14robot_container-solid2"
-      translation 0.0838 -0.001 -0.103
+      translation 0.0838 -0.01 -0.096
       rotation 1 0 0 -1.5707953071795862
     }
     EV3-LargeMotor {
       name "B"
       translation 0.0083 0.0385 0.0347
       rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
-      position -6.277103273085376
+      position -6.277103279896186
       children [
         T14robot_us_sensor_support-solid {
           translation -0.017 0.016 -0.004
@@ -340,7 +338,7 @@ DPM-Robot {
       name "D"
       translation 0.056 -0.025 0.025
       rotation 1 0 0 -1.5707953071795862
-      position 234.21727860974582
+      position 234.21727941281742
       children [
         Wheel {
           translation 0.022 3.67321e-08 0
@@ -352,7 +350,7 @@ DPM-Robot {
       name "A"
       translation -0.0555 -0.025 0.026
       rotation -0.9999999999999999 0 0 1.5707953071795862
-      position 198.66307292218448
+      position 198.66307210722144
       children [
         Wheel {
           translation -0.022 3.67321e-08 0
