@@ -72,7 +72,7 @@ public class Odometer implements Runnable {
   /* This method is where the logic for the odometer will run. */
   @Override
   public void run() {
-    leftMotor.resetTachoCount();                                    
+    leftMotor.resetTachoCount();
     rightMotor.resetTachoCount();
     
     while (true) {
