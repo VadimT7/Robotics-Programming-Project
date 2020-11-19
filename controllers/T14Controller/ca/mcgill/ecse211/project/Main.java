@@ -43,12 +43,13 @@ public class Main {
 
     UltrasonicLocalizer.localize();
     LightLocalizer.startLocalize();
-    LightLocalizer.robotBeep(3);
+//    LightLocalizer.robotBeep(3);
     Navigation.travelAcrossTunnel();
-    LightLocalizer.robotBeep(3);
-    Navigation.travelToSearchZone();
-    ObjectDetection.findObjects();
-    
+//    LightLocalizer.robotBeep(3);
+//    Navigation.travelToSearchZone();
+//    System.out.println(UltrasonicLocalizer.readUsDistance());
+//    ObjectDetection.findObjects();
+//    ObjectDetection.printMap();
   }
 
   /**

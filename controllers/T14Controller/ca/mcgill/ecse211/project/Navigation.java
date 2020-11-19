@@ -16,6 +16,7 @@ public class Navigation {
     var currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
     var currentTheta = xyt[2];
     var destinationTheta = getDestinationAngle(currentLocation, destination);
+    System.out.println(destinationTheta);
     Driver.turnBy(minimalAngle(currentTheta, destinationTheta));
     Driver.moveStraightFor(distanceBetween(currentLocation, destination));
   }
@@ -34,35 +35,47 @@ public class Navigation {
       ll = tng.ll;
       up = tng.ur;
     }
-
+    
+    Point p1;
     Point p2;
     Point p3;
-
+    
+    double angle = odometer.getXyt()[2];
+     
     // Travel to the tunnel based on the location of the island
     // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
+      System.out.println("case");
       if (up.x == island.ll.x) {
+        p1 = new Point(ll.x - 1, ll.y + 1);
         p2 = new Point(ll.x - 1, ll.y + 0.45);
         p3 = new Point(up.x + 1, ll.y + 0.45);
+        System.out.println("case");
       } else {
+        p1 = new Point(up.x - 1, ll.y - 1);
         p2 = new Point(up.x - 1, up.y - 0.45);
         p3 = new Point(ll.x + 1, up.y - 0.45);
       }
     } else {
       if (up.y == island.ll.y) {
+        p1 = new Point(ll.x + 1, ll.y - 1);
         p2 = new Point(ll.x + 0.4, ll.y - 1);
         p3 = new Point(ll.x + 0.4, up.y + 1);
       } else {
+        p1 = new Point(ll.x + 1, up.y + 1);
         p2 = new Point(ll.x + 0.4, up.y + 1);
         p3 = new Point(ll.x + 0.4, ll.y - 1);
       }
     }
 
+  //Travel to lower left and localize
+    travelTo(p1);
+    LightLocalizer.localize(p1.x*TILE_SIZE,p1.y*TILE_SIZE, angle);   
     // find magnitude of length across grid that the robot will travel from initial point to dest.
-    travelWithObjDetect(p2);
+    travelTo(p2);
 
     // Travel across tunnel in a straight line with line detection
-    double angle = getDestinationAngle(p2, p3);
+    angle = getDestinationAngle(p2, p3);
     turnTo(angle);
     LightLocalizer.lineDetect();
     travelTo(p3);

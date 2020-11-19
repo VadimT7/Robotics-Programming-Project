@@ -44,8 +44,9 @@ public class ObjectDetection {
       double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
 
       int objDist = readUsDistance();
+      //System.out.println(objDist);
       // Throw out objects over 2 tile distances away/ at the same angle
-      if (detectObjInPath(readUsDistance()) && angle != prevAngle) {
+      if (detectObjInPath(objDist) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
         usMotor.stop();
         isBlock = detectBlock(objDist);
@@ -53,7 +54,6 @@ public class ObjectDetection {
         // If the object detected is a block then add it to the map
         if (isBlock) {
           angleMap.put(angle, objDist);
-          break;
         }
         // Continue the rotation
         usMotor.setSpeed(ROTATE_SPEED);
@@ -69,11 +69,10 @@ public class ObjectDetection {
 
     // Stop the rotation
     usMotor.stop();
-    LightLocalizer.robotBeep(3);
     // Have the motor rotate back to 0 degrees (where the robot is facing)
-//    usMotor.setSpeed(ROTATE_SPEED);
-//    usMotor.rotate(-90, false);
-//    usMotor.stop();
+    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.rotate(-90, false);
+    usMotor.stop();
     usMotor.resetTachoCount();
 
     return angleMap;
@@ -93,7 +92,7 @@ public class ObjectDetection {
 
 
     // Rotate to find the edge of the object of the object
-    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.setSpeed(ROTATE_SPEED/4);
     usMotor.backward();
     while (objDist <= DETECTION_THRESHOLD) {
       objDist = readUsDistance();
@@ -106,9 +105,9 @@ public class ObjectDetection {
 
     double tempTacho = usMotor.getTachoCount();
     // Rotate opposite direction to find the other edge
-    usMotor.setSpeed(ROTATE_SPEED);
+    usMotor.setSpeed(ROTATE_SPEED/4);
     usMotor.forward();
-    while (((objDist <= maxTreshold && usMotor.getTachoCount() < 90) || usMotor.getTachoCount() < tempTacho + 10)) {
+    while (((objDist <= maxTreshold && usMotor.getTachoCount() < 90) || usMotor.getTachoCount() < tempTacho + 5)) {
       objDist = readUsDistance();
     }
     usMotor.stop();
@@ -121,6 +120,7 @@ public class ObjectDetection {
       return false;
     }
 
+    System.out.println(angle1 + " angle 2 " + angle2);
     // Remove previous value if there is overlap between the angles
     if (angle1 >= prevAngles[1]) {
       angle1 = prevAngles[0];
