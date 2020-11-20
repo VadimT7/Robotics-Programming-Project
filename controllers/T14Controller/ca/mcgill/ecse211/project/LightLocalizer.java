@@ -13,12 +13,19 @@ public class LightLocalizer {
 
   private static SampleProvider colorSensor = leftColorSensor.getRedMode();
   private static SampleProvider colorSensor2 = rightColorSensor.getRedMode();
+  private static SampleProvider colorSensor3 = rightColorSensor.getRedMode();
+
   // Initializations
   /** buffers for light sensors setup **/
   static float[] lightBuffer = new float[colorSensor.sampleSize()];
   static float[] lightBuffer2 = new float[colorSensor2.sampleSize()];
+  static float[] lightBuffer3 = new float[colorSensor2.sampleSize()];
+
   /* Arbitrary boundary condition (choice was made through testing) */
   private static float X = 70;
+  
+  /* Color at the bottom of the ramp (in the box) */
+  private static float rampEnd = 50;
 
   /**
    * performs localization with the steps seen in video tutorial+slides **\
@@ -203,6 +210,24 @@ public class LightLocalizer {
     }
     Driver.stopMotors();
   }
+  
+
+  /** 
+   * Travel in a straight line until the two back sensors are both on a line
+   */
+  public static void rampEndDetect() {
+    colorSensor3.fetchSample(lightBuffer3, 0);
+
+    Driver.setSpeed(FORWARD_SPEED);
+    
+    // travel till the ramp edge is detected
+    while (!(lightBuffer3[0] <= rampEnd)) {
+      colorSensor3.fetchSample(lightBuffer3, 0);
+    }
+    
+    // stop after detecting the ramp edge
+    Driver.stopMotors();
+  }
 
   /**
    * Localize based on color and parameters given by the wifi server
@@ -250,6 +275,7 @@ public class LightLocalizer {
   }
 
   /**   
+   *  Allows the robot to emit sound (beeps)
    *    
    * @param number of times the robot needs to beep 
    */   

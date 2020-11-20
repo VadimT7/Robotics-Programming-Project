@@ -119,7 +119,71 @@ public class Navigation {
     }
     LightLocalizer.robotBeep(3);
   }
+  
+  
+  public static void travelToRampAndBack() {
+    Point ramp;
+    
+    if (STARTING_COLOR.equals("red")) {
+      ramp = new Point(rr.left.x + 0.5, rr.left.y - 0.5);
+    } else {
+      ramp = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
+    }
+    
+    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    double angle = Navigation.getDestinationAngle(current, ramp);
+    Navigation.turnTo(angle);
+    travelWithObjDetect(ramp);
+      
+    // localize to a corner
+    LightLocalizer.localize();
+    //LightLocalizer.localize((rr.right.x), (rr.right.y - 1)*TILE_SIZE, odometer.getXyt()[2]);
+    
+    // move backwards half a tile
+    Driver.setSpeed(FORWARD_SPEED);
+    Driver.moveStraightFor(-0.5*TILE_SIZE); // move back half a tile   
+    
+    // turn to face the ramp
+    Driver.turnBy(-90);
+    
+    // move forwards till the ramp is detected by the two light sensors in the back
+    LightLocalizer.lineDetect();
+    
+    // push the box up the ramp and descend back to the start of the ramp
+    pushObjectOnRampAndReturn(); 
+    
+  }
+  
+  /**
+   * Method that allows the robot to push the box to the top of the ramp 
+   * and then descend to its starting position (bottom of the ramp).
+   */
+  public static void pushObjectOnRampAndReturn() {
+    Point rampStart;
+    
+    if (STARTING_COLOR.equals("red")) {
+      rampStart = new Point(rr.left.x + 0.5, rr.left.y - 0.5);
+    } else {
+      rampStart = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
+    }
+    
+    // push the object up the ramp until the edge of the ramp is detected
+    LightLocalizer.rampEndDetect();
+    
+    // return to the bottom of the ramp
+    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+   
+    // (optionally) turn to face the bottom of the ramp
+    double angle = Navigation.getDestinationAngle(current, rampStart);
+    Navigation.turnTo(angle); 
+    
+    // move down the ramp - (alternative implementation if the robot slips while turning with code right above (turnTo): move backwards without turning)
+    double distanceToBottomOfRamp = Navigation.distanceBetween(current, rampStart);
+    Driver.moveStraightFor(distanceToBottomOfRamp);
+    
+  }
 
+  
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
   public static double getDestinationAngle(Point current, Point destination) {
     return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;

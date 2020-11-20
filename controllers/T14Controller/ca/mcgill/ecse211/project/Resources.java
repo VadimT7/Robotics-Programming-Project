@@ -118,6 +118,8 @@ public class Resources {
   /** The right color sensor. */
   public static final EV3ColorSensor rightColorSensor = new EV3ColorSensor(SensorPort.S3);
 
+  /** The light sensor on the front of the robot **/
+  public static final EV3ColorSensor frontColorSensor = new EV3ColorSensor(SensorPort.S4);
 
   // Software singletons
   

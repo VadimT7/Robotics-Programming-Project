@@ -50,6 +50,10 @@ public class Main {
 //    System.out.println(UltrasonicLocalizer.readUsDistance());
 //    ObjectDetection.findObjects();
 //    ObjectDetection.printMap();
+    
+    // Test to push the box to the top of the ramp
+   // STARTING_COLOR = "red";
+   //   Navigation.travelToRampAndBack();
   }
 
   /**
