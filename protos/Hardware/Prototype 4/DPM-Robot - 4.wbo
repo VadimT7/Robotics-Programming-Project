@@ -1,0 +1,96 @@
+#VRML_OBJ R2020b utf8
+DPM-Robot {
+  name "T14robot"
+  translation 4.45323 0.0445857 2.59882
+  rotation 0.005055682331624766 0.9999744611771599 0.0050514423296693246 1.55351
+  children [
+    T14_P4_container-solid {
+      name "T14_P4_container-solid-r"
+      translation -0.0798 -0.0244 -0.0995
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14_P4_container-solid {
+      name "T14_P4_container-solid-l"
+      translation 0.0798 -0.0244 -0.0995
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14_P4_body_front-solid {
+      translation 2.1684e-19 -0.018 -0.052
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14_P4_body_back-solid {
+      translation 0 -0.014 0.029
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14robot_counter_weight-solid {
+      translation 0 -0.0343 0.09
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14_body3_ls_support-solid {
+      translation 0.008 -0.0183 -0.056
+      rotation 1 0 0 -1.5707953071795862
+    }
+    BallCaster {
+      translation 0 -0.042 0.098
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+    }
+    EV3-ColorSensor {
+      name "S4"
+      translation -0.0039 -0.0182 -0.0717
+      rotation 9.58978e-09 -1 9.58975e-09 1.5708
+    }
+    EV3-LargeMotor {
+      name "B"
+      translation 0.0641 0.0054 -0.0211
+      rotation -0.5773489358533613 -0.5773529358529169 0.5773489358533613 2.0944
+      position -6.282776385416284
+      children [
+        T14robot_us_sensor_support-solid {
+          translation 0.016 0.016 0.0039
+          rotation 0 1 0 1.5708
+        }
+        EV3-Ultrasonic {
+          name "S1"
+          translation 0.0008 0.0359 -0.0009
+          rotation -0.7071062811861719 -3.3905013482585576e-09 0.7071072811865696 3.14159
+        }
+      ]
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation -0.04 -0.034 0.102
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation 0.04 -0.034 0.102
+    }
+    EV3-LargeMotor {
+      name "D"
+      translation 0.056 -0.025 0.025
+      rotation 1 0 0 -1.5707953071795862
+      position 31.051842220558452
+      children [
+        Wheel {
+          translation 0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    EV3-LargeMotor {
+      name "A"
+      translation -0.0555 -0.025 0.026
+      rotation -0.9999999999999999 0 0 1.5707953071795862
+      position 19.389116103610384
+      children [
+        Wheel {
+          translation -0.022 3.67321e-08 0
+          rotation 0 0 1 1.5708
+        }
+      ]
+    }
+    EV3 {
+      rotation 1 0 0 -1.5708
+    }
+  ]
+  controller "T14Controller"
+}

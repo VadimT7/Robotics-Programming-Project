@@ -32,12 +32,17 @@ public class Main {
   /**
    * The number of threads used in the program (main, odometer), other than the one used to perform physics steps.
    */
-  public static final int NUMBER_OF_THREADS = 2;
+  public static final int NUMBER_OF_THREADS = 1;
 
   /** Main entry point. */
   public static void main(String[] args) {
     initialize();
 
+    //Driver.forward();
+    usMotor.setSpeed(10);
+    usMotor.forward();
+    
+    /*
     // Start the odometer thread
     new Thread(odometer).start();
 
@@ -50,7 +55,7 @@ public class Main {
 //    System.out.println(UltrasonicLocalizer.readUsDistance());
 //    ObjectDetection.findObjects();
 //    ObjectDetection.printMap();
-    
+    */
     // Test to push the box to the top of the ramp
    // STARTING_COLOR = "red";
    //   Navigation.travelToRampAndBack();
