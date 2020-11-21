@@ -30,8 +30,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.03428800568683606 0.6954003296437988 0.7178040917947707 3.0751814236765296
-  position 2.3251709229702793 3.367006221683877 0.6595342158598613
+  orientation -0.5111823693298242 0.659432352177168 0.5512182491431454 2.043874223822087
+  position 4.508750708760758 0.9469370837350598 2.491579859009264
 }
 TexturedBackground {
 }
@@ -271,58 +271,58 @@ DPM-Block {
   mass 2
 }
 DPM-Robot {
-  name "T14Robot"
-  translation 1.98669 0.0614279 0.738413
-  rotation 0.009057525800745366 -0.9999188698186233 0.008956283102715764 1.5713683288344256
+  hidden rotation_8 6.774161268368069e-05 0.9999999852889577 0.00015758539945383897 3.953573360063596
+  hidden rotation_10 1 0 0 4.860611686199943e-07
+  translation 4.38454 0.0716013 2.52723
+  rotation -0.001556043833064359 0.9999972332267407 0.0017641616856023316 1.5535162093347794
   children [
+    T14robot_counter_weight-solid {
+      translation 0 -0.0343 0.09
+      rotation 1 0 0 -1.5707953071795862
+    }
     T14_body3_ls_support-solid {
-      translation 0.0078 -0.0181 -0.0561
-      rotation 0.9999999999929585 2.653589999981315e-06 2.653589999981315e-06 -1.5707953071795862
+      translation 0.008 -0.0183 -0.056
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14robot_container-solid {
+      translation -0.084 -0.01 -0.096
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14robot_container-solid {
+      translation 0.084 -0.01 -0.096
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14_robot_body_horizontal_ls_front-solid {
+      translation 2.1684e-19 -0.0025 -0.053
+      rotation 1 0 0 -1.5707953071795862
     }
     T14_body3_back-solid {
-      translation 0 0.002 0.021
+      translation 0 0.0016 0.021
       rotation 1 0 0 -1.5707953071795862
     }
     BallCaster {
-      translation 0 -0.0411 0.098
+      translation 0 -0.042 0.098
       rotation -0.9999999999999999 0 0 1.5707953071795862
-    }
-    T14_robot_body_horizontal_ls_front-solid {
-      translation 0 -0.002 -0.052
-      rotation 1 0 0 -1.5707953071795862
-    }
-    T14robot_counter_weight-solid {
-      translation 0 -0.0334 0.09
-      rotation 1 0 0 1.5708
     }
     EV3-ColorSensor {
       name "S4"
-      translation -0.00430005 -0.0182 -0.072
-      rotation 3.3977899999752468e-06 -0.999999999992715 1.7392399999873293e-06 1.5707953071795862
-    }
-    T14robot_container-solid {
-      translation -0.0838 -0.01 -0.096
-      rotation 1 0 0 -1.5707953071795862
-    }
-    T14robot_container-solid {
-      name "T14robot_container-solid2"
-      translation 0.0838 -0.01 -0.096
-      rotation 1 0 0 -1.5707953071795862
+      translation -0.0039 -0.0182 -0.0717
+      rotation 9.58978e-09 -1 9.58975e-09 1.5708
     }
     EV3-LargeMotor {
       name "B"
       translation 0.0083 0.0385 0.0347
       rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
-      position -6.277103273229456
+      position -6.282776392205098
       children [
-        T14robot_us_sensor_support-solid {
-          translation -0.017 0.016 -0.004
+        T14robot_us-solid {
+          translation -0.04 0 -1.01962e-08
           rotation 0 1 0 -1.5707953071795862
         }
         EV3-Ultrasonic {
           name "S1"
-          translation -0.001 0.036 0
-          rotation 0.7071072811817993 3.673211460655597e-06 0.7071062811814016 3.14159
+          translation -0.051 0.018 2.26263e-07
+          rotation -0.6970783932918078 1.7274832191992749e-18 -0.7169949188144307 -3
         }
       ]
     }
@@ -338,7 +338,7 @@ DPM-Robot {
       name "D"
       translation 0.056 -0.025 0.025
       rotation 1 0 0 -1.5707953071795862
-      position 246.10227174644803
+      position 31.05184306013277
       children [
         Wheel {
           translation 0.022 3.67321e-08 0
@@ -350,7 +350,7 @@ DPM-Robot {
       name "A"
       translation -0.0555 -0.025 0.026
       rotation -0.9999999999999999 0 0 1.5707953071795862
-      position 210.54806129329666
+      position 19.389116928508344
       children [
         Wheel {
           translation -0.022 3.67321e-08 0
