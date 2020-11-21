@@ -41,31 +41,29 @@ public class UltrasonicLocalizer {
     // Change heading calculation based on the corner of the robot
 
     STARTING_COLOR = LightLocalizer.detectStartingColor();
-    Region startingRegion;
+    int corner;
 
     if (STARTING_COLOR.equals("red")) {
       // Use red corner parameters
-      // UPPER BOUND - 1, hard coded for now
-      startingRegion = red;
+      corner = redCorner;
     } else {
       // Use green corner parameters
-      // UPPER RIGHT - 1 = X
-      startingRegion = green;
+      corner = greenCorner;
     }
 
-    double wallHeading = 315;
-    double noWallHeading = 135;
+    double wallHeading = 325;
+    double noWallHeading = 145;
 
-    if ((startingRegion.ll.x == 0 && startingRegion.ur.y == 9)
-        || (startingRegion.ll.y == 0 && startingRegion.ur.x == 15)) {
-      wallHeading = 45;
-      noWallHeading = 225;
+    if (corner == 1 || corner == 3) {
+      wallHeading = 55;
+      noWallHeading = 235;
     }
 
     double alpha;
     double beta;
     // Determine if we are facing a wall
     detected = readUsDistance() < (DIST + K);
+    
 
     // Detect a rising edge and a falling edge if facing a wall
     if (detected) {
@@ -118,9 +116,6 @@ public class UltrasonicLocalizer {
       heading = noWallHeading - (odometer.getXyt()[2] - (alpha + beta) / 2);
     }
     Driver.turnBy(heading);
-
-    // Reset odometer
-    //odometer.setXyt(0, 0, 0);
   }
 
   /**
@@ -129,13 +124,13 @@ public class UltrasonicLocalizer {
    * @Author method taken from lab1
    */
   public static int readUsDistance() {
-    
+
     // extract from buffer, cast to int, and filter
     int[] window = new int[5];
-    for (int i = 0; i < 5; i ++) {
+    for (int i = 0; i < 5; i++) {
       usSensor.fetchSample(usData, 0);
-      window [i] = filter((int) (usData[0] * 100.0));
-     // System.out.println(window [i]);
+      window[i] = filter((int) (usData[0] * 100.0));
+      // System.out.println(window [i]);
     }
     Arrays.sort(window);
     return window[2];

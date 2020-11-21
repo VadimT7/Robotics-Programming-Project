@@ -41,13 +41,13 @@ public class ObjectDetection {
     double prevAngle = -10;
 
     while (startTacho < 90) {
-      double angle = (odometer.getXyt()[2] - usMotor.getTachoCount() + 360) % 360;
-
-      int objDist = readUsDistance();
+      double angle = (odometer.getXyt()[2] + usMotor.getTachoCount() + 360) % 360;
+      Integer objDist = readUsDistance();
       //System.out.println(objDist);
       // Throw out objects over 2 tile distances away/ at the same angle
       if (detectObjInPath(objDist) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
+        
         usMotor.stop();
         isBlock = detectBlock(objDist);
 
@@ -82,11 +82,11 @@ public class ObjectDetection {
    * 
    * @return is the object a block
    */
-  public static boolean detectBlock(double objDist) {
+  public static boolean detectBlock(Integer objDist) {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    double THRESHOLD = 15;
+    double THRESHOLD = 20;
 
     double maxTreshold = objDist;
 
@@ -94,14 +94,14 @@ public class ObjectDetection {
     // Rotate to find the edge of the object of the object
     usMotor.setSpeed(ROTATE_SPEED/4);
     usMotor.backward();
-    while (objDist <= DETECTION_THRESHOLD) {
+    while (objDist <= DETECTION_THRESHOLD && usMotor.getTachoCount() > -90) {
       objDist = readUsDistance();
     }
     maxTreshold = objDist;
     usMotor.stop();
 
     // Save the angle
-    double angle1 = -usMotor.getTachoCount();
+    double angle1 = (usMotor.getTachoCount() + 360) % 360;
 
     double tempTacho = usMotor.getTachoCount();
     // Rotate opposite direction to find the other edge
@@ -113,7 +113,7 @@ public class ObjectDetection {
     usMotor.stop();
 
     // Save the second angle
-    double angle2 = -usMotor.getTachoCount();
+    double angle2 = (usMotor.getTachoCount() + 360) % 360;
 
     // Throw out value if this second angle was the same as the previous
     if (prevAngles[1] == angle2) {
@@ -121,22 +121,22 @@ public class ObjectDetection {
     }
 
     System.out.println(angle1 + " angle 2 " + angle2);
-    // Remove previous value if there is overlap between the angles
-    if (angle1 >= prevAngles[1]) {
-      angle1 = prevAngles[0];
-      if (isBlock) {
-        ArrayList<Double> keyList = new ArrayList<>(angleMap.keySet());
-        angleMap.remove(keyList.get(keyList.size() - 1));
-      }
-    }
+//    // Remove previous value if there is overlap between the angles
+//    if (angle1 <= prevAngles[1]) {
+//      angle1 = prevAngles[0];
+//      if (isBlock) {
+//        ArrayList<Double> keyList = new ArrayList<>(angleMap.keySet());
+//        angleMap.remove(keyList.get(keyList.size() - 1));
+//      }
+//    }
 
     //Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
 
     // Verify that the width is under a certain threshold
-    if (Math.abs(angle1 - angle2) > THRESHOLD) {
-     
+    double angleDiff = Math.abs(angle1 - angle2);
+    if (angleDiff > THRESHOLD || angleDiff < 10) {
       return false;
     }
     return true;
@@ -158,7 +158,7 @@ public class ObjectDetection {
     // Retrieve the current position and angle
     double X = odometer.getXyt()[0];
     double Y = odometer.getXyt()[1];
-    double angle = Math.toRadians((odometer.getXyt()[2] - usMotor.getTachoCount()));
+    double angle = Math.toRadians((odometer.getXyt()[2] + usMotor.getTachoCount()));
 
     // Calculate final point coordinates based on distance
     double XF = X + Math.sin(angle) * objDist / 100.0;
@@ -166,20 +166,20 @@ public class ObjectDetection {
     angle = Math.toDegrees(angle);
 
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
-      return false;
-    }
-
-    // Check if any points are bin/tunnel coordinates, these are false positives
-    // Check if it matches the red tunnel
-    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
-      return false;
-    }
-
-    // Check if it matches the green tunnel
-    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
-      return false;
-    }
+//    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
+//      return false;
+//    }
+//
+//    // Check if any points are bin/tunnel coordinates, these are false positives
+//    // Check if it matches the red tunnel
+//    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
+//      return false;
+//    }
+//
+//    // Check if it matches the green tunnel
+//    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
+//      return false;
+//    }
     return true;
   }
 

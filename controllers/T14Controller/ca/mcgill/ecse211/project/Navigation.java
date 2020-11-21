@@ -45,12 +45,10 @@ public class Navigation {
     // Travel to the tunnel based on the location of the island
     // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
-      System.out.println("case");
       if (up.x == island.ll.x) {
         p1 = new Point(ll.x - 1, ll.y + 1);
         p2 = new Point(ll.x - 1, ll.y + 0.45);
         p3 = new Point(up.x + 1, ll.y + 0.45);
-        System.out.println("case");
       } else {
         p1 = new Point(up.x - 1, ll.y - 1);
         p2 = new Point(up.x - 1, up.y - 0.45);
@@ -59,18 +57,19 @@ public class Navigation {
     } else {
       if (up.y == island.ll.y) {
         p1 = new Point(ll.x + 1, ll.y - 1);
-        p2 = new Point(ll.x + 0.4, ll.y - 1);
-        p3 = new Point(ll.x + 0.4, up.y + 1);
+        p2 = new Point(ll.x + 0.5, ll.y - 1);
+        p3 = new Point(ll.x + 0.5, up.y + 0.5);
       } else {
         p1 = new Point(ll.x + 1, up.y + 1);
-        p2 = new Point(ll.x + 0.4, up.y + 1);
-        p3 = new Point(ll.x + 0.4, ll.y - 1);
+        p2 = new Point(ll.x + 0.5, up.y + 1);
+        p3 = new Point(ll.x + 0.5, ll.y - 1);
       }
     }
 
   //Travel to lower left and localize
     travelTo(p1);
-    LightLocalizer.localize(p1.x*TILE_SIZE,p1.y*TILE_SIZE, angle);   
+    turnTo(0);
+    LightLocalizer.localize(p1.x*TILE_SIZE,p1.y*TILE_SIZE, 0);   
     // find magnitude of length across grid that the robot will travel from initial point to dest.
     travelTo(p2);
 

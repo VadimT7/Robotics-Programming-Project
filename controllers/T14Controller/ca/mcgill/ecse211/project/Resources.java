@@ -48,7 +48,7 @@ public class Resources {
   public static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
 
   /** Enable this to attempt to receive Wi-Fi parameters at the start of the program. */
-  public static final boolean RECEIVE_WIFI_PARAMS = true;
+  public static final boolean RECEIVE_WIFI_PARAMS = false;
 
 
   // Simulation-related constants
@@ -80,10 +80,10 @@ public class Resources {
   public static final double WHEEL_RAD = 0.021465;
   
   /** The robot width in meters. */
-  public static final double BASE_WIDTH = 0.1645;
+  public static final double BASE_WIDTH = 0.1640;
   
   /** The distance between the color sensors and the wheels in meters. */
-  public static final double COLOR_SENSOR_TO_WHEEL_DIST = 0.128;
+  public static final double COLOR_SENSOR_TO_WHEEL_DIST = 0.122;
   
   /** The speed at which the robot moves forward in degrees per second. */
   public static final int FORWARD_SPEED = 280;
