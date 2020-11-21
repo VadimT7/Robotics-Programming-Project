@@ -37,8 +37,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.8827757589133787 -0.3671385843350778 -0.29311468637266097 4.812711643491448
-  position 0.5842019079914441 3.782476071569213 0.4239932159177806
+  orientation 0.8289360910828455 -0.5275562858823056 -0.18587447949183222 5.479376067552424
+  position 0.6344960912314557 0.7590674018067244 1.0086222299345078
 }
 TexturedBackground {
 }
@@ -260,59 +260,60 @@ DPM-Block {
   mass 2
 }
 DPM-Robot {
-  hidden rotation_4 -0.1777843534794752 0.6837965729078156 0.7076828177491744 3.424182056539556
+  hidden rotation_8 -0.002221205225714803 -0.9999961277186967 0.001676542560422477 4.990062783775601
   name "T14Robot"
-  translation 0.166632 0.0586904 0.167506
-  rotation -0.009009483716526026 0.9999594124959098 5.0635920887958044e-05 3.1411
+  translation 0.206099 0.05824 0.265406
+  rotation -0.0016574593701407779 0.9999986199856453 -0.00011338095691354938 -2.8970753071795863
   children [
+    T14robot_counter_weight-solid {
+      translation 0 -0.0343 0.09
+      rotation 1 0 0 -1.5707953071795862
+    }
     T14_body3_ls_support-solid {
-      translation 0.0078 -0.0181 -0.0561
-      rotation 0.9999999999929585 2.653589999981315e-06 2.653589999981315e-06 -1.5707953071795862
+      translation 0.008 -0.0183 -0.056
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14robot_container-solid {
+      name "T14robot_container-solid-r"
+      translation -0.084 -0.01 -0.096
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14robot_container-solid {
+      name "T14robot_container-solid-l"
+      translation 0.084 -0.01 -0.096
+      rotation 1 0 0 -1.5707953071795862
+    }
+    T14_robot_body_horizontal_ls_front-solid {
+      translation 2.1684e-19 -0.0025 -0.053
+      rotation 1 0 0 -1.5707953071795862
     }
     T14_body3_back-solid {
-      translation 0 0.002 0.021
+      translation 0 0.0016 0.021
       rotation 1 0 0 -1.5707953071795862
     }
     BallCaster {
-      translation 0 -0.0411 0.098
+      translation 0 -0.042 0.098
       rotation -0.9999999999999999 0 0 1.5707953071795862
-    }
-    T14_robot_body_horizontal_ls_front-solid {
-      translation 0 -0.002 -0.052
-      rotation 1 0 0 -1.5707953071795862
-    }
-    T14robot_counter_weight-solid {
-      translation 0 -0.0334 0.09
-      rotation 1 0 0 1.5708
     }
     EV3-ColorSensor {
       name "S4"
-      translation -0.00430005 -0.0182 -0.072
-      rotation 3.3977899999752468e-06 -0.999999999992715 1.7392399999873293e-06 1.5707953071795862
-    }
-    T14robot_container-solid {
-      translation -0.0838 -0.01 -0.096
-      rotation 1 0 0 -1.5707953071795862
-    }
-    T14robot_container-solid {
-      name "T14robot_container-solid2"
-      translation 0.0838 -0.01 -0.096
-      rotation 1 0 0 -1.5707953071795862
+      translation -0.0039 -0.0182 -0.0717
+      rotation 9.58978e-09 -1 9.58975e-09 1.5708
     }
     EV3-LargeMotor {
       name "B"
       translation 0.0083 0.0385 0.0347
       rotation -0.577349935856137 0.5773509358560258 -0.577349935856137 2.09439
-      position -6.277103273229456
+      position -6.282776392205098
       children [
-        T14robot_us_sensor_support-solid {
-          translation -0.017 0.016 -0.004
+        T14robot_us-solid {
+          translation -0.04 0 -1.01962e-08
           rotation 0 1 0 -1.5707953071795862
         }
         EV3-Ultrasonic {
           name "S1"
-          translation -0.001 0.036 0
-          rotation 0.7071072811817993 3.673211460655597e-06 0.7071062811814016 3.14159
+          translation -0.051 0.018 2.26263e-07
+          rotation -0.6970783932918078 1.7274832191992749e-18 -0.7169949188144307 -3
         }
       ]
     }
@@ -328,7 +329,7 @@ DPM-Robot {
       name "D"
       translation 0.056 -0.025 0.025
       rotation 1 0 0 -1.5707953071795862
-      position 246.10227174644803
+      position 31.05184306013277
       children [
         Wheel {
           translation 0.022 3.67321e-08 0
@@ -340,7 +341,7 @@ DPM-Robot {
       name "A"
       translation -0.0555 -0.025 0.026
       rotation -0.9999999999999999 0 0 1.5707953071795862
-      position 210.54806129329666
+      position 19.389116928508344
       children [
         Wheel {
           translation -0.022 3.67321e-08 0
