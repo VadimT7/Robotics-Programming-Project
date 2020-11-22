@@ -21,6 +21,10 @@ public class ObjectDetection {
   private static boolean isBlock;
   private static double[] prevAngles = new double[2];
 
+  /**
+   * Saves any objects that is a block into a hashmap
+   * @return Hashmap with the angle and distance of a block
+   */
   public static LinkedHashMap<Double, Integer> findObjects() {
     angleMap = new LinkedHashMap<>();
 
@@ -40,6 +44,7 @@ public class ObjectDetection {
     // arbitrary prev angle to prevent from reading the same angle twice
     double prevAngle = -10;
 
+    //Start the 180 degree sweep
     while (startTacho < 90) {
       double angle = (odometer.getXyt()[2] + usMotor.getTachoCount() + 360) % 360;
       Integer objDist = readUsDistance();
@@ -79,7 +84,8 @@ public class ObjectDetection {
   }
 
   /**
-   * 
+   * Determine the width of a detected object to confirm if the detected object is a block
+   * @param objDist the distance at which the block was detected
    * @return is the object a block
    */
   public static boolean detectBlock(Integer objDist) {
@@ -87,28 +93,17 @@ public class ObjectDetection {
      * if not in a certain threshold then the object is not a block
      */
     double THRESHOLD = 20;
-
-    double maxTreshold = objDist;
-
-
-    // Rotate to find the edge of the object of the object
-    usMotor.setSpeed(ROTATE_SPEED/4);
-    usMotor.backward();
-    while (objDist <= DETECTION_THRESHOLD && usMotor.getTachoCount() > -90) {
-      objDist = readUsDistance();
-    }
-    maxTreshold = objDist;
-    usMotor.stop();
+    double noise = 5;
 
     // Save the angle
     double angle1 = (usMotor.getTachoCount() + 360) % 360;
 
-    double tempTacho = usMotor.getTachoCount();
     // Rotate opposite direction to find the other edge
     usMotor.setSpeed(ROTATE_SPEED/4);
     usMotor.forward();
-    while (((objDist <= maxTreshold && usMotor.getTachoCount() < 90) || usMotor.getTachoCount() < tempTacho + 5)) {
+    while ((objDist <= (DETECTION_THRESHOLD + noise) && usMotor.getTachoCount() < 90)) {
       objDist = readUsDistance();
+      System.out.println(objDist);
     }
     usMotor.stop();
 
@@ -121,22 +116,14 @@ public class ObjectDetection {
     }
 
     System.out.println(angle1 + " angle 2 " + angle2);
-//    // Remove previous value if there is overlap between the angles
-//    if (angle1 <= prevAngles[1]) {
-//      angle1 = prevAngles[0];
-//      if (isBlock) {
-//        ArrayList<Double> keyList = new ArrayList<>(angleMap.keySet());
-//        angleMap.remove(keyList.get(keyList.size() - 1));
-//      }
-//    }
-
+    
     //Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
 
     // Verify that the width is under a certain threshold
     double angleDiff = Math.abs(angle1 - angle2);
-    if (angleDiff > THRESHOLD || angleDiff < 10) {
+    if (angleDiff > THRESHOLD || angleDiff < 5) {
       return false;
     }
     return true;
@@ -144,8 +131,9 @@ public class ObjectDetection {
 
   /**
    * Method checks if an object has been detected within a 2 tile radius. This method throws out values if they
-   * correspond to ramps, tunnels, bins
+   * correspond to ramps, tunnels, bins and walls
    * 
+   * @param objDist the distance at which the object was detected
    * @return if an object has been detected
    */
   public static boolean detectObjInPath(int objDist) {
@@ -166,20 +154,21 @@ public class ObjectDetection {
     angle = Math.toDegrees(angle);
 
     // Detected a wall
-//    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
-//      return false;
-//    }
-//
-//    // Check if any points are bin/tunnel coordinates, these are false positives
-//    // Check if it matches the red tunnel
-//    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
-//      return false;
-//    }
-//
-//    // Check if it matches the green tunnel
-//    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
-//      return false;
-//    }
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
+      return false;
+    }
+
+    // Check if any points are bin/tunnel coordinates, these are false positives
+    // Check if it matches the red tunnel
+    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
+      return false;
+    }
+
+    // Check if it matches the green tunnel
+    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
+      return false;
+    }
+    
     return true;
   }
 

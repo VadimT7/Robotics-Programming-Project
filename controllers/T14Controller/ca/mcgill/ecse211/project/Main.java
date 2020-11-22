@@ -42,16 +42,16 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
-    // UltrasonicLocalizer.localize();
-    // LightLocalizer.startLocalize();
-    //// LightLocalizer.robotBeep(3);
-    // Navigation.travelAcrossTunnel();
+//    UltrasonicLocalizer.localize();
+//    LightLocalizer.startLocalize();
+    // LightLocalizer.robotBeep(3);
+//    Navigation.travelAcrossTunnel();
     // LightLocalizer.robotBeep(3);
     // Navigation.travelToSearchZone();
     // System.out.println(UltrasonicLocalizer.readUsDistance());
-    //odometer.setXyt(0, 0, 0);
-//    ObjectDetection.findObjects();
-//    ObjectDetection.printMap();
+    odometer.setXyt(10.5 * TILE_SIZE, 5.5 * TILE_SIZE, 0);
+    ObjectDetection.findObjects();
+    ObjectDetection.printMap();
 
     // Test to push the box to the top of the ramp
     // STARTING_COLOR = "red";
