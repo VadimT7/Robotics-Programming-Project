@@ -49,10 +49,8 @@ public class Main {
     // LightLocalizer.robotBeep(3);
     // Navigation.travelToSearchZone();
     // System.out.println(UltrasonicLocalizer.readUsDistance());
-    odometer.setXyt(10.5 * TILE_SIZE, 5.5 * TILE_SIZE, 0);
-    ObjectDetection.findObjects();
-    ObjectDetection.printMap();
-
+//    ObjectDetection.findObjects();
+//    ObjectDetection.printMap();
     // Test to push the box to the top of the ramp
     // STARTING_COLOR = "red";
     // Navigation.travelToRampAndBack();
