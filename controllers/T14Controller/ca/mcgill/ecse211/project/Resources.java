@@ -125,6 +125,9 @@ public class Resources {
   
   /** The odometer. */
   public static Odometer odometer = Odometer.getOdometer();
+  
+  /** The stopwatch. */
+  public static Stopwatch stopwatch = Stopwatch.getStopwatch();
 
 
   // Wi-Fi parameters

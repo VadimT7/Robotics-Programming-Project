@@ -41,6 +41,12 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
+    
+    //Start the stopwatch thread
+    new Thread(stopwatch).start();
+    
+      System.out.println(stopwatch.getTime());
+
 
 //    UltrasonicLocalizer.localize();
 //    LightLocalizer.startLocalize();
