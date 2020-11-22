@@ -2,9 +2,9 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static simlejos.ExecutionController.*;
-import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
 
 import java.lang.Thread;
+import java.util.ArrayList;
 import simlejos.hardware.ev3.LocalEV3;
 
 /**
@@ -38,17 +38,23 @@ public class Main {
   public static void main(String[] args) {
     initialize();
 
+
     // Start the odometer thread
     new Thread(odometer).start();
+    // Start the timer thread
+    //new Thread(timer).start();
+     UltrasonicLocalizer.localize();
+     LightLocalizer.startLocalize();
+     Navigation.travelAcrossTunnel();
+     //Navigation.travelToSearchZone();
+     //System.out.println(UltrasonicLocalizer.readUsDistance());
+    //odometer.setXyt(0, 0, 0);
+    //ObjectDetection.findObjects();
+    //ObjectDetection.printMap();
 
-    UltrasonicLocalizer.localize();
-    LightLocalizer.startLocalize();
-    LightLocalizer.robotBeep(3);
-    Navigation.travelAcrossTunnel();
-    LightLocalizer.robotBeep(3);
-    ObjectDetection.findObjects();
-    Navigation.travelToSearchZone();
-    ObjectDetection.detectBlock(readUsDistance());
+    // Test to push the box to the top of the ramp
+    
+     //Navigation.travelToRampAndBack();
   }
 
   /**

@@ -4,6 +4,17 @@ WorldInfo {
   coordinateSystem "NUE"
   contactProperties [
     ContactProperties {
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material1 "DPM-Tile"
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
       material1 "DPM-Tile"
       material2 "Rubber"
       coulombFriction [
@@ -11,9 +22,6 @@ WorldInfo {
       ]
       softERP 0.4
       softCFM 0.00025
-      bumpSound ""
-      rollSound ""
-      slideSound ""
     }
     ContactProperties {
       material1 "DPM-Tile"
@@ -21,8 +29,7 @@ WorldInfo {
       coulombFriction [
         1000
       ]
-      softERP 0.4
-      softCFM 0.00025
+      softCFM 1e-05
       bumpSound ""
       rollSound ""
       slideSound ""
@@ -30,54 +37,48 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.38219439290928897 -0.8275124848362719 -0.4112791430024124 4.452684654246825
-  position 3.2398280621896176 3.8174376824405347 -0.0009707733497552606
+  orientation -0.9976315249553531 -0.04623048346768215 -0.050932139299280324 1.6698599329447048
+  position 2.1778933073536573 5.603155987014703 1.8776612590533515
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 DEF ARENA DPM-CompetitionArena {
+  wallHeight 0.25
   children [
     DEF CHUTE1 DPM-Chute {
-      position 0 9
-      rotation 0 1 0 1.57
-    }
-    DEF CHUTE2 DPM-Chute {
-      name "chute2"
-      position 0 12
+      position 1 7
       rotation 0 1 0 1.57
     }
     DEF OBSTACLE1 DPM-Obstacle {
       name "obstacle1"
-      position 8.5 3.5
+      position 7.5 6.5
       sections 4
     }
     DEF OBSTACLE2 DPM-Obstacle {
       name "obstacle2"
-      position 14.5 3.5
-      rotation 2.1
+      position 5.1 4
       sections 3
     }
     DEF OBSTACLE3 DPM-Obstacle {
       name "obstacle3"
-      position 3 3
+      position 10 7
     }
     DEF OBSTACLE4 DPM-Obstacle {
       name "obstacle4"
-      position 13.5 5.5
+      position 10 3
       sections 6
     }
     DEF BRIDGE2 DPM-Bridge {
       name "bridge2"
-      position 10.5 5
-      rotation 1.57
+      position 12 5.5
       length 0.6096
       sections 10
     }
     DEF BRIDGE1 DPM-Bridge {
       name "bridge1"
-      position 5 1.5
+      position 3 7.5
       length 0.6096
       sections 10
     }
@@ -86,156 +87,144 @@ DEF ARENA DPM-CompetitionArena {
   tileColor_0_1 1 0.5 0.5
   tileColor_0_2 1 0.5 0.5
   tileColor_0_3 1 0.5 0.5
-  tileHeight_0_4 -0.1
-  tileHeight_0_5 -0.1
-  tileHeight_0_6 -0.1
-  tileHeight_0_7 -0.1
-  tileHeight_0_8 -0.1
+  tileColor_0_4 1 0.5 0.5
+  tileColor_0_5 1 0.5 0.5
+  tileColor_0_6 1 0.5 0.5
+  tileColor_0_7 1 0.5 0.5
+  tileColor_0_8 1 0.5 0.5
   tileColor_1_0 1 0.5 0.5
   tileColor_1_1 1 0.5 0.5
   tileColor_1_2 1 0.5 0.5
   tileColor_1_3 1 0.5 0.5
-  tileHeight_1_4 -0.1
-  tileColor_1_5 0.25 0.25 0.75
-  tileHeight_1_5 -0.2
-  tileColor_1_6 0.25 0.25 0.75
-  tileHeight_1_6 -0.2
-  tileColor_1_7 0.25 0.25 0.75
-  tileHeight_1_7 -0.2
-  tileHeight_1_8 -0.1
-  tileColor_2_0 1 0.5 0.5
-  tileColor_2_1 1 0.5 0.5
-  tileColor_2_2 1 0.5 0.5
-  tileColor_2_3 1 0.5 0.5
+  tileColor_1_4 1 0.5 0.5
+  tileColor_1_5 1 0.5 0.5
+  tileColor_1_6 1 0.5 0.5
+  tileColor_1_7 1 0.5 0.5
+  tileColor_1_8 1 0.5 0.5
+  tileHeight_2_0 -0.1
+  tileHeight_2_1 -0.1
+  tileHeight_2_2 -0.1
+  tileHeight_2_3 -0.1
   tileHeight_2_4 -0.1
-  tileColor_2_5 0.25 0.25 0.75
-  tileHeight_2_5 -0.2
-  tileColor_2_6 0.1 0.1 0.5
-  tileHeight_2_6 -0.3
-  tileColor_2_7 0.25 0.25 0.75
-  tileHeight_2_7 -0.2
+  tileHeight_2_5 -0.1
+  tileHeight_2_6 -0.1
+  tileColor_2_7 0.7 0.7 0.7
   tileHeight_2_8 -0.1
-  tileColor_3_0 1 0.5 0.5
-  tileColor_3_1 1 0.5 0.5
-  tileColor_3_2 1 0.5 0.5
-  tileColor_3_3 1 0.5 0.5
+  tileHeight_3_0 -0.1
+  tileHeight_3_1 -0.1
+  tileHeight_3_2 -0.1
+  tileHeight_3_3 -0.1
   tileHeight_3_4 -0.1
-  tileColor_3_5 0.25 0.25 0.75
-  tileHeight_3_5 -0.2
-  tileColor_3_6 0.1 0.1 0.5
-  tileHeight_3_6 -0.3
-  tileColor_3_7 0.25 0.25 0.75
-  tileHeight_3_7 -0.2
+  tileHeight_3_5 -0.1
+  tileHeight_3_6 -0.1
+  tileColor_3_7 0.7 0.7 0.7
   tileHeight_3_8 -0.1
-  tileHeight_4_0 -0.1
-  tileColor_4_1 0.7 0.7 0.7
-  tileHeight_4_2 -0.1
-  tileHeight_4_3 -0.1
-  tileHeight_4_4 -0.1
-  tileColor_4_5 0.25 0.25 0.75
-  tileHeight_4_5 -0.2
-  tileColor_4_6 0.1 0.1 0.5
-  tileHeight_4_6 -0.3
-  tileColor_4_7 0.25 0.25 0.75
-  tileHeight_4_7 -0.2
-  tileHeight_4_8 -0.1
-  tileHeight_5_0 -0.1
-  tileColor_5_1 0.7 0.7 0.7
-  tileHeight_5_2 -0.1
-  tileHeight_5_3 -0.1
-  tileHeight_5_4 -0.1
-  tileColor_5_5 0.25 0.25 0.75
-  tileHeight_5_5 -0.2
-  tileColor_5_6 0.1 0.1 0.5
-  tileHeight_5_6 -0.3
-  tileColor_5_7 0.25 0.25 0.75
-  tileHeight_5_7 -0.2
-  tileHeight_5_8 -0.1
+  tileColor_4_0 0.82 0.82 0.4
+  tileColor_4_1 0.82 0.82 0.4
+  tileColor_4_2 0.82 0.82 0.4
+  tileColor_4_3 0.82 0.82 0.4
+  tileColor_4_4 0.82 0.82 0.4
+  tileColor_4_5 0.82 0.82 0.4
+  tileColor_4_6 0.82 0.82 0.4
+  tileColor_4_7 0.82 0.82 0.4
+  tileColor_4_8 0.82 0.82 0.4
+  tileColor_5_0 0.82 0.82 0.4
+  tileColor_5_1 0.82 0.82 0.4
+  tileColor_5_2 0.82 0.82 0.4
+  tileColor_5_3 0.82 0.82 0.4
+  tileColor_5_4 0.82 0.82 0.4
+  tileColor_5_5 0.82 0.82 0.4
+  tileColor_5_6 0.82 0.82 0.4
+  tileColor_5_7 0.82 0.82 0.4
+  tileColor_5_8 0.82 0.82 0.4
   tileColor_6_0 0.82 0.82 0.4
   tileColor_6_1 0.82 0.82 0.4
   tileColor_6_2 0.82 0.82 0.4
   tileColor_6_3 0.82 0.82 0.4
-  tileHeight_6_4 -0.1
-  tileColor_6_5 0.25 0.25 0.75
-  tileHeight_6_5 -0.2
-  tileColor_6_6 0.1 0.1 0.5
-  tileHeight_6_6 -0.3
-  tileColor_6_7 0.25 0.25 0.75
-  tileHeight_6_7 -0.2
-  tileHeight_6_8 -0.1
+  tileColor_6_4 0.82 0.82 0.4
+  tileColor_6_5 0.82 0.82 0.4
+  tileColor_6_6 0.82 0.82 0.4
+  tileColor_6_7 0.82 0.82 0.4
+  tileColor_6_8 0.82 0.82 0.4
   tileColor_7_0 0.82 0.82 0.4
   tileColor_7_1 0.82 0.82 0.4
   tileColor_7_2 0.82 0.82 0.4
   tileColor_7_3 0.82 0.82 0.4
-  tileHeight_7_4 -0.1
-  tileColor_7_5 0.25 0.25 0.75
-  tileHeight_7_5 -0.2
-  tileColor_7_6 0.1 0.1 0.5
-  tileHeight_7_6 -0.3
-  tileColor_7_7 0.25 0.25 0.75
-  tileHeight_7_7 -0.2
-  tileHeight_7_8 -0.1
+  tileColor_7_4 0.82 0.82 0.4
+  tileColor_7_5 0.82 0.82 0.4
+  tileColor_7_6 0.82 0.82 0.4
+  tileColor_7_7 0.82 0.82 0.4
+  tileColor_7_8 0.82 0.82 0.4
   tileColor_8_0 0.82 0.82 0.4
   tileColor_8_1 0.82 0.82 0.4
   tileColor_8_2 0.82 0.82 0.4
   tileColor_8_3 0.82 0.82 0.4
-  tileHeight_8_4 -0.1
-  tileColor_8_5 0.25 0.25 0.75
-  tileHeight_8_5 -0.2
-  tileColor_8_6 0.25 0.25 0.75
-  tileHeight_8_6 -0.2
-  tileColor_8_7 0.25 0.25 0.75
-  tileHeight_8_7 -0.2
-  tileHeight_8_8 -0.1
+  tileColor_8_4 0.82 0.82 0.4
+  tileColor_8_5 0.82 0.82 0.4
+  tileColor_8_6 0.82 0.82 0.4
+  tileColor_8_7 0.82 0.82 0.4
+  tileColor_8_8 0.82 0.82 0.4
   tileColor_9_0 0.82 0.82 0.4
   tileColor_9_1 0.82 0.82 0.4
   tileColor_9_2 0.82 0.82 0.4
   tileColor_9_3 0.82 0.82 0.4
-  tileHeight_9_4 -0.1
-  tileHeight_9_5 -0.1
-  tileHeight_9_6 -0.1
-  tileHeight_9_7 -0.1
-  tileHeight_9_8 -0.1
+  tileColor_9_4 0.82 0.82 0.4
+  tileColor_9_5 0.82 0.82 0.4
+  tileColor_9_6 0.82 0.82 0.4
+  tileColor_9_7 0.82 0.82 0.4
+  tileColor_9_8 0.82 0.82 0.4
   tileColor_10_0 0.82 0.82 0.4
   tileColor_10_1 0.82 0.82 0.4
   tileColor_10_2 0.82 0.82 0.4
   tileColor_10_3 0.82 0.82 0.4
-  tileColor_10_4 0.7 0.7 0.7
-  tileColor_10_5 0.7 0.7 0.7
-  tileColor_10_6 0.5 1 0.5
-  tileColor_10_7 0.5 1 0.5
-  tileColor_10_8 0.5 1 0.5
-  tileColor_11_0 0.82 0.82 0.4
-  tileColor_11_1 0.82 0.82 0.4
-  tileColor_11_2 0.82 0.82 0.4
-  tileColor_11_3 0.82 0.82 0.4
+  tileColor_10_4 0.82 0.82 0.4
+  tileColor_10_5 0.82 0.82 0.4
+  tileColor_10_6 0.82 0.82 0.4
+  tileColor_10_7 0.82 0.82 0.4
+  tileColor_10_8 0.82 0.82 0.4
+  tileHeight_11_0 -0.1
+  tileHeight_11_1 -0.1
+  tileHeight_11_2 -0.1
+  tileHeight_11_3 -0.1
   tileHeight_11_4 -0.1
-  tileColor_11_5 0.5 1 0.5
-  tileColor_11_6 0.5 1 0.5
-  tileColor_11_7 0.5 1 0.5
-  tileColor_11_8 0.5 1 0.5
-  tileColor_12_0 0.82 0.82 0.4
-  tileColor_12_1 0.82 0.82 0.4
-  tileColor_12_2 0.82 0.82 0.4
-  tileColor_12_3 0.82 0.82 0.4
+  tileColor_11_5 0.7 0.7 0.7
+  tileHeight_11_6 -0.1
+  tileHeight_11_7 -0.1
+  tileHeight_11_8 -0.1
+  tileColor_12_0 0.25 0.25 0.75
+  tileHeight_12_0 -0.2
+  tileColor_12_1 0.25 0.25 0.75
+  tileHeight_12_1 -0.2
+  tileColor_12_2 0.25 0.25 0.75
+  tileHeight_12_2 -0.2
+  tileColor_12_3 0.25 0.25 0.75
+  tileHeight_12_3 -0.2
   tileHeight_12_4 -0.1
-  tileColor_12_5 0.5 1 0.5
-  tileColor_12_6 0.5 1 0.5
-  tileColor_12_7 0.5 1 0.5
-  tileColor_12_8 0.5 1 0.5
-  tileColor_13_0 0.82 0.82 0.4
-  tileColor_13_1 0.82 0.82 0.4
-  tileColor_13_2 0.82 0.82 0.4
-  tileColor_13_3 0.82 0.82 0.4
+  tileColor_12_5 0.7 0.7 0.7
+  tileHeight_12_6 -0.1
+  tileHeight_12_7 -0.1
+  tileHeight_12_8 -0.1
+  tileColor_13_0 0.1 0.1 0.5
+  tileHeight_13_0 -0.3
+  tileColor_13_1 0.1 0.1 0.5
+  tileHeight_13_1 -0.3
+  tileColor_13_2 0.1 0.1 0.5
+  tileHeight_13_2 -0.3
+  tileColor_13_3 0.25 0.25 0.75
+  tileHeight_13_3 -0.2
   tileHeight_13_4 -0.1
   tileColor_13_5 0.5 1 0.5
   tileColor_13_6 0.5 1 0.5
   tileColor_13_7 0.5 1 0.5
   tileColor_13_8 0.5 1 0.5
-  tileColor_14_0 0.82 0.82 0.4
-  tileColor_14_1 0.82 0.82 0.4
-  tileColor_14_2 0.82 0.82 0.4
-  tileColor_14_3 0.82 0.82 0.4
+  tileColor_14_0 0.1 0.1 0.5
+  tileHeight_14_0 -0.3
+  tileColor_14_1 0.1 0.1 0.5
+  tileHeight_14_1 -0.3
+  tileColor_14_2 0.1 0.1 0.5
+  tileHeight_14_2 -0.3
+  tileColor_14_3 0.25 0.25 0.75
+  tileHeight_14_3 -0.2
   tileHeight_14_4 -0.1
   tileColor_14_5 0.5 1 0.5
   tileColor_14_6 0.5 1 0.5
@@ -244,40 +233,36 @@ DEF ARENA DPM-CompetitionArena {
 }
 DPM-Block {
   name "block1"
-  translation 3.6522399999999977 0.04986920001941152 2.137940000000003
-  rotation 0.7073804504303743 -2.518206242634685e-05 0.7068330055358085 -1.7376291540094448e-06
+  translation 1.72903 0.0498692 1.72925
+  rotation -4.924860809565115e-06 -0.9999999999689663 -6.149263952461034e-06 0.22100834745770503
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block2"
-  translation 4.129630695971677 0.04986920001941152 0.460165931242292
-  rotation 0.707380450343037 -2.9978478676735e-05 0.70683300543606 -1.737629154289743e-06
+  translation 2.791930473778205 0.04986919999992463 0.4829086317962664
+  rotation 0.0013938898361106926 0.9999980568608744 0.0013940393109114916 -0.0008814355294510893
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block3"
-  translation 0.7153642943389705 0.04986919951373484 0.29503954026193413
-  rotation 0.7003169869362689 0.1367391770171527 0.7006129568293593 -1.7553605825176615e-06
+  translation 1.969118647983947 0.04986919999992463 0.4526604784563467
+  rotation -0.00034447580812216875 -0.9999998810046923 -0.0003454374311469446 0.003561866187825624
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block4"
-  translation 3.2903499999999974 0.04986920001941153 0.8261700000000026
-  rotation 0.7073651337720448 0.006579505446709003 0.7068177117416725 -1.7376855549261727e-06
+  translation 2.6156133582959797 0.049869199999924646 1.2481448234507269
+  rotation -2.5371846553004226e-05 0.9999999993871511 -2.4123996658622005e-05 0.04963752905287235
   dimension 0.1
   mass 2
 }
 DPM-Robot {
-  hidden position_7_0 0.0005160114683938542
-  hidden translation_8 1.6977367528230204e-05 8.317924403057602e-06 6.827217848619006e-05
-  hidden rotation_8 -0.0040968276798717985 0.9999889124041539 0.0023218681527837617 4.030049445128581
-  hidden rotation_24 -1 0 0 1.6827099577776813e-06
-  hidden rotation_27 -1 0 0 1.6515434983370071e-06
-  translation 0.15303825216314587 0.061560135372218036 0.15715910230711927
-  rotation -0.002086640746367179 0.9999853678446095 -0.004990994597940958 -2.367743864943182
+  hidden rotation_8 0.9938909912284328 -0.09733181910956525 0.05203089989406579 3.806404519728119
+  translation 1.3685605319690974 0.06167781758693934 2.269596149561319
+  rotation 0.015859501669585475 -0.0020613902170097927 0.9998721052600504 0.00285095
   children [
     T14_P4_container-solid {
       name "T14_P4_container-solid-r"
@@ -318,7 +303,7 @@ DPM-Robot {
       name "B"
       translation 0.0641 0.0054 -0.0211
       rotation -0.5773489358533613 -0.5773529358529169 0.5773489358533613 2.0944
-      position -6.28277634914
+      position -6.277107981199027
       children [
         T14robot_us_sensor_support-solid {
           translation 0.016 0.016 0.0039
@@ -343,7 +328,7 @@ DPM-Robot {
       name "D"
       translation 0.056 -0.025 0.025
       rotation 1 0 0 -1.5707953071795862
-      position 248.60484591740368
+      position 144.29599280262016
       children [
         Wheel {
           translation 0.022 3.67321e-08 0
@@ -355,7 +340,7 @@ DPM-Robot {
       name "A"
       translation -0.0555 -0.025 0.026
       rotation -0.9999999999999999 0 0 1.5707953071795862
-      position 266.23279883993047
+      position 156.03245054453924
       children [
         Wheel {
           translation -0.022 3.67321e-08 0
