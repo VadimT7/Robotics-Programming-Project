@@ -49,11 +49,11 @@ public class Main {
 //     Navigation.travelAcrossTunnel();
      //Navigation.travelToSearchZone();
      //System.out.println(UltrasonicLocalizer.readUsDistance());
-    odometer.setXyt(5* TILE_SIZE, 2*TILE_SIZE, 0);
+    odometer.setXyt(7* TILE_SIZE, 4*TILE_SIZE, 90);
     //ObjectDetection.findObjects();
     //ObjectDetection.printMap();
     
-    ObjectDetection.OutobjectAvoider(new Point(6,5));
+    ObjectDetection.OutobjectAvoider(new Point(9,6));
     
     
     // Test to push the box to the top of the ramp

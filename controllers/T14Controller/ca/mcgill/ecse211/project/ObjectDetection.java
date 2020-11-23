@@ -196,11 +196,11 @@ public class ObjectDetection {
     // // make sure robot is facing object in its path
     // Navigation.turnTo(thetaF);
     
-    if(usMotor.getTachoCount() != -15) {
-      usMotor.setSpeed(ROTATE_SPEED);
-      usMotor.rotate(-15, false);
-    }
-    
+//    if(usMotor.getTachoCount() != -15) {
+//      usMotor.setSpeed(ROTATE_SPEED);
+//      usMotor.rotate(-15, false);
+//    }
+//    
 
     if (readUsDistance() < TILE_SIZE * 100) {
       // while robot is still in threshold vicinity of object, it backs up and turns to 90 degrees from its initial
@@ -228,8 +228,6 @@ public class ObjectDetection {
       
       // move straight
       Driver.moveStraightFor(5 * TILE_SIZE);
-      // turn back to to original angle
-      Navigation.turnTo(startingAngle);
       // repeat process to get to destination
       OutobjectAvoider(destination);
     }
@@ -237,14 +235,16 @@ public class ObjectDetection {
     // if small distance between current point and destination, just move straight
     else if (Navigation.distanceBetween(current, destination) < 2) {
       Navigation.travelTo(destination);
-      usMotor.rotate(15, false);
+//      usMotor.rotate(15, false);
     }
-    // if object is outside given range of a tile
+    // if object is outside given range of a tile and the robot is too far from its destination
     else {
       double destinationTheta = Navigation.getDestinationAngle(current, destination);
       Navigation.turnTo(destinationTheta);
       // move straight towards destination while this is still the case
       while (readUsDistance() > TILE_SIZE * 100) {
+        //Update the position
+        current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
         // record angle between current and destination points
         Driver.forward();
         // do not exceed island bounds
