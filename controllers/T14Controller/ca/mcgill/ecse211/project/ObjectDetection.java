@@ -168,61 +168,84 @@ public class ObjectDetection {
    */
   public static void OutobjectAvoider(Point destination) {
 
-    // initializations
-    int thetaF;
-    double objDist = 0;
+    // // initializations
+    // int thetaF;
+    // double objDist = 0;
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-
-    while (Driver.isNavigating()) {
-      // detect objects continuously during robot's travel
-      findObjects();
-      // obtain distances of detected objects
-      Set<Double> distances = angleMap.keySet();
-      // iterate through distances
-      for (Double distance : distances) {
-        // if distance is within detection threshold and an object is detected within distance, stop robot
-        if (distance < TILE_SIZE && detectObjInPath(distance)) {
-          objDist = distance;
-          Driver.stopMotors();
-          System.out.println(distance);
-          break;
-        }
-        continue;
-      }
+    //
+    // while (Driver.isNavigating()) {
+    // // detect objects continuously during robot's travel
+    // findObjects();
+    // // obtain distances of detected objects
+    // Set<Double> distances = angleMap.keySet();
+    // // iterate through distances
+    // for (Double distance : distances) {
+    // // if distance is within detection threshold and an object is detected within distance, stop robot
+    // if (distance < TILE_SIZE && detectObjInPath(distance)) {
+    // objDist = distance;
+    // Driver.stopMotors();
+    // System.out.println(distance);
+    // break;
+    // }
+    // continue;
+    // }
+    // }
+    // // detect object's angle
+    // thetaF = angleMap.get(objDist);
+    // System.out.println(thetaF);
+    // // make sure robot is facing object in its path
+    // Navigation.turnTo(thetaF);
+    
+    if(usMotor.getTachoCount() != -15) {
+      usMotor.setSpeed(ROTATE_SPEED);
+      usMotor.rotate(-15, false);
     }
-    // detect object's angle
-    thetaF = angleMap.get(objDist);
-    System.out.println(thetaF);
-    // make sure robot is facing object in its path
-    Navigation.turnTo(thetaF);
+    
 
-    if (readUsDistance() < TILE_SIZE) {
+    if (readUsDistance() < TILE_SIZE * 100) {
       // while robot is still in threshold vicinity of object, it backs up and turns to 90 degrees from its initial
       // angle
-      while (readUsDistance() < TILE_SIZE) {
-        Driver.moveStraightFor(0.3 * -TILE_SIZE);
-        Navigation.turnTo(odometer.getXyt()[2] - 90);
+      Driver.setSpeed(ROTATE_SPEED);
+      
+      double startingAngle = odometer.getXyt()[2];
+      double currentAngle  = startingAngle;
+      Driver.rotateClk();
+      
+      while(readUsDistance() < 2 * DETECTION_THRESHOLD) {
+        System.out.println(readUsDistance());
+        if(Math.abs(currentAngle - startingAngle) > 90) {
+          Driver.rotateCClk();
+        }
+        currentAngle = odometer.getXyt()[2];
       }
+      
+      //Turn an extra 15 to clear the object
+      if(startingAngle - currentAngle > 0) {
+        Driver.turnBy(-20);
+      }else {
+        Driver.turnBy(20);
+      }
+      
       // move straight
-      Driver.moveStraightFor(0.5 * TILE_SIZE);
+      Driver.moveStraightFor(5 * TILE_SIZE);
       // turn back to to original angle
-      Navigation.turnTo(odometer.getXyt()[2] + 90);
+      Navigation.turnTo(startingAngle);
       // repeat process to get to destination
       OutobjectAvoider(destination);
     }
 
     // if small distance between current point and destination, just move straight
-    else if (Navigation.distanceBetween(current, destination) < 1) {
+    else if (Navigation.distanceBetween(current, destination) < 2) {
       Navigation.travelTo(destination);
+      usMotor.rotate(15, false);
     }
     // if object is outside given range of a tile
-    else if (readUsDistance() > TILE_SIZE) {
+    else {
+      double destinationTheta = Navigation.getDestinationAngle(current, destination);
+      Navigation.turnTo(destinationTheta);
       // move straight towards destination while this is still the case
-      while (readUsDistance() > TILE_SIZE) {
+      while (readUsDistance() > TILE_SIZE * 100) {
         // record angle between current and destination points
-        var destinationTheta = Navigation.getDestinationAngle(current, destination);
-        // turn to destination and move forward
-        Driver.turnBy(Navigation.minimalAngle(odometer.getXyt()[2], destinationTheta));
         Driver.forward();
         // do not exceed island bounds
         if (current.y <= island.ll.y + 0.4) {
@@ -230,55 +253,30 @@ public class ObjectDetection {
           Navigation.turnTo(90);
           break;
         }
+        
+        if(Navigation.distanceBetween(current, destination) <= 1) {
+          break;
+        }
       }
-      //when while loop breaks because object is read, call method again.
+      // when while loop breaks because object is read, call method again.
       OutobjectAvoider(destination);
     }
   }
-  // Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-  // int objDist = readUsDistance();
 
-  // Point bounds = island.ll;
-
-  // System.out.println(objDist);
-  // if (readUsDistance() < TILE_SIZE) {
-  // Driver.moveStraightFor(0.2* -TILE_SIZE);
-  // Rotate until we stop detecting it
-  // while (readUsDistance() < TILE_SIZE) {
-  // if (p1.y <= bounds.y + 0.4) {
-  // Driver.turnBy(-35);
-  // } else {
-  // Driver.turnBy(35);
-  // }
-  // }
-
-  // while (readUsDistance() > TILE_SIZE) {
-  // Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-  // Driver.setSpeed(FORWARD_SPEED);
-  // Driver.forward();
-  // if (current.y <= bounds.y + 0.4) {
-  // Driver.stopMotors();
-  // Navigation.turnTo(90);
-  // break;
-  // }
-  // }
-  // Driver.stopMotors();
-  // OutobjectAvoider(destination);
-  // } else if (Navigation.distanceBetween(p1, destination) < 1) {
-  // Navigation.travelTo(destination);
-  // } else {
-  // int tempdist = readUsDistance();
-  // while (tempdist > TILE_SIZE) {
-  // System.out.println(tempdist);
-  // Driver.setSpeed(FORWARD_SPEED);
-  // Driver.forward();
-  // tempdist = readUsDistance();
-  // }
-  // Driver.stopMotors();
-  // OutobjectAvoider(destination);
-  // }
-  // }
-
+  public static void rotateOutOfObject() {
+    Driver.setSpeed(ROTATE_SPEED);
+    
+    double startingAngle = odometer.getXyt()[2];
+    double currentAngle  = startingAngle;
+    Driver.rotateCClk();
+    
+    while(readUsDistance() < TILE_SIZE * 100) {
+      currentAngle = odometer.getXyt()[2];
+      if(Math.abs(currentAngle - startingAngle) > 90) {
+        Driver.rotateClk();
+      }
+    }
+  }
 
   // Print values
   public static void printMap() {

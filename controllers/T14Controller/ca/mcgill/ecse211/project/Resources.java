@@ -48,7 +48,7 @@ public class Resources {
   public static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
 
   /** Enable this to attempt to receive Wi-Fi parameters at the start of the program. */
-  public static final boolean RECEIVE_WIFI_PARAMS = true;
+  public static final boolean RECEIVE_WIFI_PARAMS = false;
 
 
   // Simulation-related constants
