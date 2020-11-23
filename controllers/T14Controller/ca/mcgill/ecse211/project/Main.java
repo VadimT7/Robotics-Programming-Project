@@ -32,12 +32,11 @@ public class Main {
   /**
    * The number of threads used in the program (main, odometer), other than the one used to perform physics steps.
    */
-  public static final int NUMBER_OF_THREADS = 2;
+  public static final int NUMBER_OF_THREADS = 1;
 
   /** Main entry point. */
   public static void main(String[] args) {
     initialize();
-
 
     // Start the odometer thread
     new Thread(odometer).start();
@@ -46,7 +45,6 @@ public class Main {
     new Thread(stopwatch).start();
     
       System.out.println(stopwatch.getTime());
-
 
 //    UltrasonicLocalizer.localize();
 //    LightLocalizer.startLocalize();
