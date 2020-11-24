@@ -2,8 +2,9 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static java.lang.Math.*;
-
+import java.util.Map.Entry;
 import ca.mcgill.ecse211.playingfield.Point;
+import ca.mcgill.ecse211.playingfield.RampEdge;
 
 public class Navigation {
 
@@ -35,13 +36,13 @@ public class Navigation {
       ll = tng.ll;
       up = tng.ur;
     }
-    
+
     Point p1;
     Point p2;
     Point p3;
-    
+
     double angle = 0;
-     
+
     // Travel to the tunnel based on the location of the island
     // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
@@ -68,10 +69,10 @@ public class Navigation {
       }
     }
 
-  //Travel to lower left and localize
+    // Travel to lower left and localize
     travelTo(p1);
     turnTo(angle);
-    LightLocalizer.localize(p1.x*TILE_SIZE,p1.y*TILE_SIZE, angle);   
+    LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, angle);
     // find magnitude of length across grid that the robot will travel from initial point to dest.
     travelTo(p2);
 
@@ -111,9 +112,9 @@ public class Navigation {
       ur = szg.ur;
     }
     Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    double curX = odometer.getXyt()[0]/TILE_SIZE;
-    double curY = odometer.getXyt()[1]/TILE_SIZE;
-    
+    double curX = odometer.getXyt()[0] / TILE_SIZE;
+    double curY = odometer.getXyt()[1] / TILE_SIZE;
+
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
       double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, szg.ll.y + 1));
       Navigation.turnTo(angle);
@@ -121,71 +122,187 @@ public class Navigation {
     }
     LightLocalizer.robotBeep(3);
   }
-  
-  
+
+
   public static void travelToRampAndBack() {
     Point ramp;
-    
+
     if (STARTING_COLOR.equals("red")) {
       ramp = new Point(rr.left.x + 0.5, rr.left.y - 0.5);
     } else {
       ramp = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
     }
-    
+
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     double angle = Navigation.getDestinationAngle(current, ramp);
     Navigation.turnTo(angle);
     travelWithObjDetect(ramp);
-      
+
     // localize to a corner
     LightLocalizer.localize();
-    //LightLocalizer.localize((rr.right.x), (rr.right.y - 1)*TILE_SIZE, odometer.getXyt()[2]);
-    
+    // LightLocalizer.localize((rr.right.x), (rr.right.y - 1)*TILE_SIZE, odometer.getXyt()[2]);
+
     // move backwards half a tile
     Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-0.5*TILE_SIZE); // move back half a tile   
-    
+    Driver.moveStraightFor(-0.5 * TILE_SIZE); // move back half a tile
+
     // turn to face the ramp
     Driver.turnBy(-90);
-    
+
     // move forwards till the ramp is detected by the two light sensors in the back
     LightLocalizer.lineDetect();
-    
+
     // push the box up the ramp and descend back to the start of the ramp
-    pushObjectOnRampAndReturn(); 
-    
+    pushObjectOnRampAndReturn();
+
   }
-  
+
+  public static void moveToBlock(Entry<Double, Integer> entry) {
+    // The current angle the robot is facing
+    double curAngle = odometer.getXyt()[2];
+
+    // Extra turning the robot might need to accomodate the sensor position
+    double angleOffset = 0;
+
+    if (curAngle < entry.getKey()) {
+      angleOffset = 15;
+    }
+
+    turnTo(entry.getKey() + angleOffset);
+
+
+    // Move straight until the torque changes
+    Driver.moveStraightFor(entry.getValue() / (TILE_SIZE * 100));
+    Driver.stopMotors();
+
+  }
+
+
   /**
-   * Method that allows the robot to push the box to the top of the ramp 
-   * and then descend to its starting position (bottom of the ramp).
+   * Pushes a box from a starting point to an end point
+   * 
+   * @param start where the box is currently located
+   * @param end where the box should be pushed to
+   */
+  public static void pushTo() {
+
+    RampEdge ramp;
+
+    double turningAngle = 0;
+
+    double endX;
+    double endY;
+
+    // Length of the bin/ramp along the y axis
+    double maxY;
+
+    if (STARTING_COLOR.equals("red")) {
+      ramp = rr;
+    } else {
+      ramp = gr;
+    }
+
+    // Change pushing based on where the ramp is located
+    if (ramp.left.x > ramp.right.x) {
+      endX = ramp.right.x + 0.5;
+      endY = ramp.left.y + 1;
+      maxY = ramp.left.y - 2;
+    } else if (ramp.left.x < ramp.right.x) {
+      endX = ramp.right.x - 0.5;
+      endY = ramp.left.y - 1;
+      maxY = ramp.left.y + 2;
+    } else if (ramp.left.y < ramp.right.y) {
+      endX = ramp.right.x + 1;
+      endY = ramp.left.y + 0.5;
+      maxY = ramp.left.y;
+    } else {
+      endX = ramp.right.x - 1;
+      endY = ramp.left.y - 0.5;
+      maxY = ramp.left.y;
+    }
+
+    // Initial position (where the block is)
+    double x = odometer.getXyt()[0];
+    double y = odometer.getXyt()[1];
+    Point cur = new Point(x / TILE_SIZE, y / TILE_SIZE);
+
+
+    // Should be starting at the block
+    // Move back half a tile
+    Driver.moveStraightFor(-0.5);
+
+    // Decide to travel x or y first
+    // Robot falls in between the bins position
+    // travel along y first
+    double rampMin = Math.min(ramp.left.y, ramp.right.y);
+
+    if (maxY <= cur.y && rampMin >= cur.y) {
+      if (cur.y < endY) {
+        travelTo(new Point(cur.x, cur.y + 0.5));
+        turningAngle = 180;
+      } else {
+        travelTo(new Point(cur.x, cur.y - 0.5));
+        turningAngle = 0;
+      }
+    } else {
+      if (cur.x < endX) {
+        travelTo(new Point(cur.x - 0.5, cur.y - 0.5));
+        turningAngle = 90;
+      } else {
+        travelTo(new Point(cur.x + 0.5, cur.y - 0.5));
+        turningAngle = 270;
+      }
+    }
+    turnTo(turningAngle);
+
+    // Turn to and check for object
+
+
+
+    // Check if the robot is level with the bin
+
+    // while (cur.x != end.x && cur.y != end.y) {
+    //
+    // // Update the position
+    // x = Math.round(odometer.getXyt()[0]);
+    // y = Math.round(odometer.getXyt()[1]);
+    // cur = new Point(x / TILE_SIZE, y / TILE_SIZE);
+    // }
+  }
+
+
+
+  /**
+   * Method that allows the robot to push the box to the top of the ramp and then descend to its starting position
+   * (bottom of the ramp).
    */
   public static void pushObjectOnRampAndReturn() {
     Point rampStart;
-    
+
     if (STARTING_COLOR.equals("red")) {
       rampStart = new Point(rr.left.x + 0.5, rr.left.y - 0.5);
     } else {
       rampStart = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
     }
-    
+
     // push the object up the ramp until the edge of the ramp is detected
     LightLocalizer.rampEndDetect();
-    
+
     // return to the bottom of the ramp
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-   
+
     // (optionally) turn to face the bottom of the ramp
     double angle = Navigation.getDestinationAngle(current, rampStart);
-    Navigation.turnTo(angle); 
-    
-    // move down the ramp - (alternative implementation if the robot slips while turning with code right above (turnTo): move backwards without turning)
+    Navigation.turnTo(angle);
+
+    // move down the ramp - (alternative implementation if the robot slips while turning with code right above (turnTo):
+    // move backwards without turning)
     double distanceToBottomOfRamp = Navigation.distanceBetween(current, rampStart);
     Driver.moveStraightFor(distanceToBottomOfRamp);
-    
+
   }
 
-  
+
   /** Returns the angle that the robot should point towards to face the destination in degrees. */
   public static double getDestinationAngle(Point current, Point destination) {
     return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;

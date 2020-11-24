@@ -48,7 +48,6 @@ public class ObjectDetection {
     while (startTacho < 90) {
       double angle = (odometer.getXyt()[2] + usMotor.getTachoCount() + 360) % 360;
       Integer objDist = readUsDistance();
-      //System.out.println(objDist);
       // Throw out objects over 2 tile distances away/ at the same angle
       if (detectObjInPath(objDist) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
@@ -103,7 +102,6 @@ public class ObjectDetection {
     usMotor.forward();
     while ((objDist <= (DETECTION_THRESHOLD + noise) && usMotor.getTachoCount() < 90)) {
       objDist = readUsDistance();
-      System.out.println(objDist);
     }
     usMotor.stop();
 
@@ -152,7 +150,8 @@ public class ObjectDetection {
     double XF = X + Math.sin(angle) * objDist / 100.0;
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
-
+    
+    System.out.println(YF/TILE_SIZE);
     // Detected a wall
     if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
       return false;
@@ -271,7 +270,11 @@ public class ObjectDetection {
 
   }
 
-
+  
+  
+  public static LinkedHashMap<Double, Integer> getAngleMap() {
+    return angleMap;
+  }
   // Print values
   public static void printMap() {
     // sortMapByValue();

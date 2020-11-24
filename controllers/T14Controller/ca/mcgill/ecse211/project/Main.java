@@ -5,6 +5,8 @@ import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 import simlejos.hardware.ev3.LocalEV3;
 
 /**
@@ -32,7 +34,7 @@ public class Main {
   /**
    * The number of threads used in the program (main, odometer), other than the one used to perform physics steps.
    */
-  public static final int NUMBER_OF_THREADS = 1;
+  public static final int NUMBER_OF_THREADS = 2;
 
   /** Main entry point. */
   public static void main(String[] args) {
@@ -40,21 +42,28 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-    
-    //Start the stopwatch thread
-    new Thread(stopwatch).start();
-    
-      System.out.println(stopwatch.getTime());
 
-//    UltrasonicLocalizer.localize();
-//    LightLocalizer.startLocalize();
-    // LightLocalizer.robotBeep(3);
-//    Navigation.travelAcrossTunnel();
+    // //Start the stopwatch thread
+    // new Thread(stopwatch).start();
+    //
+    // System.out.println(stopwatch.getTime());
+
+    UltrasonicLocalizer.localize();
+    LightLocalizer.startLocalize();
+    // // LightLocalizer.robotBeep(3);
+    Navigation.travelAcrossTunnel();
     // LightLocalizer.robotBeep(3);
     // Navigation.travelToSearchZone();
     // System.out.println(UltrasonicLocalizer.readUsDistance());
-//    ObjectDetection.findObjects();
-//    ObjectDetection.printMap();
+     ObjectDetection.findObjects();
+     ObjectDetection.printMap();
+     List<Entry<Double, Integer>> list = new ArrayList<Entry<Double,
+     Integer>>(ObjectDetection.getAngleMap().entrySet());
+     for (int i = 0; i < 1; i++) {
+     Navigation.moveToBlock(list.get(i));
+     }
+     
+     Navigation.pushTo();
     // Test to push the box to the top of the ramp
     // STARTING_COLOR = "red";
     // Navigation.travelToRampAndBack();
