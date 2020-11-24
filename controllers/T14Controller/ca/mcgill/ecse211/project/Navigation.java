@@ -5,12 +5,21 @@ import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.Point;
 
+/**
+ * Class responsible for directing (navigating) the robot on the map 
+ * all while using object detection to avoid obstacles encountered on its way.
+ */
 public class Navigation {
 
-  /** Do not instantiate this class. */
+  /**
+   * Constructor. Do not instantiate this class.
+   */
   private Navigation() {}
-
-  /** Travels to the given destination. */
+  
+  /**
+   * Navigates the robot from its starting position to a certain point specified as the parameter
+   * @param destination Destination to travel to
+   */
   public static void travelTo(Point destination) {
     var xyt = odometer.getXyt();
     var currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
@@ -21,7 +30,7 @@ public class Navigation {
     Driver.moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
-  /** travels across the tunnel based on the given coordinates. */
+  /** Makes robot travel across the tunnel based on the received coordinates at the start of the simulation. */
   public static void travelAcrossTunnel() {
 
     Point ll;
@@ -83,6 +92,10 @@ public class Navigation {
     travelTo(p3);
   }
 
+  /**
+   * Navigates the robot from its starting position to a certain point specified as the parameter using object detection
+   * @param destination Destination to travel to using object detection
+   */
   public static void travelWithObjDetect(Point destination) {
     Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
 
@@ -100,6 +113,9 @@ public class Navigation {
 
   }
 
+  /**
+   * Navigates the robot to the search zone.
+   */
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
@@ -123,6 +139,11 @@ public class Navigation {
   }
   
   
+  /**
+   * Navigates robot from some point in the search zone to up the ramp, then makes 
+   * the robot push the previously collected box into the bin at the top of the ramp, 
+   * and descends back down the ramp.
+   */
   public static void travelToRampAndBack() {
     Point ramp;
     
@@ -144,10 +165,13 @@ public class Navigation {
     // move backwards half a tile
     Driver.setSpeed(FORWARD_SPEED);
     Driver.moveStraightFor(-0.5*TILE_SIZE); // move back half a tile   
+    Driver.stopMotors();
     
     // turn to face the ramp
-    Driver.turnBy(-90);
-    
+    current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    angle = Navigation.getDestinationAngle(current, ramp);
+    Navigation.turnTo(angle);
+
     // move forwards till the ramp is detected by the two light sensors in the back
     LightLocalizer.lineDetect();
     
@@ -157,7 +181,7 @@ public class Navigation {
   }
   
   /**
-   * Method that allows the robot to push the box to the top of the ramp 
+   * (Helper method) Makes the robot push the box to the top of the ramp 
    * and then descend to its starting position (bottom of the ramp).
    */
   public static void pushObjectOnRampAndReturn() {

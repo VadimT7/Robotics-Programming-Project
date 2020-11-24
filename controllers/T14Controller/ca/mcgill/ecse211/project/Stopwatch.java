@@ -21,17 +21,22 @@ public class Stopwatch implements Runnable {
   /** The singleton stopwatch instance. */
   private static Stopwatch stopwatch;
 
-  // This method indicates how the stopwatch will run
+  /**
+   * Starts the .
+   */
   @Override
   public void run() {
     while (true) {
       currentTime = TimeUnit.SECONDS.convert(System.nanoTime(), TimeUnit.SECONDS);
       timeElapsed = currentTime - startTime;
     }
-
   }
 
-  /** Returns the Stopwatch Object. Use this method to obtain an instance of Stopwatch. */
+  /** Get the Stopwatch Object. Use this method to obtain an instance of Stopwatch. If it was not created previously, 
+   * create the Stopwatch object and return this new Stopwatch object.
+   * 
+   * @return stopwatch Instance of the stopwatch
+   */
   public static synchronized Stopwatch getStopwatch() {
     if (stopwatch == null) {
       startTime = TimeUnit.SECONDS.convert(System.nanoTime(), TimeUnit.SECONDS);
@@ -41,7 +46,9 @@ public class Stopwatch implements Runnable {
   }
 
   
-  /** @return the time that has passed since the start of the program*/
+  /** Get the total time elapsed since starting the stopwatch.
+   * 
+   * @return the time that has passed since the start of the program*/
   public double getTime() {
     double timePassed;
     lock.lock();

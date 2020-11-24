@@ -131,12 +131,13 @@ public class UltrasonicLocalizer {
     for (int i = 0; i < 5; i++) {
       usSensor.fetchSample(usData, 0);
       window[i] = filter((int) (usData[0] * 100.0));
-      // System.out.println(window [i]);
     }
     Arrays.sort(window);
     
-    //Resume odometer thread
+    // Resume odometer thread
     odometer.releaseLock();
+    
+    // Return median of the sorted window of data
     return window[2];
   }
 

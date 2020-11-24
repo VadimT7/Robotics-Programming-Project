@@ -22,7 +22,7 @@ public class ObjectDetection {
   private static double[] prevAngles = new double[2];
 
   /**
-   * Saves any objects that is a block into a hashmap
+   * Saves any object that is a block into a hashmap.
    * @return Hashmap with the angle and distance of a block
    */
   public static LinkedHashMap<Double, Integer> findObjects() {

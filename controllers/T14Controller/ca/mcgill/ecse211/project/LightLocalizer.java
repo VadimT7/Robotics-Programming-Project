@@ -28,7 +28,11 @@ public class LightLocalizer {
   private static float rampEnd = 50;
 
   /**
-   * performs localization with the steps seen in video tutorial+slides **\
+   * Localizes the robot to a specific location specified by the parameters.
+   * 
+   * @param x X coordinate of the location to localize to
+   * @param y Y coordinate of the location to localize to
+   * @param angle Angle to localize to
    */
   public static void localize(double x, double y, double angle) {
     /* initial readings of light sensor at very end of ultrasonic/beginning of light localization */
@@ -61,6 +65,7 @@ public class LightLocalizer {
     Driver.stopMotors();
     Driver.setSpeed(FORWARD_SPEED);
     Driver.moveStraightFor(-COLOR_SENSOR_TO_WHEEL_DIST/TILE_SIZE);
+    
     // when reached, turn 90 degrees away from the wall with set rotation speed.
     Driver.setSpeed(ROTATE_SPEED);
 
@@ -71,8 +76,7 @@ public class LightLocalizer {
 
     Driver.turnBy(turningAngle);
 
-    /* updating current reading and storing in arrays */
-
+    // updating current reading and storing in arrays
     colorSensor.fetchSample(lightBuffer, 0);
     colorSensor2.fetchSample(lightBuffer2, 0);
 
@@ -112,7 +116,7 @@ public class LightLocalizer {
   }
 
   /**
-   * Localize without setting any odometer parameters
+   * Localizes the robot without setting any odometer parameters.
    */
   public static void localize() {
 
@@ -186,7 +190,7 @@ public class LightLocalizer {
   }
 
   /** 
-   * Travel in a straight line until the two back sensors are both on a line
+   * Travel in a straight line until the two back sensors are both on a line.
    */
   public static void lineDetect() {
     colorSensor.fetchSample(lightBuffer, 0);
@@ -213,7 +217,7 @@ public class LightLocalizer {
   
 
   /** 
-   * Travel in a straight line until the two back sensors are both on a line
+   * Travel in a straight up the ramp until the front sensor detects the end of the ramp.
    */
   public static void rampEndDetect() {
     colorSensor3.fetchSample(lightBuffer3, 0);
@@ -230,7 +234,7 @@ public class LightLocalizer {
   }
 
   /**
-   * Localize based on color and parameters given by the wifi server
+   * Localizes based on color and parameters given by the wifi server.
    */
   public static void startLocalize() {
     STARTING_COLOR = detectStartingColor();
@@ -265,6 +269,11 @@ public class LightLocalizer {
     localize(initialX * TILE_SIZE, initialY * TILE_SIZE, angle);
   }
 
+  /**
+   * Detect color of the tile right under the robot (used at the start of the simulation).
+   * 
+   * @return color Color of the tile under the robot
+   */
   public static String detectStartingColor() {
     colorSensor.fetchSample(lightBuffer, 0);
     colorSensor2.fetchSample(lightBuffer2, 0);
@@ -275,9 +284,9 @@ public class LightLocalizer {
   }
 
   /**   
-   *  Allows the robot to emit sound (beeps)
+   * Make the robot emit sound (beeps).
    *    
-   * @param number of times the robot needs to beep 
+   * @param n number of times the robot needs to beep 
    */   
   public static void robotBeep(int n) { 
     for(int i = 0; i < n; i++) {    
