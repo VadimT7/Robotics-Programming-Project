@@ -144,21 +144,39 @@ public class ObjectDetection {
    */
   public static boolean detectObjInPath(double objDist) {
 
-    // Object out of detection range
+ // Object out of detection range
     if (objDist > DETECTION_THRESHOLD) {
       return false;
     }
 
-    while (DETECTION_THRESHOLD >= readUsDistance() && readUsDistance() >= objDist) {
+    // Retrieve the current position and angle
+    double X = odometer.getXyt()[0];
+    double Y = odometer.getXyt()[1];
+    double angle = Math.toRadians((odometer.getXyt()[2] + usMotor.getTachoCount()));
 
-      // Retrieve the current angle
-      double angle = Math.toRadians((odometer.getXyt()[2] + usMotor.getTachoCount()));
-
-
-      return true;
-
+    // Calculate final point coordinates based on distance
+    double XF = X + Math.sin(angle) * objDist / 100.0;
+    double YF = Y + Math.cos(angle) * objDist / 100.0;
+    angle = Math.toDegrees(angle);
+    
+    System.out.println(YF/TILE_SIZE);
+    // Detected a wall
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
+      return false;
     }
-    return false;
+
+    // Check if any points are bin/tunnel coordinates, these are false positives
+    // Check if it matches the red tunnel
+    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
+      return false;
+    }
+
+    // Check if it matches the green tunnel
+    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
+      return false;
+    }
+    
+    return true;
   }
 
   /*
@@ -196,11 +214,11 @@ public class ObjectDetection {
     // // make sure robot is facing object in its path
     // Navigation.turnTo(thetaF);
     
-//    if(usMotor.getTachoCount() != -15) {
-//      usMotor.setSpeed(ROTATE_SPEED);
-//      usMotor.rotate(-15, false);
-//    }
-//    
+    if(usMotor.getTachoCount() != -15) {
+      usMotor.setSpeed(ROTATE_SPEED);
+      usMotor.rotate(-15, false);
+    }
+    
 
     if (readUsDistance() < TILE_SIZE * 100) {
       // while robot is still in threshold vicinity of object, it backs up and turns to 90 degrees from its initial
@@ -235,14 +253,14 @@ public class ObjectDetection {
     // if small distance between current point and destination, just move straight
     else if (Navigation.distanceBetween(current, destination) < 2) {
       Navigation.travelTo(destination);
-//      usMotor.rotate(15, false);
+      usMotor.rotate(15, false);
     }
     // if object is outside given range of a tile and the robot is too far from its destination
     else {
       double destinationTheta = Navigation.getDestinationAngle(current, destination);
       Navigation.turnTo(destinationTheta);
       // move straight towards destination while this is still the case
-      while (readUsDistance() > TILE_SIZE * 100) {
+      while (!detectObjInPath(readUsDistance())) {
         //Update the position
         current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
         // record angle between current and destination points
@@ -258,6 +276,7 @@ public class ObjectDetection {
           break;
         }
       }
+  
       // when while loop breaks because object is read, call method again.
       OutobjectAvoider(destination);
     }
