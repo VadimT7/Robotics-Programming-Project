@@ -1,9 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
-
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -151,9 +149,8 @@ public class ObjectDetection {
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
     
-    System.out.println(YF/TILE_SIZE);
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0) {
       return false;
     }
 

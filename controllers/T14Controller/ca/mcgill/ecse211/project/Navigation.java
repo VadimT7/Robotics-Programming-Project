@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static java.lang.Math.*;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
 import java.util.Map.Entry;
 import ca.mcgill.ecse211.playingfield.Point;
 import ca.mcgill.ecse211.playingfield.RampEdge;
@@ -17,7 +18,6 @@ public class Navigation {
     var currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
     var currentTheta = xyt[2];
     var destinationTheta = getDestinationAngle(currentLocation, destination);
-    System.out.println(destinationTheta);
     Driver.turnBy(minimalAngle(currentTheta, destinationTheta));
     Driver.moveStraightFor(distanceBetween(currentLocation, destination));
   }
@@ -84,20 +84,22 @@ public class Navigation {
     travelTo(p3);
   }
 
-  public static void travelWithObjDetect(Point destination) {
-    Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
 
-    double angle = getDestinationAngle(p1, destination);
-    turnTo(angle);
-    int objDist = UltrasonicLocalizer.readUsDistance();
-    // Consider an object if it is within 2 tiles
-    if (objDist <= DETECTION_THRESHOLD) {
-      // Need to know the initial position of the robot
-      travelTo(new Point(destination.x, p1.y));
-      travelTo(new Point(destination.x, destination.y));
+
+  /**
+   * Have the robot travel in straight lines with object detection
+   * 
+   * @param start where the block is located
+   * @param destination where the ramp is located
+   */
+  public static void pushWithObjDetect(Point start, Point destination) {
+    double objDist = readUsDistance();
+    if (objDist <= TILE_SIZE) {
+
     } else {
-      travelTo(destination);
+
     }
+
 
   }
 
@@ -136,7 +138,7 @@ public class Navigation {
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     double angle = Navigation.getDestinationAngle(current, ramp);
     Navigation.turnTo(angle);
-    travelWithObjDetect(ramp);
+    // Move to ramp
 
     // localize to a corner
     LightLocalizer.localize();
@@ -172,7 +174,18 @@ public class Navigation {
 
 
     // Move straight until the torque changes
-    Driver.moveStraightFor(entry.getValue() / (TILE_SIZE * 100));
+    // Driver.moveStraightFor(entry.getValue() / (TILE_SIZE * 100));
+    Point start = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    Point current = start;
+    while (distanceBetween(start, current) < entry.getValue() / (100 * TILE_SIZE)) {
+      Driver.forward();
+      // If the torque is over a certain threshold, the robot is pushing a blcok
+      if ((rightMotor.getTorque() + leftMotor.getTorque()) / 2 * 100 > 5 && distanceBetween(start, current) > 0.05) {
+        break;
+      }
+
+      current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    }
     Driver.stopMotors();
 
   }
@@ -235,7 +248,6 @@ public class Navigation {
     // Robot falls in between the bins position
     // travel along y first
     double rampMin = Math.min(ramp.left.y, ramp.right.y);
-
     if (maxY <= cur.y && rampMin >= cur.y) {
       if (cur.y < endY) {
         travelTo(new Point(cur.x, cur.y + 0.5));
@@ -254,16 +266,13 @@ public class Navigation {
       }
     }
     turnTo(turningAngle);
+    Driver.moveStraightFor(0.5);
 
     // Turn to and check for object
-
-
-
-    // Check if the robot is level with the bin
-
-    // while (cur.x != end.x && cur.y != end.y) {
-    //
+    // Keep calling travel method while the robot has not reached its destination
+    // while (cur.x != endX && cur.y != endY) {
     // // Update the position
+    // pushWithObjDetect(cur, new Point(endX, endY));
     // x = Math.round(odometer.getXyt()[0]);
     // y = Math.round(odometer.getXyt()[1]);
     // cur = new Point(x / TILE_SIZE, y / TILE_SIZE);
