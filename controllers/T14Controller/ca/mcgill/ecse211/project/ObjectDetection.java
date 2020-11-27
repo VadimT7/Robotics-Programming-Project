@@ -27,7 +27,7 @@ public class ObjectDetection {
   private static boolean isBlock;
   private static double[] prevAngles = new double[2];
   // treemap sorts heaviest blocks in ascending order based on keys
-  private static TreeMap tree = new TreeMap<Double, Point>(PointsList);
+  private static TreeMap <Double, Point> tree = new TreeMap<Double, Point>(PointsList);
 
   public static LinkedHashMap<Double, Integer> findObjects() {
     angleMap = new LinkedHashMap<>();
@@ -301,7 +301,7 @@ public class ObjectDetection {
   public static void printBlock() {
     
     //store torques in arraylist in order establish in treemap
-    List torques= new ArrayList(tree.keySet());
+    ArrayList<Double> torques= new ArrayList<Double>(tree.keySet());
     double totTorque= 0;
         
     //calculate average torque of torques currently stored in arraylist   

@@ -222,6 +222,8 @@ public class LightLocalizer {
     
     // travel till the ramp edge is detected
     while (!(lightBuffer3[0] <= rampEnd)) {
+      
+      Driver.forward();
       colorSensor3.fetchSample(lightBuffer3, 0);
     }
     
