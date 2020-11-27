@@ -5,6 +5,7 @@ import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
 import java.util.ArrayList;
+import ca.mcgill.ecse211.playingfield.Point;
 import simlejos.hardware.ev3.LocalEV3;
 
 /**
@@ -41,25 +42,25 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
+    // Start the timer thread
+    //new Thread(timer).start();
     
-    //Start the stopwatch thread
-    new Thread(stopwatch).start();
-    
-      System.out.println(stopwatch.getTime());
-
-
-//    UltrasonicLocalizer.localize();
-//    LightLocalizer.startLocalize();
-    // LightLocalizer.robotBeep(3);
-//    Navigation.travelAcrossTunnel();
-    // LightLocalizer.robotBeep(3);
+    // UltrasonicLocalizer.localize();
+    // LightLocalizer.startLocalize();
+    //  LightLocalizer.robotBeep(3);
+    // Navigation.travelAcrossTunnel();
     // Navigation.travelToSearchZone();
-    // System.out.println(UltrasonicLocalizer.readUsDistance());
-//    ObjectDetection.findObjects();
-//    ObjectDetection.printMap();
+     //System.out.println(UltrasonicLocalizer.readUsDistance());
+   // odometer.setXyt(7* TILE_SIZE, 7*TILE_SIZE, 90);
+    //ObjectDetection.findObjects();
+    //ObjectDetection.printMap();
+
+    //ObjectDetection.OutobjectAvoider(new Point(12,6));
+    
+    
     // Test to push the box to the top of the ramp
-    // STARTING_COLOR = "red";
-    // Navigation.travelToRampAndBack();
+    
+     //Navigation.travelToRampAndBack();
   }
 
   /**

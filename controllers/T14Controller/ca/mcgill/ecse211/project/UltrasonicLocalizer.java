@@ -124,8 +124,7 @@ public class UltrasonicLocalizer {
    * @Author method taken from lab1
    */
   public static int readUsDistance() {
-    //Stop the odometer thread
-    odometer.setLock();
+
     // extract from buffer, cast to int, and filter
     int[] window = new int[5];
     for (int i = 0; i < 5; i++) {
@@ -134,9 +133,6 @@ public class UltrasonicLocalizer {
       // System.out.println(window [i]);
     }
     Arrays.sort(window);
-    
-    //Resume odometer thread
-    odometer.releaseLock();
     return window[2];
   }
 

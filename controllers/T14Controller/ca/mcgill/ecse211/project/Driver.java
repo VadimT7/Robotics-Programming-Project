@@ -1,8 +1,9 @@
 package ca.mcgill.ecse211.project;
+
 import static ca.mcgill.ecse211.project.Resources.*;
 
 public class Driver {
-  
+
   /**
    * Turns the robot by a specified angle. Note that this method is different from {@code Navigation.turnTo()}. For
    * example, if the robot is facing 90 degrees, calling {@code turnBy(90)} will make the robot turn to 180 degrees, but
@@ -14,7 +15,7 @@ public class Driver {
     // determining angle
     int rotationAngle = convertAngle(angle);
     setSpeed(ROTATE_SPEED);
-    //wheel rotations, angles are absolute
+    // wheel rotations, angles are absolute
     leftMotor.rotate(rotationAngle, true);
     rightMotor.rotate(-rotationAngle, false);
   }
@@ -29,8 +30,8 @@ public class Driver {
     leftMotor.rotate(convertDistance(distance * TILE_SIZE), true);
     rightMotor.rotate(convertDistance(distance * TILE_SIZE), false);
   }
-  
-  
+
+
   /**
    * Converts input distance to the total rotation of each wheel needed to cover that distance.
    * 
@@ -38,8 +39,8 @@ public class Driver {
    * @return the wheel rotations necessary to cover the distance
    */
   public static int convertDistance(double distance) {
-    //Compute and return the correct value
-    return (int) (distance * 360/ (2 * Math.PI * WHEEL_RAD));
+    // Compute and return the correct value
+    return (int) (distance * 360 / (2 * Math.PI * WHEEL_RAD));
   }
 
   /**
@@ -49,8 +50,8 @@ public class Driver {
    * @return the wheel rotations necessary to rotate the robot by the angle
    */
   public static int convertAngle(double angle) {
-    //Compute and return the correct value. Hint: you can reuse convertDistance()
-    return convertDistance(Math.PI * BASE_WIDTH * angle/360.0);
+    // Compute and return the correct value. Hint: you can reuse convertDistance()
+    return convertDistance(Math.PI * BASE_WIDTH * angle / 360.0);
   }
 
   /**
@@ -90,7 +91,7 @@ public class Driver {
     leftMotor.setAcceleration(acceleration);
     rightMotor.setAcceleration(acceleration);
   }
-  
+
   /**
    * Makes the robot rotate clockwise
    */
@@ -99,7 +100,7 @@ public class Driver {
     leftMotor.forward();
     rightMotor.backward();
   }
-  
+
   /**
    * Makes the robot rotate counter clockwise
    */
@@ -108,19 +109,26 @@ public class Driver {
     leftMotor.backward();
     rightMotor.forward();
   }
-  
+
   /** Moves the robot forward for an indeterminate distance. */
   public static void forward() {
     setSpeed(FORWARD_SPEED);
     leftMotor.forward();
     rightMotor.forward();
   }
-  
+
   /** Moves the robot backward for an indeterminate distance. */
   public static void backward() {
     setSpeed(FORWARD_SPEED);
     leftMotor.backward();
     rightMotor.backward();
   }
-  
+
+  /** Returns whether robot is moving/navigating */
+  public static boolean isNavigating() {
+    if (leftMotor.isMoving() && rightMotor.isMoving()) {
+      return true;
+    }
+    return false;
+  }
 }

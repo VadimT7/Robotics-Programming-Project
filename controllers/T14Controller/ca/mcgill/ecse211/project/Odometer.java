@@ -245,13 +245,5 @@ public class Odometer implements Runnable {
       lock.unlock();
     }
   }
-  
-  public void setLock() {
-    lock.lock();
-  }
-  
-  public void releaseLock() {
-    lock.unlock();
-  }
 
 }
