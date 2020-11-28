@@ -6,6 +6,7 @@ import static simlejos.ExecutionController.waitUntilNextStep;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import ca.mcgill.ecse211.playingfield.Point;
 
 /**
  * The odometer class keeps track of the robot's (x, y, theta) deltaPosition.
@@ -254,4 +255,8 @@ public class Odometer implements Runnable {
     lock.unlock();
   }
 
+  public Point getPoint() {
+    return new Point(this.x/TILE_SIZE,this.y/TILE_SIZE);
+  }
+  
 }

@@ -31,12 +31,12 @@
   <value key="SZG_LL_y">5</value>
   <value key="SZG_UR_x">15</value>
   <value key="SZG_UR_y">9</value>
-  <value key="RRL_x">9</value>
-  <value key="RRL_y">7</value>
-  <value key="RRR_x">10</value>
-  <value key="RRR_y">7</value>
-  <value key="GRL_x">12</value>
-  <value key="GRL_y">7</value>
-  <value key="GRR_x">13</value>
-  <value key="GRR_y">7</value>
+  <value key="RRL_x">7</value>
+  <value key="RRL_y">6</value>
+  <value key="RRR_x">8</value>
+  <value key="RRR_y">6</value>
+  <value key="GRL_x">7</value>
+  <value key="GRL_y">6</value>
+  <value key="GRR_x">8</value>
+  <value key="GRR_y">6</value>
 </xml>

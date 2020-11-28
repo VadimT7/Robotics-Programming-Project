@@ -89,7 +89,7 @@ public class ObjectDetection {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    double THRESHOLD = 20;
+    double THRESHOLD = 40;
     double noise = 5;
 
     // Save the angle
@@ -118,7 +118,7 @@ public class ObjectDetection {
     prevAngles[1] = angle2;
 
     // Verify that the width is under a certain threshold
-    double angleDiff = Math.abs(angle1 - angle2);
+    double angleDiff = Math.abs(Navigation.minimalAngle(angle1, angle2));
     if (angleDiff > THRESHOLD || angleDiff < 5) {
       return false;
     }
@@ -148,7 +148,7 @@ public class ObjectDetection {
     double XF = X + Math.sin(angle) * objDist / 100.0;
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
-    
+//    System.out.println(XF + " " + YF);
     // Detected a wall
     if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0) {
       return false;
@@ -156,12 +156,14 @@ public class ObjectDetection {
 
     // Check if any points are bin/tunnel coordinates, these are false positives
     // Check if it matches the red tunnel
-    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
+    if (XF >= tnr.ll.x * (TILE_SIZE) && XF <= tnr.ur.x * (TILE_SIZE) && YF >= tnr.ll.y* (TILE_SIZE) && YF <= tnr.ur.y* (TILE_SIZE)) {
+      System.out.println("yes");
       return false;
     }
 
     // Check if it matches the green tunnel
-    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
+    if (XF >= tng.ll.x* (TILE_SIZE) && XF <= tng.ur.x* (TILE_SIZE) && YF >= tng.ll.y* (TILE_SIZE) && YF <= tng.ur.y* (TILE_SIZE)) {
+      System.out.println("no");
       return false;
     }
     
