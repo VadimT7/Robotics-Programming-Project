@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -102,11 +103,10 @@ public class ObjectDetection {
     // Save the angle
     double angle1 = (usMotor.getTachoCount() + 360) % 360;
 
-    double tempTacho = usMotor.getTachoCount();
     // Rotate opposite direction to find the other edge
-    usMotor.setSpeed(ROTATE_SPEED / 4);
+    usMotor.setSpeed(ROTATE_SPEED/4);
     usMotor.forward();
-    while (((objDist <= maxTreshold && usMotor.getTachoCount() < 90) || usMotor.getTachoCount() < tempTacho + 5)) {
+    while ((objDist <= (DETECTION_THRESHOLD + noise) && usMotor.getTachoCount() < 90)) {
       objDist = readUsDistance();
     }
     usMotor.stop();
@@ -119,17 +119,16 @@ public class ObjectDetection {
       return false;
     }
 
-    // System.out.println(angle1 + " angle 2 " + angle2);
-
-    // Save the angles
+    System.out.println(angle1 + " angle 2 " + angle2);
+    
+    //Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
 
     // Verify that the width is under a certain threshold
     double angleDiff = Math.abs(Navigation.minimalAngle(angle1, angle2));
-    if (angleDiff > THRESHOLD || angleDiff < 10) {
+    if (angleDiff > THRESHOLD || angleDiff < 5) {
       return false;
-
     }
     return true;
   }

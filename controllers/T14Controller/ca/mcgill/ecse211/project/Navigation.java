@@ -298,13 +298,7 @@ public class Navigation {
     // }
   }
 
-  /**
-   * Method that allows the robot to push the box to the top of the ramp and then descend to its starting position
-   * (bottom of the ramp).
-   */
-  public static void pushObjectOnRampAndReturn() {
-    Point rampStart;
-    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+
   public static void moveToBlock(Entry<Double, Integer> entry) {
     // The current angle the robot is facing
     double curAngle = odometer.getXyt()[2];
