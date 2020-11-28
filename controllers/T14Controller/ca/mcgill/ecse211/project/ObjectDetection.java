@@ -1,9 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
-
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -55,7 +53,7 @@ public class ObjectDetection {
     while (startTacho < 90) {
       double angle = (odometer.getXyt()[2] + usMotor.getTachoCount() + 360) % 360;
       Integer objDist = readUsDistance();
-      // System.out.println(objDist);
+	  
       // Throw out objects over 2 tile distances away/ at the same angle
       if (detectObjInPath(objDist) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
@@ -98,19 +96,8 @@ public class ObjectDetection {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    double THRESHOLD = 20;
-
-    double maxTreshold = objDist;
-
-
-    // Rotate to find the edge of the object of the object
-    usMotor.setSpeed(ROTATE_SPEED / 4);
-    usMotor.backward();
-    while (objDist <= DETECTION_THRESHOLD && usMotor.getTachoCount() > -90) {
-      objDist = readUsDistance();
-    }
-    maxTreshold = objDist;
-    usMotor.stop();
+    double THRESHOLD = 40;
+    double noise = 5;
 
     // Save the angle
     double angle1 = (usMotor.getTachoCount() + 360) % 360;
@@ -169,21 +156,22 @@ public class ObjectDetection {
     double XF = X + Math.sin(angle) * objDist / 100.0;
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
-
-    System.out.println(YF / TILE_SIZE);
+	
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9 * TILE_SIZE) || YF <= 0) {
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0) {
       return false;
     }
 
     // Check if any points are bin/tunnel coordinates, these are false positives
     // Check if it matches the red tunnel
-    if (XF >= tnr.ll.x && XF <= tnr.ur.x && YF >= tnr.ll.y && YF <= tnr.ur.y) {
+    if (XF >= tnr.ll.x * (TILE_SIZE) && XF <= tnr.ur.x * (TILE_SIZE) && YF >= tnr.ll.y* (TILE_SIZE) && YF <= tnr.ur.y* (TILE_SIZE)) {
+      System.out.println("yes");
       return false;
     }
 
     // Check if it matches the green tunnel
-    if (XF >= tng.ll.x && XF <= tng.ur.x && YF >= tng.ll.y && YF <= tng.ur.y) {
+    if (XF >= tng.ll.x* (TILE_SIZE) && XF <= tng.ur.x* (TILE_SIZE) && YF >= tng.ll.y* (TILE_SIZE) && YF <= tng.ur.y* (TILE_SIZE)) {
+      System.out.println("no");
       return false;
     }
 
@@ -336,7 +324,12 @@ public class ObjectDetection {
       }
     }
   }
-
+  
+  
+  public static LinkedHashMap<Double, Integer> getAngleMap() {
+    return angleMap;
+  }
+  
   // Print values
   public static void printMap() {
     // sortMapByValue();

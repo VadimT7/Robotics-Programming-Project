@@ -6,6 +6,8 @@ import static simlejos.ExecutionController.*;
 import java.lang.Thread;
 import java.util.ArrayList;
 import ca.mcgill.ecse211.playingfield.Point;
+import java.util.List;
+import java.util.Map.Entry;
 import simlejos.hardware.ev3.LocalEV3;
 
 /**
@@ -42,25 +44,31 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-    // Start the timer thread
-    //new Thread(timer).start();
-    
-    // UltrasonicLocalizer.localize();
-    // LightLocalizer.startLocalize();
-    //  LightLocalizer.robotBeep(3);
-    // Navigation.travelAcrossTunnel();
-    // Navigation.travelToSearchZone();
-     //System.out.println(UltrasonicLocalizer.readUsDistance());
-   // odometer.setXyt(7* TILE_SIZE, 7*TILE_SIZE, 90);
-    //ObjectDetection.findObjects();
-    //ObjectDetection.printMap();
 
-    //ObjectDetection.OutobjectAvoider(new Point(12,6));
-    
-    
+    // //Start the stopwatch thread
+    // new Thread(stopwatch).start();
+    //
+    // System.out.println(stopwatch.getTime());
+    STARTING_COLOR = "red";
+//    UltrasonicLocalizer.localize();
+//    LightLocalizer.startLocalize();
+    // // LightLocalizer.robotBeep(3);
+//    Navigation.travelAcrossTunnel();
+    // LightLocalizer.robotBeep(3);
+    // Navigation.travelToSearchZone();
+    // System.out.println(UltrasonicLocalizer.readUsDistance());
+    odometer.setXyt(8* TILE_SIZE, 5 * TILE_SIZE, 90);
+    ObjectDetection.findObjects();
+    ObjectDetection.printMap();
+    List<Entry<Double, Integer>> list = new ArrayList<Entry<Double, Integer>>(ObjectDetection.getAngleMap().entrySet());
+    for (int i = 0; i < 1; i++) {
+      Navigation.moveToBlock(list.get(i));
+    }
+
+    Navigation.pushTo();
     // Test to push the box to the top of the ramp
-    
-     //Navigation.travelToRampAndBack();
+     
+    // Navigation.travelToRampAndBack();
   }
 
   /**
