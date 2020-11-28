@@ -29,6 +29,10 @@ public class ObjectDetection {
   // treemap sorts heaviest blocks in ascending order based on keys
   private static TreeMap <Double, Point> tree = new TreeMap<Double, Point>(PointsList);
 
+  /**
+   * Saves any objects that is a block into a hashmap
+   * @return Hashmap with the angle and distance of a block
+   */
   public static LinkedHashMap<Double, Integer> findObjects() {
     angleMap = new LinkedHashMap<>();
 

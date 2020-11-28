@@ -10,7 +10,6 @@ import ca.mcgill.ecse211.playingfield.RampEdge;
 
 public class Navigation {
 
-
   /** Do not instantiate this class. */
   private Navigation() {}
 
@@ -85,8 +84,6 @@ public class Navigation {
     travelTo(p3);
   }
 
-
-
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
@@ -109,7 +106,6 @@ public class Navigation {
     LightLocalizer.robotBeep(3);
   }
 
-
   public static void travelToRampAndBack() {
     Point ramp;
 
@@ -129,10 +125,6 @@ public class Navigation {
 
     // move backwards half a tile
     Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-0.5 * TILE_SIZE); // move back half a tile
-
-    // turn to face the ramp
-    Driver.turnBy(-90);
 
     // move forwards till the ramp is detected by the two light sensors in the back
     LightLocalizer.lineDetect();
@@ -218,8 +210,13 @@ public class Navigation {
   }
 
   /**
+<<<<<<< HEAD
    * Method that allows the robot to push the box to the top of the ramp and then descend to its starting position
    * (bottom of the ramp).
+=======
+   * Method that allows the robot to push the box to the top of the ramp 
+   * and then descend to its starting position (bottom of the ramp).
+>>>>>>> parent of 7313aab... Added Javadoc
    */
   public static void pushObjectOnRampAndReturn() {
     Point rampStart;
