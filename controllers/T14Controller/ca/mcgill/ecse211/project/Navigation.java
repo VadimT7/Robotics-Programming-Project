@@ -42,7 +42,7 @@ public class Navigation {
     Point p2;
     Point p3;
 
-    double angle = odometer.getXyt()[2];
+    double angle = 0;
     // Travel to the tunnel based on the location of the island
     // Checks to see if the tunnel is along the x axis
     if (Math.abs(ll.x - up.x) > 1) {
@@ -50,6 +50,7 @@ public class Navigation {
         p1 = new Point(ll.x - 1, ll.y + 1);
         p2 = new Point(ll.x - 1, ll.y + 0.5);
         p3 = new Point(up.x + 1, ll.y + 0.5);
+        angle = 180;
       } else {
         p1 = new Point(up.x - 1, ll.y - 1);
         p2 = new Point(up.x - 1, up.y - 0.5);
@@ -60,17 +61,19 @@ public class Navigation {
         p1 = new Point(ll.x + 1, ll.y - 1);
         p2 = new Point(ll.x + 0.5, ll.y - 1);
         p3 = new Point(ll.x + 0.5, up.y + 0.5);
+        angle = 270;
       } else {
         p1 = new Point(ll.x + 1, up.y + 1);
         p2 = new Point(ll.x + 0.5, up.y + 1);
         p3 = new Point(ll.x + 0.5, ll.y - 1);
+        angle = 180;
       }
     }
 
     turnTo(getDestinationAngle(current, p1));
     ObjectDetection.objectAvoider(p1);
-    turnTo(0);
-    LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, 0);
+    turnTo(angle);
+    LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, angle);
     // find magnitude of length across grid that the robot will travel from initial point to dest.
     travelTo(p2);
     // Travel across tunnel in a straight line with line detection
@@ -80,8 +83,87 @@ public class Navigation {
     travelTo(p3);
   }
 
+  /** travels across the tunnel from the search zone based on the given coordinates. */
+  public static void travelBackAcrossTunnel() {
+
+    Point ll;
+    Point up;
+    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    int corner;
+    // Pick depending on starting color
+    if (STARTING_COLOR.equals("red")) {
+      ll = tnr.ll;
+      up = tnr.ur;
+      corner = redCorner;
+    } else {
+      ll = tng.ll;
+      up = tng.ur;
+      corner = greenCorner;
+    }
+
+    Point p1;
+    Point p2;
+    Point p3;
+
+    double angle = 0;
+    // Travel to the tunnel based on the location of the island
+    // Checks to see if the tunnel is along the x axis
+    if (Math.abs(ll.x - up.x) > 1) {
+      if (up.x == island.ll.x) {
+        p1 = new Point(up.x + 1, ll.y + 1);
+        p2 = new Point(up.x + 1, up.y - 0.6);
+        p3 = new Point(ll.x - 1, up.y - 0.6);
+        angle = 180;
+      } else {
+        p3 = new Point(up.x + 1, up.y - 0.5);
+        p2 = new Point(ll.x + 1, up.y - 0.5);
+        p1 = new Point(ll.x - 1, up.y - 1);
+      }
+    } else {
+      if (up.y == island.ll.y) {
+        p1 = new Point(ll.x + 1, up.y + 1);
+        p2 = new Point(ll.x + 0.5, up.y + 1);
+        p3 = new Point(ll.x + 0.5, ll.y - 1);
+        angle = 270;
+      } else {
+        p1 = new Point(ll.x + 1, ll.y - 1);
+        p2 = new Point(ll.x + 0.5, ll.y - 1);
+        p3 = new Point(ll.x + 0.5, up.y + 1);
+        angle = 180;
+      }
+    }
+
+
+    turnTo(getDestinationAngle(current, p1));
+    ObjectDetection.objectAvoider(p1);
+    turnTo(angle);
+    LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, angle);
+    // find magnitude of length across grid that the robot will travel from initial point to dest.
+    travelTo(p2);
+    // Travel across tunnel in a straight line with line detection
+    angle = getDestinationAngle(p2, p3);
+    turnTo(angle);
+    LightLocalizer.lineDetect();
+    travelTo(p3);
+
+
+    // Travel to corner
+    if (corner == 0) {
+      ObjectDetection.objectAvoider(new Point(1, 1));
+    } else if (corner == 1) {
+      ObjectDetection.objectAvoider(new Point(14, 1));
+    } else if (corner == 2) {
+      ObjectDetection.objectAvoider(new Point(14, 8));
+    } else {
+      ObjectDetection.objectAvoider(new Point(1, 8));
+    }
+
+  }
+
+
   /**
    * Have the robot travel in straight lines with object detection
+   * 
    * @param destination the point the robot needs to push the block to
    * @param ramp the ramp coordinates
    * @param rampOrientation direction of the ramp
@@ -89,7 +171,7 @@ public class Navigation {
   public static void pushWithObjDetect(Point destination, RampEdge ramp, int rampOrientation) {
     // Starting point is where the block is placed
     Point start = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    
+
     double maxY;
     double minY;
     // Change pushing based on where the ramp is located
@@ -147,8 +229,8 @@ public class Navigation {
       double turningAngle = 0;
       // Check for object
       if (!(readUsDistance() <= DETECTION_THRESHOLD)) {
-        
-        //Move to the side of the block and push it away from the obstacle
+
+        // Move to the side of the block and push it away from the obstacle
         if (angle >= -10 && angle <= 10) {
           travelTo(new Point(start.x + 0.75, start.y + 0.25));
           turningAngle = 270;
@@ -163,7 +245,7 @@ public class Navigation {
         }
 
       } else {
-        //Move to opposite side since there was an object detected here
+        // Move to opposite side since there was an object detected here
         if (angle >= -10 && angle <= 10) {
           travelTo(new Point(start.x - 0.75, start.y + 0.25));
           turningAngle = 270;
@@ -181,22 +263,22 @@ public class Navigation {
       // Turn back towards the block
       turnTo(turningAngle);
       Driver.moveStraightFor(2);
-    } 
-    
-    //No object was detected
+    }
+
+    // No object was detected
     else {
       double xOff = destination.x - 0.5;
       angle = odometer.getXyt()[2];
       if (angle <= 360 && angle >= 180) {
         xOff = destination.x + 0.5;
       }
-      
-      //Push the block to the x of the ramp
+
+      // Push the block to the x of the ramp
       if (verifyThreshold(start.x, xOff)) {
         travelTo(new Point(xOff, start.y));
-      } 
-      
-      //Push the block along the y direction towards the bin
+      }
+
+      // Push the block along the y direction towards the bin
       else {
         Point p = odometer.getPoint();
         Driver.moveStraightFor(-0.5);
@@ -207,9 +289,9 @@ public class Navigation {
         travelTo(new Point(destination.x, yOff));
         turnTo(getDestinationAngle(odometer.getPoint(), destination));
         Driver.moveStraightFor(0.4);
-        
-        
-        //Detected object need to push the block away
+
+
+        // Detected object need to push the block away
         if (readUsDistance() < DETECTION_THRESHOLD) {
           pushWithObjDetect(destination, ramp, rampOrientation);
           p = odometer.getPoint();
@@ -226,12 +308,12 @@ public class Navigation {
           travelTo(new Point(xOff, yOff));
           turnTo(getDestinationAngle(odometer.getPoint(), new Point(odometer.getPoint().x, destination.y)));
           Driver.moveStraightFor(3);
-          
+
           Point cur = odometer.getPoint();
           Driver.moveStraightFor(-0.5);
           double turningAngle;
-          
-          //Move to push the block along the x axis
+
+          // Move to push the block along the x axis
           if (cur.x < destination.x) {
             ObjectDetection.objectAvoider(new Point(cur.x - 0.5, cur.y));
             turningAngle = 90;
@@ -240,7 +322,7 @@ public class Navigation {
             turningAngle = 270;
           }
           turnTo(turningAngle);
-          
+
         } else {
           travelTo(destination);
         }
@@ -271,42 +353,13 @@ public class Navigation {
     LightLocalizer.robotBeep(3);
   }
 
-  public static void travelToRampAndBack() {
-    Point ramp;
 
-    if (STARTING_COLOR.equals("red")) {
-      ramp = new Point(rr.left.x + 0.5, rr.left.y - 0.5);
-    } else {
-      ramp = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
-    }
-
-    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    double angle = Navigation.getDestinationAngle(current, ramp);
-    Navigation.turnTo(angle);
-    ObjectDetection.objectAvoider(ramp);
-    // localize to a corner
-    LightLocalizer.localize();
-    // LightLocalizer.localize((rr.right.x), (rr.right.y - 1)*TILE_SIZE, odometer.getXyt()[2]);
-
-    // move backwards half a tile
-    Driver.setSpeed(FORWARD_SPEED);
-    Driver.moveStraightFor(-0.5 * TILE_SIZE); // move back half a tile
-
-    // turn to face the ramp
-    Driver.turnBy(-90);
-
-    // move forwards till the ramp is detected by the two light sensors in the back
-    LightLocalizer.lineDetect();
-
-    // push the box up the ramp and descend back to the start of the ramp
-    pushObjectOnRampAndReturn();
-
-  }
-
-
+  /**
+   * Method move straight and stops once coming into contact with a block
+   * 
+   * @param entry map entry with the angle at which the block was detected
+   */
   public static void moveToBlock(Entry<Double, Integer> entry) {
-    // The current angle the robot is facing
-    double curAngle = odometer.getXyt()[2];
 
     // Extra turning the robot might need to accommodate the sensor position
     double angleOffset = 10;
@@ -328,7 +381,6 @@ public class Navigation {
       if ((rightMotor.getTorque() + leftMotor.getTorque()) / 2 * 100 > 20 && distanceBetween(start, current) > 0.1) {
         break;
       }
-
       current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     }
     Driver.stopMotors();
@@ -404,7 +456,7 @@ public class Navigation {
         ObjectDetection.objectAvoider(new Point(cur.x, cur.y + 1.25));
         turningAngle = 180;
       } else {
-        ObjectDetection.objectAvoider(new Point(cur.x, cur.y - 0.5));
+        ObjectDetection.objectAvoider(new Point(cur.x, cur.y - 1.25));
         turningAngle = 0;
       }
     } else {
@@ -425,11 +477,18 @@ public class Navigation {
       pushWithObjDetect(new Point(endX, endY), ramp, rampCase);
       cur = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     }
-    
+
     pushObjectOnRampAndReturn();
     Driver.stopMotors();
   }
 
+  /**
+   * Verifies if a given value falls within a threshold
+   * 
+   * @param cur
+   * @param end
+   * @return
+   */
   private static boolean verifyThreshold(double cur, double end) {
     return !(cur <= end + 0.5) || !(cur >= end - 0.5);
   }
@@ -446,8 +505,8 @@ public class Navigation {
     } else {
       rampStart = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
     }
-    
-//    LightLocalizer.lineDetect();
+
+    // LightLocalizer.lineDetect();
 
     // push the object up the ramp until the edge of the ramp is detected
     LightLocalizer.rampEndDetect();

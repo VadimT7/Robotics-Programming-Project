@@ -46,23 +46,25 @@ public class Main {
     new Thread(odometer).start();
 
     // //Start the stopwatch thread
-     new Thread(timer).start();
-//    STARTING_COLOR = "red";
-     UltrasonicLocalizer.localize();
-     LightLocalizer.startLocalize();
-     // LightLocalizer.robotBeep(3);
-     Navigation.travelAcrossTunnel();
+    new Thread(timer).start();
+    STARTING_COLOR = "start";
+    // UltrasonicLocalizer.localize();
+    // LightLocalizer.startLocalize();
+    // // LightLocalizer.robotBeep(3);
+    // Navigation.travelAcrossTunnel();
     // LightLocalizer.robotBeep(3);
     // Navigation.travelToSearchZone();
     // System.out.println(UltrasonicLocalizer.readUsDistance());
-//    odometer.setXyt(6 * TILE_SIZE, 1 * TILE_SIZE, 90);
-//    ObjectDetection.findObjects();
-//    ObjectDetection.printMap();
-//    List<Entry<Double, Integer>> list = new ArrayList<Entry<Double, Integer>>(ObjectDetection.getAngleMap().entrySet());
-//    Navigation.moveToBlock(list.get(1));
-//
-//
-//    Navigation.pushTo();
+     odometer.setXyt(6 * TILE_SIZE, 6 * TILE_SIZE, 0);
+     ObjectDetection.findObjects();
+    // ObjectDetection.sortMapByValue();
+    // ObjectDetection.printMap();
+     List<Entry<Double, Integer>> list = new ArrayList<Entry<Double,
+     Integer>>(ObjectDetection.getAngleMap().entrySet());
+     Navigation.moveToBlock(list.get(0));
+    //
+    //
+     Navigation.pushTo();
     // Test to push the box to the top of the ramp
 
     // Navigation.travelToRampAndBack();

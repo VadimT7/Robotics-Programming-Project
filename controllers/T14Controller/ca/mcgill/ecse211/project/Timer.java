@@ -27,14 +27,13 @@ public class Timer implements Runnable {
       try {
         // countdown the seconds
         seconds--;
-        System.out.println(seconds);
         Thread.sleep(1000);
       } catch (InterruptedException e) {
         System.out.println("Timer ran out");
       }
       // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone.
       if (seconds == 60) {
-        Navigation.travelAcrossTunnel();
+        Navigation.travelBackAcrossTunnel();
       }
     }
   }
