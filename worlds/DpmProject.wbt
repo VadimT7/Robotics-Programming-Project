@@ -271,28 +271,17 @@ DPM-Block {
   mass 2
 }
 DPM-Robot {
-  hidden position_7_0 0.0017174023689474685
-  hidden translation_8 -1.3220218753051682e-08 1.4675148616305478e-06 0.00014169984331684551
-  hidden rotation_8 0.5552375693279775 0.8030874357229004 0.21624479691029758 -1.2518748414992467
-  hidden rotation_13 -1 0 0 0.01337573019134934
-  hidden rotation_24 1 0 0 1.687367395110063
-  hidden rotation_27 -1 0 0 4.975810313195776
   translation 0.166137 0.0848917 0.158924
   rotation 0 1 0 3.14159
   children [
-    T14_P4_container-solid {
-      name "T14_P4_container-solid-r"
-      translation -0.0798 -0.0244 -0.0995
+    T14_P4_container_arm_right-solid {
+      translation -0.0656 -0.0171 -0.0758
       rotation 1 0 0 -1.5707953071795862
     }
-    T14_P4_container-solid {
-      name "T14_P4_container-solid-l"
-      translation 0.0798 -0.0244 -0.0995
-      rotation 1 0 0 -1.5707953071795862
-    }
-    T14_P4_body_front-solid {
-      translation 2.1684e-19 -0.018 -0.052
-      rotation 1 0 0 -1.5707953071795862
+    T14_P4_container_arm-solid {
+      name "T14_P4_container_arm-solid-l"
+      translation 0.056 -0.018 -0.079
+      rotation 1 0 0 1.5708
     }
     T14_P4_body_back-solid {
       translation 0 -0.014 0.029
