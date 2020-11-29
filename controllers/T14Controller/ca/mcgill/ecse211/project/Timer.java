@@ -28,7 +28,7 @@ public class Timer implements Runnable {
         // countdown the seconds
         seconds--;
         System.out.println(seconds);
-        Thread.sleep(100);
+        Thread.sleep(1000);
       } catch (InterruptedException e) {
         System.out.println("Timer ran out");
       }

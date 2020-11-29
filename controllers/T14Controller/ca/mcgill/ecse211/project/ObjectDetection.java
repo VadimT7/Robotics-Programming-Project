@@ -270,6 +270,19 @@ public class ObjectDetection {
     if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9.5 * TILE_SIZE) || YF <= 0.2) {
       return false;
     }
+
+    // Check if any points are bin/tunnel coordinates, these are false positives
+    // Check if it matches the red tunnel
+    if (XF >= tnr.ll.x * (TILE_SIZE) && XF <= tnr.ur.x * (TILE_SIZE) && YF >= tnr.ll.y * (TILE_SIZE)
+        && YF <= tnr.ur.y * (TILE_SIZE)) {
+      return false;
+    }
+
+    // Check if it matches the green tunnel
+    if (XF >= tng.ll.x * (TILE_SIZE) && XF <= tng.ur.x * (TILE_SIZE) && YF >= tng.ll.y * (TILE_SIZE)
+        && YF <= tng.ur.y * (TILE_SIZE)) {
+      return false;
+    }
     return true;
   }
 
@@ -282,14 +295,13 @@ public class ObjectDetection {
   public static void objectAvoider(Point destination) {
 
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    System.out.println(current);
 
     if (usMotor.getTachoCount() != -15) {
       usMotor.setSpeed(ROTATE_SPEED);
       usMotor.rotate(-15 - usMotor.getTachoCount(), false);
     }
 
-    if (!detectWallOrObject(readUsDistance(), TILE_SIZE * 100)) {
+    if (detectWallOrObject(readUsDistance(), TILE_SIZE * 100)) {
       // while robot is still in threshold vicinity of object, it backs up and turns to 90 degrees from its initial
       // angle
       Driver.setSpeed(ROTATE_SPEED);
@@ -346,7 +358,6 @@ public class ObjectDetection {
 
 
       }
-
       // when while loop breaks because object is read, call method again.
       objectAvoider(destination);
     }
