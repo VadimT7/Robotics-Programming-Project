@@ -24,11 +24,19 @@ public class Stopwatch implements Runnable {
   // This method indicates how the stopwatch will run
   @Override
   public void run() {
-    while (true) {
+    while (timeElapsed < 300) {
       currentTime = TimeUnit.SECONDS.convert(System.nanoTime(), TimeUnit.SECONDS);
       timeElapsed = currentTime - startTime;
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      System.out.println(timeElapsed);
     }
-
+      
+    //Travel
   }
 
   /** Returns the Stopwatch Object. Use this method to obtain an instance of Stopwatch. */

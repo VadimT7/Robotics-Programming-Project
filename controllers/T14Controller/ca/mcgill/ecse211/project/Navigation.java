@@ -110,7 +110,7 @@ public class Navigation {
       minY = ramp.right.y;
       maxY = ramp.left.y;
     }
-    
+
     // The robot is located besides the bin move to
     if (start.y >= minY && start.y <= maxY) {
       // Move until we pass the bin
@@ -250,92 +250,17 @@ public class Navigation {
 
   }
 
-  public static void pushToRamp() {
-
-    RampEdge ramp;
-
-    double turningAngle = 0;
-    double endX;
-    double endY;
-
-    // Length of the bin/ramp along the y axis
-    double maxY;
-
-    if (STARTING_COLOR.equals("red")) {
-      ramp = rr;
-    } else {
-      ramp = gr;
-    }
-
-    // Change pushing based on where the ramp is located
-    if (ramp.left.x > ramp.right.x) {
-      endX = ramp.right.x + 0.5;
-      endY = ramp.left.y + 1;
-      maxY = ramp.left.y - 2;
-    } else if (ramp.left.x < ramp.right.x) {
-      endX = ramp.right.x - 0.5;
-      endY = ramp.left.y - 1;
-      maxY = ramp.left.y + 2;
-    } else if (ramp.left.y < ramp.right.y) {
-      endX = ramp.right.x + 1;
-      endY = ramp.left.y + 0.5;
-      maxY = ramp.left.y;
-    } else {
-      endX = ramp.right.x - 1;
-      endY = ramp.left.y - 0.5;
-      maxY = ramp.left.y;
-    }
-
-    // Initial position (where the block is)
-    double x = odometer.getXyt()[0];
-    double y = odometer.getXyt()[1];
-
-    // Decide to travel x or y first
-    // Robot falls in between the bins position
-    // travel along y first
-    // double rampMin = Math.min(ramp.left.y, ramp.right.y);
-    // if (maxY <= cur.y && rampMin >= cur.y) {
-    // if (cur.y < endY) {
-    // travelTo(new Point(cur.x, cur.y + 0.5));
-    // turningAngle = 180;
-    // } else {
-    // travelTo(new Point(cur.x, cur.y - 0.5));
-    // turningAngle = 0;
-    // }
-    // } else {
-    // if (cur.x < endX) {
-    // travelTo(new Point(cur.x - 0.5, cur.y - 0.5));
-    // turningAngle = 90;
-    // } else {
-    // travelTo(new Point(cur.x + 0.5, cur.y - 0.5));
-    // turningAngle = 270;
-    // }
-    // }
-    // turnTo(turningAngle);
-    // Driver.moveStraightFor(0.5);
-
-    // Turn to and check for object
-    // Keep calling travel method while the robot has not reached its destination
-    // while (cur.x != endX && cur.y != endY) {
-    // // Update the position
-    // pushWithObjDetect(cur, new Point(endX, endY));
-    // x = Math.round(odometer.getXyt()[0]);
-    // y = Math.round(odometer.getXyt()[1]);
-    // cur = new Point(x / TILE_SIZE, y / TILE_SIZE);
-    // }
-  }
-
 
   public static void moveToBlock(Entry<Double, Integer> entry) {
     // The current angle the robot is facing
     double curAngle = odometer.getXyt()[2];
 
     // Extra turning the robot might need to accommodate the sensor position
-    double angleOffset = 0;
+    double angleOffset = 10;
 
-    if (minimalAngle(curAngle, entry.getValue()) + curAngle > curAngle) {
-      angleOffset = 10;
-    }
+//    if (minimalAngle(curAngle, entry.getValue()) + curAngle > curAngle) {
+//      angleOffset = 10;
+//    }
 
     turnTo(entry.getKey() + angleOffset);
 
@@ -348,7 +273,6 @@ public class Navigation {
       Driver.forward();
       // If the torque is over a certain threshold, the robot is pushing a block
       if ((rightMotor.getTorque() + leftMotor.getTorque()) / 2 * 100 > 20 && distanceBetween(start, current) > 0.1) {
-        System.out.println((rightMotor.getTorque() + leftMotor.getTorque()) / 2 * 100);
         break;
       }
 
@@ -424,14 +348,14 @@ public class Navigation {
     double rampMin = Math.min(ramp.left.y, ramp.right.y);
     if (maxY >= cur.y && rampMin <= cur.y) {
       if (cur.y >= endY) {
-        ObjectDetection.objectAvoider(new Point(cur.x , cur.y + 1.5));
+        ObjectDetection.objectAvoider(new Point(cur.x, cur.y + 1.25));
         turningAngle = 180;
       } else {
         travelTo(new Point(cur.x, cur.y - 0.5));
         turningAngle = 0;
       }
     } else {
-      if (cur.x < endX) {
+      if (cur.x < endX) { 
         if (odometer.getPoint().y > cur.y) {
           ObjectDetection.objectAvoider(new Point(cur.x - 1, cur.y - 0.5));
         } else {

@@ -57,7 +57,7 @@ public class ObjectDetection {
       Integer objDist = readUsDistance();
 
       // Throw out objects over 2 tile distances away/ at the same angle
-      if (detectObjInPath(objDist, DETECTION_THRESHOLD) && angle != prevAngle) {
+      if (detectObjInPath(objDist, DETECTION_THRESHOLD/2 + 15) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
 
         usMotor.stop();
@@ -237,9 +237,42 @@ public class ObjectDetection {
       return false;
     }
 
-
     return true;
   }
+
+  
+  /**
+   * 
+   * @param objDist
+   * @param threshold
+   * @return if an object that is not a wall has been detected
+   */
+  public static boolean detectWallOrObject(double objDist, double threshold) {
+    
+    // Object out of detection range
+    if (objDist > threshold) {
+      return false;
+    }
+
+    // Retrieve the current position and angle
+    double X = odometer.getXyt()[0];
+    double Y = odometer.getXyt()[1];
+    double angle = Math.toRadians((odometer.getXyt()[2] + usMotor.getTachoCount()));
+
+    // Calculate final point coordinates based on distance
+    double XF = X + Math.sin(angle) * objDist / 100.0;
+    double YF = Y + Math.cos(angle) * objDist / 100.0;
+    angle = Math.toDegrees(angle);
+
+    System.out.println(XF + " "+ YF);
+    
+    // Detected a wall
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9.5 * TILE_SIZE) || YF <= 0.2) {
+      return false;
+    }
+    return true;
+  }
+
 
   /*
    * Method which ensures that robot will not collide into obstacle throughout trajectory, will follow a following
@@ -248,15 +281,16 @@ public class ObjectDetection {
    */
   public static void objectAvoider(Point destination) {
 
-
+    System.out.println(destination);
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    System.out.println(current);
 
     if (usMotor.getTachoCount() != -15) {
       usMotor.setSpeed(ROTATE_SPEED);
       usMotor.rotate(-15 - usMotor.getTachoCount(), false);
     }
 
-    if (detectObjInPath(readUsDistance(), TILE_SIZE * 100)) {
+    if (!detectWallOrObject(readUsDistance(), TILE_SIZE * 100)) {
       // while robot is still in threshold vicinity of object, it backs up and turns to 90 degrees from its initial
       // angle
       Driver.setSpeed(ROTATE_SPEED);
@@ -265,7 +299,7 @@ public class ObjectDetection {
       double currentAngle = startingAngle;
       Driver.rotateClk();
 
-      while ((detectObjInPath(readUsDistance(), 2 * DETECTION_THRESHOLD))) {
+      while ((detectWallOrObject(readUsDistance(), 2 * DETECTION_THRESHOLD))) {
         if (Math.abs(currentAngle - startingAngle) > 45) {
           Driver.rotateCClk();
         }
@@ -286,7 +320,7 @@ public class ObjectDetection {
     }
 
     // if small distance between current point and destination, just move straight
-    else if (Navigation.distanceBetween(current, destination) < 1) {
+    else if (Navigation.distanceBetween(current, destination) < 1.5) {
       Navigation.travelTo(destination);
       usMotor.rotate(15, false);
     }
@@ -295,7 +329,7 @@ public class ObjectDetection {
       double destinationTheta = Navigation.getDestinationAngle(current, destination);
       Navigation.turnTo(destinationTheta);
       // move straight towards destination while this is still the case
-      while (!detectObjInPath(readUsDistance(), DETECTION_THRESHOLD)) {
+      while (!detectWallOrObject(readUsDistance(), DETECTION_THRESHOLD)) {
         // Update the position
         current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
         // record angle between current and destination points
