@@ -247,7 +247,11 @@ public class Odometer implements Runnable {
     }
   }
 
-  public Point getPoint() {
+  /**
+   * 
+   * @return the current odometer position as a point
+   */
+    public Point getPoint() {
     return new Point(this.x/TILE_SIZE,this.y/TILE_SIZE);
   }
   

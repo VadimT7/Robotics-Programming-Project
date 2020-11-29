@@ -48,28 +48,20 @@ public class Main {
     // //Start the stopwatch thread
      new Thread(timer).start();
     
-    STARTING_COLOR = "red";
-    Navigation.travelToSearchZone(); 
-    ObjectDetection.ZoneDetection();    
-    // UltrasonicLocalizer.localize();
-    // LightLocalizer.startLocalize();
-     // LightLocalizer.robotBeep(3);
-   //  Navigation.travelAcrossTunnel();
-    // LightLocalizer.robotBeep(3);
-    // Navigation.travelToSearchZone();
-     
-    // System.out.println(UltrasonicLocalizer.readUsDistance());
-
-//    ObjectDetection.findObjects();
-//    ObjectDetection.printMap();
-//    List<Entry<Double, Integer>> list = new ArrayList<Entry<Double, Integer>>(ObjectDetection.getAngleMap().entrySet());
-//    Navigation.moveToBlock(list.get(1));
-//
-//
-//    Navigation.pushTo();
-    // Test to push the box to the top of the ramp
-
-    // Navigation.travelToRampAndBack();
+    STARTING_COLOR = "red"; 
+    //localize
+    UltrasonicLocalizer.localize();
+    LightLocalizer.startLocalize();
+    LightLocalizer.robotBeep(3);
+    //travel to island
+    Navigation.travelAcrossTunnel();
+    LightLocalizer.robotBeep(3);
+    //get to searc zone and dump blocks in bins
+    Navigation.travelToSearchZone();     
+    ObjectDetection.ZoneDetection();
+    //go back to initial position
+    Navigation.travelBackAcrossTunnel();
+    LightLocalizer.robotBeep(5);
   }
 
   /**

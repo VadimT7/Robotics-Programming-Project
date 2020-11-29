@@ -27,7 +27,6 @@ public class ObjectDetection {
   private static double[] prevAngles = new double[2];
   // treemap sorts heaviest blocks in ascending order based on keys
   private static TreeMap<Double, Point> tree = new TreeMap<Double, Point>(PointsList);
-  
   /**
    * Saves any objects that is a block into a hashmap
    * 
@@ -57,7 +56,7 @@ public class ObjectDetection {
       Integer objDist = readUsDistance();
 
       // Throw out objects over 2 tile distances away/ at the same angle
-      if (detectObjInPath(objDist, DETECTION_THRESHOLD / 2 + 15) && angle != prevAngle) {
+      if (detectObjInPath(objDist, DETECTION_THRESHOLD / 2) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
 
         usMotor.stop();
@@ -91,14 +90,14 @@ public class ObjectDetection {
   }
 
   /**
-   * 
+   * method which determines whether detected object is a block or not
    * @return is the object a block
    */
   public static boolean detectBlock(Integer objDist) {
     /*
      * if not in a certain threshold then the object is not a block
      */
-    double THRESHOLD = 25;
+    double THRESHOLD = 20;
     double noise = 5;
 
     // Save the angle
@@ -119,9 +118,6 @@ public class ObjectDetection {
     if (prevAngles[1] == angle2) {
       return false;
     }
-
-    System.out.println(angle1 + " angle 2 " + angle2);
-
     // Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
@@ -141,7 +137,6 @@ public class ObjectDetection {
    * @return if an object has been detected
    */
   public static boolean detectObjInPath(double objDist, double threshold) {
-
     // Object out of detection range
     if (objDist > threshold) {
       return false;
@@ -210,6 +205,7 @@ public class ObjectDetection {
       return false;
     }
 
+    //green ramp
     if (gr.left.x > gr.right.x) {
       maxY = gr.left.y - 2;
       minY = gr.left.y;
@@ -264,10 +260,9 @@ public class ObjectDetection {
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
 
-    System.out.println(XF + " " + YF);
-
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9.5 * TILE_SIZE) || YF <= 0.2) {
+
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0.2) {
       return false;
     }
 
@@ -283,14 +278,15 @@ public class ObjectDetection {
         && YF <= tng.ur.y * (TILE_SIZE)) {
       return false;
     }
+
     return true;
   }
-
 
   /*
    * Method which ensures that robot will not collide into obstacle throughout trajectory, will follow a following
    * algorithm and put back facing to original path once obstacle dealt with. This is specifically for avoidance outside
    * the search zone.
+   * @param destination Point location
    */
   public static void objectAvoider(Point destination) {
 
@@ -311,7 +307,7 @@ public class ObjectDetection {
       Driver.rotateClk();
 
       while ((detectWallOrObject(readUsDistance(), 2 * DETECTION_THRESHOLD))) {
-        if (Math.abs(currentAngle - startingAngle) > 45) {
+        if (Math.abs(currentAngle - startingAngle) > 55) {
           Driver.rotateCClk();
         }
         currentAngle = odometer.getXyt()[2];
@@ -362,7 +358,6 @@ public class ObjectDetection {
       objectAvoider(destination);
     }
   }
-
   /*
    * Method urges robot to detect and measure the torque while pushing every block in its search zone, all the while
    * avoiding potential objects and obstacles that may be found in its respective search zone
@@ -425,6 +420,7 @@ public class ObjectDetection {
     }
     //travel to the heaviest block (while avoiding obstacles) and get it in the bin
     objectAvoider(tree.lastEntry().getValue());
+    printBlock(tree.lastEntry().getKey());
     Navigation.pushTo();
     Navigation.pushObjectOnRampAndReturn();
     
@@ -442,6 +438,7 @@ public class ObjectDetection {
   /**
    * Sorts out HashMap to have the locations of the heaviest blocks stored in ascending order, prints out weight and
    * block of block at hand
+   * @param avgTorque averageTorque of block
    */
   public static void printBlock(double avgTorque) {
 
@@ -456,22 +453,11 @@ public class ObjectDetection {
     System.out.println("Container with weight:" + index + 1 + "identitfied.");
   }
 
-  public static void rotateOutOfObject() {
-    Driver.setSpeed(ROTATE_SPEED);
 
-    double startingAngle = odometer.getXyt()[2];
-    double currentAngle = startingAngle;
-    Driver.rotateCClk();
-
-    while (readUsDistance() < TILE_SIZE * 100) {
-      currentAngle = odometer.getXyt()[2];
-      if (Math.abs(currentAngle - startingAngle) > 90) {
-        Driver.rotateClk();
-      }
-    }
-  }
-
-
+  /**
+   * 
+   * @return the angle and distance where the 
+   */
   public static LinkedHashMap<Double, Integer> getAngleMap() {
     return angleMap;
   }
