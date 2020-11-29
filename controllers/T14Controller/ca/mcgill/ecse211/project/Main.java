@@ -47,10 +47,10 @@ public class Main {
 
     // //Start the stopwatch thread
      new Thread(timer).start();
-     
     
-     Navigation.pushObjectOnRampAndReturn();
-//    STARTING_COLOR = "red";
+    STARTING_COLOR = "red";
+    Navigation.travelToSearchZone(); 
+    ObjectDetection.ZoneDetection();    
     // UltrasonicLocalizer.localize();
     // LightLocalizer.startLocalize();
      // LightLocalizer.robotBeep(3);

@@ -29,16 +29,24 @@ public class Timer implements Runnable {
       try {
         // countdown the seconds
         seconds--;
-        System.out.println(seconds);
+        System.out.println(seconds + " second left");
         Thread.sleep(1000);
       } catch (InterruptedException e) {
         System.out.println("Timer ran out");
       }
-      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone.
+      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone and beeps to finish.
       if (seconds == 60) {
         Driver.stopMotors();
         Driver.setSpeed(FORWARD_SPEED);
         Navigation.travelBackAcrossTunnel();
+        LightLocalizer.robotBeep(5);
+        break;
+      }
+      //terminate at 0 seconds left---time is up
+      if (seconds ==0) {       
+        Driver.stopMotors();
+        System.out.println("Simulation demo is over");
+        break;
       }
     }
   }
