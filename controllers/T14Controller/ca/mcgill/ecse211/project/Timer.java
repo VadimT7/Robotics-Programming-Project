@@ -1,4 +1,6 @@
 package ca.mcgill.ecse211.project;
+//importing necessary libraries
+import static ca.mcgill.ecse211.project.Resources.*;
 
 /*
  * Class that ensures that simulation runs under given time constraints, and tracks the timeframe throughout which robot
@@ -31,6 +33,19 @@ public class Timer implements Runnable {
       } catch (InterruptedException e) {
         System.out.println("Timer ran out");
       }
+      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone and beeps to finish.
+      if (seconds == 60) {
+        Driver.stopMotors();
+        Driver.setSpeed(FORWARD_SPEED);
+        Navigation.travelBackAcrossTunnel();
+        LightLocalizer.robotBeep(5);
+        break;
+      }
+      //terminate at 0 seconds left---time is up
+      if (seconds ==0) {       
+        Driver.stopMotors();
+        System.out.println("Simulation demo is over");
+        break;
       // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone.
       if (seconds == 60) {
         Navigation.travelBackAcrossTunnel();
@@ -38,12 +53,10 @@ public class Timer implements Runnable {
     }
   }
 
-  /**
-   * Method to be run to count down from 5 minutes once simulation begins, prompts robot to return to its initial zone
-   * through tunnel with a minute left
-   */
-  public static void CountDown(int seconds) {
-
+  /* Getter method to return time left in the simulation*/
+  public  int getTime() {
+   
+    return seconds;
 
   }
 }

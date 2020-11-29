@@ -22,12 +22,11 @@ public class ObjectDetection {
   // initializations
   private static HashMap<Double, Point> PointsList = new HashMap<Double, Point>();
   private static LinkedHashMap<Double, Integer> angleMap;
-  private static ArrayList<Double> allTorque = new ArrayList<Double>();
+  private static ArrayList<Double> tempTorque = new ArrayList<Double>();
   private static boolean isBlock;
   private static double[] prevAngles = new double[2];
   // treemap sorts heaviest blocks in ascending order based on keys
   private static TreeMap<Double, Point> tree = new TreeMap<Double, Point>(PointsList);
-
   /**
    * Saves any objects that is a block into a hashmap
    * 
@@ -119,7 +118,6 @@ public class ObjectDetection {
     if (prevAngles[1] == angle2) {
       return false;
     }
-
     // Save the angles
     prevAngles[0] = angle1;
     prevAngles[1] = angle2;
@@ -139,7 +137,6 @@ public class ObjectDetection {
    * @return if an object has been detected
    */
   public static boolean detectObjInPath(double objDist, double threshold) {
-
     // Object out of detection range
     if (objDist > threshold) {
       return false;
@@ -263,7 +260,8 @@ public class ObjectDetection {
     angle = Math.toDegrees(angle);
 
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9.5 * TILE_SIZE) || YF <= 0.2) {
+
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0.2) {
       return false;
     }
 
@@ -279,9 +277,9 @@ public class ObjectDetection {
         && YF <= tng.ur.y * (TILE_SIZE)) {
       return false;
     }
+
     return true;
   }
-
 
   /*
    * Method which ensures that robot will not collide into obstacle throughout trajectory, will follow a following
@@ -358,59 +356,97 @@ public class ObjectDetection {
       objectAvoider(destination);
     }
   }
-
   /*
    * Method urges robot to detect and measure the torque while pushing every block in its search zone, all the while
    * avoiding potential objects and obstacles that may be found in its respective search zone
    */
-  // public static void ZoneDetection() {
+  public static void ZoneDetection() {
+    
+    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    
+    double totalTorque = 0;
+    double avgTorque = 0;
+    Point szll;
+    Point szur;
+    
+   // Find middle of the search zone based on starting zone
+    if (STARTING_COLOR.equals("red")) {
+      szll = szr.ll;
+      szur = szr.ur;
+    } else {
+      szll = szr.ll;
+      szur = szr.ur;
+    }
+    
+    Point middleOfSZ = new Point((szll.x+szur.x)/2,(szll.y+szur.y)/2);  
+    //travel to the middlePoint, all the while avoiding obstacles in the search zone
+    Navigation.turnTo(Navigation.getDestinationAngle(current, middleOfSZ));
+    ObjectDetection.objectAvoider(middleOfSZ);
+    
+    // robot firstly finds all objects close to it in its search zone
+    findObjects();
+    // check objects it findObjects(), store the angles they are located at with respect to robot in set
+    Set<Double> angles = angleMap.keySet();
 
-  // current location stored
-  // Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-
-  // robot firstly finds all objects close to it in its search zone
-  // findObjects();
-
-  // check objects it findObjects(), store the angles they are located at with respect to robot in set
-  // Set <Double> angles= angleMap.keySet();
-
-  // verify at each of these angle whether a block is present
-  // for (Double i : angles) {
-  // turn to angle
-  // Navigation.turnTo(i);
-  // if block is detected at angle, itertion stops
-  // if(detectBlock(readUsDistance())) {
-  // break;
-  // }
-  // continue;
-  // }
-  // move straight to the block
-  // Driver.moveStraightFor(readUsDistance()/100);
-
-  // }
+    // verify at each of these angle whether a block is present
+    for (Double i : angles) {
+      // turn to angle
+      Navigation.turnTo(i);
+      // if block is detected at angle, iteration stops, robot moves to block
+      if (detectBlock(readUsDistance())) {    
+        Navigation.moveToBlock(Map.entry(i, readUsDistance()));
+        // initial and current location stored
+        Point initial = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+        //drivers travels distance of 1, average torque calculated throughout quick block push
+        while(Navigation.distanceBetween(initial,current) < 1) { 
+          Driver.forward();
+          tempTorque.add((leftMotor.getTorque() + rightMotor.getTorque())/ 2);
+          current.x=odometer.getXyt()[0];
+          current.y=odometer.getXyt()[1] / TILE_SIZE;
+        }
+        //find total torque of list, and then get average
+        for (Double j : tempTorque){
+          totalTorque += j;
+        }
+        avgTorque = totalTorque/tempTorque.size();
+        //store this average torque in hashmap, clear tempTorque for future use
+        tempTorque.clear();
+        PointsList.put(avgTorque, current);
+      }
+      //continue iterating
+      continue;
+    }
+    //travel to the heaviest block (while avoiding obstacles) and get it in the bin
+    objectAvoider(tree.lastEntry().getValue());
+    Navigation.pushTo();
+    Navigation.pushObjectOnRampAndReturn();
+    
+    //if time allows it dump blocks in bins in ascending order of weight to get as many blocks in as possible faslyr
+    if(timer.getTime() > 60) {
+      
+      for(Point location : tree.values()) {
+        objectAvoider(location);
+        Navigation.pushTo();
+        Navigation.pushObjectOnRampAndReturn();   
+      }
+    }
+  }
 
   /**
    * Sorts out HashMap to have the locations of the heaviest blocks stored in ascending order, prints out weight and
    * block of block at hand
    */
-  public static void printBlock() {
+  public static void printBlock(double avgTorque) {
 
     // store torques in arraylist in order establish in treemap
     ArrayList<Double> torques = new ArrayList<Double>(tree.keySet());
     double totTorque = 0;
 
-    // calculate average torque of torques currently stored in arraylist
-    for (Double t : allTorque) {
-      totTorque += t;
-    }
-
-    double avgTorque = totTorque / allTorque.size();
-
     // store index of torque in list
     int index = torques.indexOf(avgTorque);
 
+    // message to be printed prior to block being dumped into bin
     System.out.println("Container with weight:" + index + 1 + "identitfied.");
-
   }
 
 

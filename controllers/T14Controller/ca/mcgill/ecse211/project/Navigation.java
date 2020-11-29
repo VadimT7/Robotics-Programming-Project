@@ -42,6 +42,7 @@ public class Navigation {
     Point p2;
     Point p3;
 
+
     double angle = 0;
     // Travel to the tunnel based on the location of the island
     // Checks to see if the tunnel is along the x axis
@@ -61,7 +62,9 @@ public class Navigation {
         p1 = new Point(ll.x + 1, ll.y - 1);
         p2 = new Point(ll.x + 0.5, ll.y - 1);
         p3 = new Point(ll.x + 0.5, up.y + 0.5);
+
         angle = 270;
+
       } else {
         p1 = new Point(ll.x + 1, up.y + 1);
         p2 = new Point(ll.x + 0.5, up.y + 1);
@@ -83,9 +86,9 @@ public class Navigation {
     travelTo(p3);
   }
 
+
   /** travels across the tunnel from the search zone based on the given coordinates. */
   public static void travelBackAcrossTunnel() {
-
     Point ll;
     Point up;
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
@@ -353,14 +356,12 @@ public class Navigation {
     LightLocalizer.robotBeep(3);
   }
 
-
   /**
    * Method move straight and stops once coming into contact with a block
    * 
    * @param entry map entry with the angle at which the block was detected
    */
   public static void moveToBlock(Entry<Double, Integer> entry) {
-
     // Extra turning the robot might need to accommodate the sensor position
     double angleOffset = 10;
 
@@ -477,7 +478,7 @@ public class Navigation {
       pushWithObjDetect(new Point(endX, endY), ramp, rampCase);
       cur = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     }
-
+    
     pushObjectOnRampAndReturn();
     Driver.stopMotors();
   }
@@ -498,26 +499,11 @@ public class Navigation {
    * (bottom of the ramp).
    */
   public static void pushObjectOnRampAndReturn() {
-    Point rampStart;
-
-    if (STARTING_COLOR.equals("red")) {
-      rampStart = new Point(rr.left.x + 0.5, rr.left.y - 0.5);
-    } else {
-      rampStart = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
-    }
-
-    // LightLocalizer.lineDetect();
-
-    // push the object up the ramp until the edge of the ramp is detected
+    //pushes the robot up the appropriate length up the ramp in order to drop block in bin
+    Driver.moveStraightFor(1.1);
     LightLocalizer.rampEndDetect();
-    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    Driver.moveStraightFor(1);
-
     // return to the bottom of the ramp
-    // move down the ramp
-    double distanceToBottomOfRamp = Navigation.distanceBetween(current, rampStart);
-    Driver.moveStraightFor(-distanceToBottomOfRamp);
-
+    Driver.moveStraightFor(-1.1);
   }
 
 
