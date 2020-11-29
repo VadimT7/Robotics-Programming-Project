@@ -48,10 +48,10 @@ public class Main {
     // //Start the stopwatch thread
      new Thread(timer).start();
 //    STARTING_COLOR = "red";
-    // UltrasonicLocalizer.localize();
-    // LightLocalizer.startLocalize();
-    // // LightLocalizer.robotBeep(3);
-    // Navigation.travelAcrossTunnel();
+     UltrasonicLocalizer.localize();
+     LightLocalizer.startLocalize();
+     // LightLocalizer.robotBeep(3);
+     Navigation.travelAcrossTunnel();
     // LightLocalizer.robotBeep(3);
     // Navigation.travelToSearchZone();
     // System.out.println(UltrasonicLocalizer.readUsDistance());

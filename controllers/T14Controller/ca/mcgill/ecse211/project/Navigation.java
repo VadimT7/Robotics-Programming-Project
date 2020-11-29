@@ -82,18 +82,14 @@ public class Navigation {
 
   /**
    * Have the robot travel in straight lines with object detection
-   *
-   * @param destination
+   * @param destination the point the robot needs to push the block to
+   * @param ramp the ramp coordinates
+   * @param rampOrientation direction of the ramp
    */
   public static void pushWithObjDetect(Point destination, RampEdge ramp, int rampOrientation) {
     // Starting point is where the block is placed
-
-
     Point start = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    // double destinationTheta = getDestinationAngle(start, destination);
-    //
-    // usMotor.rotate(minimalAngle(usMotor.getTachoCount(), destinationTheta), false);
-
+    
     double maxY;
     double minY;
     // Change pushing based on where the ramp is located
@@ -144,54 +140,111 @@ public class Navigation {
     double angle = odometer.getXyt()[2];
 
     double objDist = readUsDistance();
-    System.out.println(objDist);
     if (objDist <= DETECTION_THRESHOLD) {
       // Have the robot move back to check its surroundings
-      Driver.moveStraightFor(-0.5);
-      usMotor.rotate(-90, false);
-
+      Driver.moveStraightFor(-0.6);
+      usMotor.rotate(45, false);
+      double turningAngle = 0;
       // Check for object
       if (!(readUsDistance() <= DETECTION_THRESHOLD)) {
+        
+        //Move to the side of the block and push it away from the obstacle
         if (angle >= -10 && angle <= 10) {
-          travelTo(new Point(start.x + 0.5, start.y + 0.5));
+          travelTo(new Point(start.x + 0.75, start.y + 0.25));
+          turningAngle = 270;
         } else if (angle >= 90 - 10 && angle <= 90 + 10) {
-          travelTo(new Point(start.x + 0.5, start.y - 0.5));
+          travelTo(new Point(start.x + 0.75, start.y - 0.25));
+          turningAngle = 180;
         } else if (angle >= 180 - 10 && angle <= 180 + 10) {
           travelTo(new Point(start.x - 0.5, start.y - 0.5));
+          turningAngle = 90;
         } else {
           travelTo(new Point(start.x - 0.5, start.y + 0.5));
         }
 
       } else {
+        //Move to opposite side since there was an object detected here
         if (angle >= -10 && angle <= 10) {
-          travelTo(new Point(start.x - 0.5, start.y + 0.5));
+          travelTo(new Point(start.x - 0.75, start.y + 0.25));
+          turningAngle = 270;
         } else if (angle >= 90 - 10 && angle <= 90 + 10) {
-          travelTo(new Point(start.x + 0.5, start.y + 0.5));
+          travelTo(new Point(start.x + 0.75, start.y + 0.25));
+          turningAngle = 180;
         } else if (angle >= 180 - 10 && angle <= 180 + 10) {
           travelTo(new Point(start.x + 0.5, start.y - 0.5));
+          turningAngle = 90;
         } else {
           travelTo(new Point(start.x - 0.5, start.y - 0.5));
         }
       }
-      usMotor.rotate(90, false);
+      usMotor.rotate(-45, false);
+      // Turn back towards the block
+      turnTo(turningAngle);
       Driver.moveStraightFor(2);
-    } else {
+    } 
+    
+    //No object was detected
+    else {
       double xOff = destination.x - 0.5;
       angle = odometer.getXyt()[2];
       if (angle <= 360 && angle >= 180) {
         xOff = destination.x + 0.5;
       }
+      
+      //Push the block to the x of the ramp
       if (verifyThreshold(start.x, xOff)) {
         travelTo(new Point(xOff, start.y));
-      } else {
-        Point p = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+      } 
+      
+      //Push the block along the y direction towards the bin
+      else {
+        Point p = odometer.getPoint();
         Driver.moveStraightFor(-0.5);
-        double yOff = p.y - 0.75;
+        double yOff = p.y - 0.5;
         if (rampOrientation > 2) {
-          yOff = p.y + 0.75;
+          yOff = p.y + 0.5;
         }
         travelTo(new Point(destination.x, yOff));
-        travelTo(destination);
+        turnTo(getDestinationAngle(odometer.getPoint(), destination));
+        Driver.moveStraightFor(0.4);
+        
+        
+        //Detected object need to push the block away
+        if (readUsDistance() < DETECTION_THRESHOLD) {
+          pushWithObjDetect(destination, ramp, rampOrientation);
+          p = odometer.getPoint();
+          Driver.moveStraightFor(-0.5);
+          yOff = p.y - 0.75;
+          if (rampOrientation > 2) {
+            yOff = p.y + 0.75;
+          }
+          xOff = p.x + 0.5;
+          angle = odometer.getXyt()[2];
+          if (angle <= 360 && angle >= 180) {
+            xOff = p.x - 0.5;
+          }
+          travelTo(new Point(xOff, yOff));
+          turnTo(getDestinationAngle(odometer.getPoint(), new Point(odometer.getPoint().x, destination.y)));
+          Driver.moveStraightFor(3);
+          
+          Point cur = odometer.getPoint();
+          Driver.moveStraightFor(-0.5);
+          double turningAngle;
+          
+          //Move to push the block along the x axis
+          if (cur.x < destination.x) {
+            ObjectDetection.objectAvoider(new Point(cur.x - 0.5, cur.y));
+            turningAngle = 90;
+          } else {
+            ObjectDetection.objectAvoider(new Point(cur.x + 0.5, cur.y));
+            turningAngle = 270;
+          }
+          turnTo(turningAngle);
+          
+        } else {
+          travelTo(destination);
+        }
+
       }
     }
   }
@@ -258,9 +311,9 @@ public class Navigation {
     // Extra turning the robot might need to accommodate the sensor position
     double angleOffset = 10;
 
-//    if (minimalAngle(curAngle, entry.getValue()) + curAngle > curAngle) {
-//      angleOffset = 10;
-//    }
+    // if (minimalAngle(curAngle, entry.getValue()) + curAngle > curAngle) {
+    // angleOffset = 10;
+    // }
 
     turnTo(entry.getKey() + angleOffset);
 
@@ -351,23 +404,15 @@ public class Navigation {
         ObjectDetection.objectAvoider(new Point(cur.x, cur.y + 1.25));
         turningAngle = 180;
       } else {
-        travelTo(new Point(cur.x, cur.y - 0.5));
+        ObjectDetection.objectAvoider(new Point(cur.x, cur.y - 0.5));
         turningAngle = 0;
       }
     } else {
-      if (cur.x < endX) { 
-        if (odometer.getPoint().y > cur.y) {
-          ObjectDetection.objectAvoider(new Point(cur.x - 1, cur.y - 0.5));
-        } else {
-          ObjectDetection.objectAvoider(new Point(cur.x - 1, cur.y + 0.5));
-        }
+      if (cur.x < endX) {
+        ObjectDetection.objectAvoider(new Point(cur.x - 0.5, cur.y));
         turningAngle = 90;
       } else {
-        if (odometer.getPoint().y > cur.y) {
-          ObjectDetection.objectAvoider(new Point(cur.x + 1, cur.y - 0.5));
-        } else {
-          ObjectDetection.objectAvoider(new Point(cur.x + 1, cur.y + 0.5));
-        }
+        ObjectDetection.objectAvoider(new Point(cur.x + 0.5, cur.y));
         turningAngle = 270;
       }
     }
@@ -380,6 +425,8 @@ public class Navigation {
       pushWithObjDetect(new Point(endX, endY), ramp, rampCase);
       cur = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     }
+    
+    pushObjectOnRampAndReturn();
     Driver.stopMotors();
   }
 
@@ -399,20 +446,18 @@ public class Navigation {
     } else {
       rampStart = new Point(gr.left.x + 0.5, gr.left.y - 0.5);
     }
+    
+//    LightLocalizer.lineDetect();
 
     // push the object up the ramp until the edge of the ramp is detected
     LightLocalizer.rampEndDetect();
+    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    Driver.moveStraightFor(1);
 
     // return to the bottom of the ramp
-    Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    // (optionally) turn to face the bottom of the ramp
-    double angle = Navigation.getDestinationAngle(current, rampStart);
-    Navigation.turnTo(angle);
-
-    // move down the ramp - (alternative implementation if the robot slips while turning with code right above (turnTo):
-    // move backwards without turning)
+    // move down the ramp
     double distanceToBottomOfRamp = Navigation.distanceBetween(current, rampStart);
-    Driver.moveStraightFor(distanceToBottomOfRamp);
+    Driver.moveStraightFor(-distanceToBottomOfRamp);
 
   }
 

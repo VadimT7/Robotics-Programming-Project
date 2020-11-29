@@ -57,7 +57,7 @@ public class ObjectDetection {
       Integer objDist = readUsDistance();
 
       // Throw out objects over 2 tile distances away/ at the same angle
-      if (detectObjInPath(objDist, DETECTION_THRESHOLD/2 + 15) && angle != prevAngle) {
+      if (detectObjInPath(objDist, DETECTION_THRESHOLD / 2 + 15) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
 
         usMotor.stop();
@@ -158,7 +158,7 @@ public class ObjectDetection {
     angle = Math.toDegrees(angle);
 
     // Detected a wall
-    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0) {
+    if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 8.5 * TILE_SIZE) || YF <= 0.3) {
       return false;
     }
 
@@ -240,7 +240,7 @@ public class ObjectDetection {
     return true;
   }
 
-  
+
   /**
    * 
    * @param objDist
@@ -248,7 +248,7 @@ public class ObjectDetection {
    * @return if an object that is not a wall has been detected
    */
   public static boolean detectWallOrObject(double objDist, double threshold) {
-    
+
     // Object out of detection range
     if (objDist > threshold) {
       return false;
@@ -264,8 +264,8 @@ public class ObjectDetection {
     double YF = Y + Math.cos(angle) * objDist / 100.0;
     angle = Math.toDegrees(angle);
 
-    System.out.println(XF + " "+ YF);
-    
+    System.out.println(XF + " " + YF);
+
     // Detected a wall
     if (XF >= 15 * (TILE_SIZE) || XF <= 0 || (YF >= 9.5 * TILE_SIZE) || YF <= 0.2) {
       return false;
@@ -281,7 +281,6 @@ public class ObjectDetection {
    */
   public static void objectAvoider(Point destination) {
 
-    System.out.println(destination);
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     System.out.println(current);
 
@@ -334,6 +333,10 @@ public class ObjectDetection {
         current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
         // record angle between current and destination points
         Driver.forward();
+
+        if (Navigation.distanceBetween(current, destination) <= 1.5) {
+          break;
+        }
         // do not exceed island bounds
         if (current.y <= island.ll.y + 0.4) {
           Driver.stopMotors();
@@ -341,9 +344,7 @@ public class ObjectDetection {
           break;
         }
 
-        if (Navigation.distanceBetween(current, destination) <= 1) {
-          break;
-        }
+
       }
 
       // when while loop breaks because object is read, call method again.
