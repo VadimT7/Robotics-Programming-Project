@@ -338,6 +338,7 @@ public class Navigation {
     }
   }
  /* Method which prompts the robot to travel to its respective search zone once it has arrived onto the island*/
+
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
@@ -355,8 +356,9 @@ public class Navigation {
 
     //travel to search zone, avoid abstacles
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
-      double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, szg.ll.y + 1));
+      double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, ll.y + 1));
       Navigation.turnTo(angle);
+      System.out.println(ll);
       ObjectDetection.objectAvoider(new Point(ll.x + 2, ll.y + 1));
     }
     

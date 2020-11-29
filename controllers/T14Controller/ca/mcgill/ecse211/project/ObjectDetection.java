@@ -27,6 +27,7 @@ public class ObjectDetection {
   private static double[] prevAngles = new double[2];
   // treemap sorts heaviest blocks in ascending order based on keys
   private static TreeMap<Double, Point> tree = new TreeMap<Double, Point>(PointsList);
+
   /**
    * Saves any objects that is a block into a hashmap
    * 
@@ -358,20 +359,21 @@ public class ObjectDetection {
       objectAvoider(destination);
     }
   }
+
   /*
    * Method urges robot to detect and measure the torque while pushing every block in its search zone, all the while
    * avoiding potential objects and obstacles that may be found in its respective search zone
    */
   public static void ZoneDetection() {
-    
+
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-    
+
     double totalTorque = 0;
     double avgTorque = 0;
     Point szll;
     Point szur;
-    
-   // Find middle of the search zone based on starting zone
+
+    // Find middle of the search zone based on starting zone
     if (STARTING_COLOR.equals("red")) {
       szll = szr.ll;
       szur = szr.ur;
@@ -379,14 +381,22 @@ public class ObjectDetection {
       szll = szr.ll;
       szur = szr.ur;
     }
-    
-    Point middleOfSZ = new Point((szll.x+szur.x)/2,(szll.y+szur.y)/2);  
-    //travel to the middlePoint, all the while avoiding obstacles in the search zone
+
+    Point middleOfSZ = new Point((szll.x + szur.x) / 2, (szll.y + szur.y) / 2);
+    // travel to the middlePoint, all the while avoiding obstacles in the search zone
     Navigation.turnTo(Navigation.getDestinationAngle(current, middleOfSZ));
     ObjectDetection.objectAvoider(middleOfSZ);
-    
+
     // robot firstly finds all objects close to it in its search zone
     findObjects();
+
+
+    // If it doesn't find objects have it sweep again
+    if (angleMap.size() == 0) {
+      Driver.turnBy(180);
+      findObjects();
+    }
+
     // check objects it findObjects(), store the angles they are located at with respect to robot in set
     Set<Double> angles = angleMap.keySet();
 
@@ -395,42 +405,42 @@ public class ObjectDetection {
       // turn to angle
       Navigation.turnTo(i);
       // if block is detected at angle, iteration stops, robot moves to block
-      if (detectBlock(readUsDistance())) {    
+      if (detectBlock(readUsDistance())) {
         Navigation.moveToBlock(Map.entry(i, readUsDistance()));
         // initial and current location stored
         Point initial = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
-        //drivers travels distance of 1, average torque calculated throughout quick block push
-        while(Navigation.distanceBetween(initial,current) < 1) { 
+        // drivers travels distance of 1, average torque calculated throughout quick block push
+        while (Navigation.distanceBetween(initial, current) < 1) {
           Driver.forward();
-          tempTorque.add((leftMotor.getTorque() + rightMotor.getTorque())/ 2);
-          current.x=odometer.getXyt()[0];
-          current.y=odometer.getXyt()[1] / TILE_SIZE;
+          tempTorque.add((leftMotor.getTorque() + rightMotor.getTorque()) / 2);
+          current.x = odometer.getXyt()[0];
+          current.y = odometer.getXyt()[1] / TILE_SIZE;
         }
-        //find total torque of list, and then get average
-        for (Double j : tempTorque){
+        // find total torque of list, and then get average
+        for (Double j : tempTorque) {
           totalTorque += j;
         }
-        avgTorque = totalTorque/tempTorque.size();
-        //store this average torque in hashmap, clear tempTorque for future use
+        avgTorque = totalTorque / tempTorque.size();
+        // store this average torque in hashmap, clear tempTorque for future use
         tempTorque.clear();
         PointsList.put(avgTorque, current);
       }
-      //continue iterating
+      // continue iterating
       continue;
     }
-    //travel to the heaviest block (while avoiding obstacles) and get it in the bin
+    // travel to the heaviest block (while avoiding obstacles) and get it in the bin
     objectAvoider(tree.lastEntry().getValue());
     printBlock(tree.lastEntry().getKey());
     Navigation.pushTo();
     Navigation.pushObjectOnRampAndReturn();
-    
-    //if time allows it dump blocks in bins in ascending order of weight to get as many blocks in as possible faslyr
-    if(timer.getTime() > 60) {
-      
-      for(Point location : tree.values()) {
+
+    // if time allows it dump blocks in bins in ascending order of weight to get as many blocks in as possible faslyr
+    if (timer.getTime() > 60) {
+
+      for (Point location : tree.values()) {
         objectAvoider(location);
         Navigation.pushTo();
-        Navigation.pushObjectOnRampAndReturn();   
+        Navigation.pushObjectOnRampAndReturn();
       }
     }
   }
@@ -456,7 +466,7 @@ public class ObjectDetection {
 
   /**
    * 
-   * @return the angle and distance where the 
+   * @return the angle and distance where the
    */
   public static LinkedHashMap<Double, Integer> getAngleMap() {
     return angleMap;

@@ -271,6 +271,7 @@ DPM-Block {
   mass 2
 }
 DPM-Robot {
+  name "T14Robot"
   translation 2.44614 0.0648917 0.58891
   rotation 0 1 0 3.14159
   children [
