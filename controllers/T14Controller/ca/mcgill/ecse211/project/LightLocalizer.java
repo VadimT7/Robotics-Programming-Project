@@ -267,6 +267,10 @@ public class LightLocalizer {
     localize(initialX * TILE_SIZE, initialY * TILE_SIZE, angle);
   }
 
+  /**
+   * 
+   * @return the starting island's color
+   */
   public static String detectStartingColor() {
     colorSensor.fetchSample(lightBuffer, 0);
     colorSensor2.fetchSample(lightBuffer2, 0);

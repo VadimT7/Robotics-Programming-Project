@@ -29,7 +29,6 @@ public class Timer implements Runnable {
       try {
         // countdown the seconds
         seconds--;
-        System.out.println(seconds + " second left");
         Thread.sleep(1000);
       } catch (InterruptedException e) {
         System.out.println("Timer ran out");
@@ -47,6 +46,9 @@ public class Timer implements Runnable {
         Driver.stopMotors();
         System.out.println("Simulation demo is over");
         break;
+      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone.
+      if (seconds == 60) {
+        Navigation.travelBackAcrossTunnel();
       }
     }
   }
@@ -55,5 +57,6 @@ public class Timer implements Runnable {
   public  int getTime() {
    
     return seconds;
+
   }
 }
