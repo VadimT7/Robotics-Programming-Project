@@ -13,13 +13,13 @@ public class LightLocalizer {
 
   private static SampleProvider colorSensor = leftColorSensor.getRedMode();
   private static SampleProvider colorSensor2 = rightColorSensor.getRedMode();
-  private static SampleProvider colorSensor3 = rightColorSensor.getRedMode();
+  private static SampleProvider colorSensor3 = frontColorSensor.getRedMode();
 
   // Initializations
   /** buffers for light sensors setup **/
   static float[] lightBuffer = new float[colorSensor.sampleSize()];
   static float[] lightBuffer2 = new float[colorSensor2.sampleSize()];
-  static float[] lightBuffer3 = new float[colorSensor2.sampleSize()];
+  static float[] lightBuffer3 = new float[colorSensor3.sampleSize()];
 
   /* Arbitrary boundary condition (choice was made through testing) */
   private static float X = 70;
@@ -222,6 +222,8 @@ public class LightLocalizer {
     
     // travel till the ramp edge is detected
     while (!(lightBuffer3[0] <= rampEnd)) {
+      System.out.println(lightBuffer3[0]);
+      Driver.forward();
       colorSensor3.fetchSample(lightBuffer3, 0);
     }
     

@@ -133,6 +133,7 @@ public class UltrasonicLocalizer {
       // System.out.println(window [i]);
     }
     Arrays.sort(window);
+    
     return window[2];
   }
 
