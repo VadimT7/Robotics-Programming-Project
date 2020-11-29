@@ -334,6 +334,9 @@ public class Navigation {
     }
   }
 
+  /**
+   * Has the robot travel to a random point in the search zone
+   */
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
@@ -349,8 +352,9 @@ public class Navigation {
     double curY = odometer.getXyt()[1] / TILE_SIZE;
 
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
-      double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, szg.ll.y + 1));
+      double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, ll.y + 1));
       Navigation.turnTo(angle);
+      System.out.println(ll);
       ObjectDetection.objectAvoider(new Point(ll.x + 2, ll.y + 1));
     }
     LightLocalizer.robotBeep(3);
