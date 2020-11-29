@@ -91,7 +91,7 @@ public class ObjectDetection {
   }
 
   /**
-   * 
+   * method which determines whether detected object is a block or not
    * @return is the object a block
    */
   public static boolean detectBlock(Integer objDist) {
@@ -206,6 +206,7 @@ public class ObjectDetection {
       return false;
     }
 
+    //green ramp
     if (gr.left.x > gr.right.x) {
       maxY = gr.left.y - 2;
       minY = gr.left.y;
@@ -286,6 +287,7 @@ public class ObjectDetection {
    * Method which ensures that robot will not collide into obstacle throughout trajectory, will follow a following
    * algorithm and put back facing to original path once obstacle dealt with. This is specifically for avoidance outside
    * the search zone.
+   * @param destination Point location
    */
   public static void objectAvoider(Point destination) {
 
@@ -428,6 +430,7 @@ public class ObjectDetection {
     }
     // travel to the heaviest block (while avoiding obstacles) and get it in the bin
     objectAvoider(tree.lastEntry().getValue());
+    printBlock(tree.lastEntry().getKey());
     Navigation.pushTo();
     Navigation.pushObjectOnRampAndReturn();
 
@@ -445,6 +448,7 @@ public class ObjectDetection {
   /**
    * Sorts out HashMap to have the locations of the heaviest blocks stored in ascending order, prints out weight and
    * block of block at hand
+   * @param avgTorque averageTorque of block
    */
   public static void printBlock(double avgTorque) {
 

@@ -25,31 +25,24 @@ public class Timer implements Runnable {
   /** Will count down from the given 5 minute time constraint, to be used when the main method starts its run */
   public void run() {
     while (seconds > 0) {
-
       try {
         // countdown the seconds
         seconds--;
         Thread.sleep(1000);
       } catch (InterruptedException e) {
-        System.out.println("Timer ran out");
+        System.out.println("Timer error");
       }
-      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone and beeps to finish.
+      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone.
       if (seconds == 60) {
         Driver.stopMotors();
         Driver.setSpeed(FORWARD_SPEED);
         Navigation.travelBackAcrossTunnel();
-        LightLocalizer.robotBeep(5);
-        break;
       }
-      //terminate at 0 seconds left---time is up
-      if (seconds ==0) {       
-        Driver.stopMotors();
-        System.out.println("Simulation demo is over");
-        break;
-      // at a minute left, robot drops what it is doing and thread prompts it to return to starting zone.
-      if (seconds == 60) {
-        Navigation.travelBackAcrossTunnel();
-      }
+    }
+    //simulation end
+    if (seconds == 0) {  
+      Driver.stopMotors();
+      System.out.println("Simulation is over");
     }
   }
 
@@ -57,6 +50,5 @@ public class Timer implements Runnable {
   public  int getTime() {
    
     return seconds;
-
   }
 }

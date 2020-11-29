@@ -12,13 +12,17 @@ public class Navigation {
   /** Do not instantiate this class. */
   private Navigation() {}
 
-  /** Travels to the given destination. */
+  /** Travels to the given destination. 
+   * @param destination Point location
+  */
   public static void travelTo(Point destination) {
     var xyt = odometer.getXyt();
     var currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
     var currentTheta = xyt[2];
     var destinationTheta = getDestinationAngle(currentLocation, destination);
+    //turn towards destination
     Driver.turnBy(minimalAngle(currentTheta, destinationTheta));
+    //travel towards destination point in straight trajectory
     Driver.moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
@@ -333,13 +337,12 @@ public class Navigation {
       }
     }
   }
+ /* Method which prompts the robot to travel to its respective search zone once it has arrived onto the island*/
 
-  /**
-   * Has the robot travel to a random point in the search zone
-   */
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
+    //determine coordinates
     if (STARTING_COLOR.equals("red")) {
       ll = szr.ll;
       ur = szr.ur;
@@ -351,13 +354,14 @@ public class Navigation {
     double curX = odometer.getXyt()[0] / TILE_SIZE;
     double curY = odometer.getXyt()[1] / TILE_SIZE;
 
+    //travel to search zone, avoid abstacles
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
       double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, ll.y + 1));
       Navigation.turnTo(angle);
       System.out.println(ll);
       ObjectDetection.objectAvoider(new Point(ll.x + 2, ll.y + 1));
     }
-    LightLocalizer.robotBeep(3);
+    
   }
 
   /**
