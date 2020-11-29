@@ -57,7 +57,7 @@ public class Main {
     // LightLocalizer.robotBeep(3);
     // Navigation.travelToSearchZone();
     // System.out.println(UltrasonicLocalizer.readUsDistance());
-    odometer.setXyt(8* TILE_SIZE, 5 * TILE_SIZE, 90);
+    odometer.setXyt(9* TILE_SIZE, 6 * TILE_SIZE, 0);
     ObjectDetection.findObjects();
     ObjectDetection.printMap();
     List<Entry<Double, Integer>> list = new ArrayList<Entry<Double, Integer>>(ObjectDetection.getAngleMap().entrySet());

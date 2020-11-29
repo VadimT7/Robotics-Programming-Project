@@ -2,9 +2,6 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static java.lang.Math.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.readUsDistance;
 import java.util.Map.Entry;
 import ca.mcgill.ecse211.playingfield.Point;
@@ -71,7 +68,7 @@ public class Navigation {
     }
 
     turnTo(getDestinationAngle(current, p1));
-    ObjectDetection.OutobjectAvoider(p1);
+    ObjectDetection.objectAvoider(p1);
     turnTo(0);
     LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, 0);
     // find magnitude of length across grid that the robot will travel from initial point to dest.
@@ -85,9 +82,8 @@ public class Navigation {
 
   /**
    * Have the robot travel in straight lines with object detection
-   * 
-   * @param start where the block is located
-   * @param destination where the ramp is located
+   *
+   * @param destination
    */
   public static void pushWithObjDetect(Point destination, RampEdge ramp, int rampOrientation) {
     // Starting point is where the block is placed
@@ -98,19 +94,52 @@ public class Navigation {
     //
     // usMotor.rotate(minimalAngle(usMotor.getTachoCount(), destinationTheta), false);
 
+    double maxY;
+    double minY;
+    // Change pushing based on where the ramp is located
+    if (ramp.left.x > ramp.right.x) {
+      minY = ramp.left.y;
+      maxY = ramp.left.y - 2;
+    } else if (ramp.left.x < ramp.right.x) {
+      minY = ramp.left.y;
+      maxY = ramp.left.y + 2;
+    } else if (ramp.left.y < ramp.right.y) {
+      minY = ramp.left.y;
+      maxY = ramp.right.y;
+    } else {
+      minY = ramp.right.y;
+      maxY = ramp.left.y;
+    }
+    
+    // The robot is located besides the bin move to
+    if (start.y >= minY && start.y <= maxY) {
+      // Move until we pass the bin
+      travelTo(new Point(start.x, destination.y));
+      // Move to push the block sideways
+      double turningAngle;
 
-    // Determine where the robot should be heading
-    // Checking if the robot is behind a bin
-    // double minX = Math.min(ramp.left.x, ramp.right.x);
-    // double maxX = Math.max(ramp.left.x, ramp.right.x);
-    //
-    // if(start.x >= minX && start.x <= maxX && rampOrientation == 2 && start.y >= ramp.left.y + 2) {
-    // //Turn the motor by 90
-    // usMotor.rotate(90, false);
-    //
-    // while()
-    //
-    // }
+      start = odometer.getPoint();
+      Driver.moveStraightFor(-0.5);
+      if (start.x < destination.x) {
+        if (odometer.getPoint().y > destination.y) {
+          ObjectDetection.objectAvoider(new Point(start.x - 0.25, start.y - 0.25));
+        } else {
+          ObjectDetection.objectAvoider(new Point(start.x - 0.25, start.y + 0.25));
+        }
+        turningAngle = 90;
+      } else {
+        if (odometer.getPoint().y > destination.y) {
+          ObjectDetection.objectAvoider(new Point(start.x + 0.25, start.y - 0.25));
+        } else {
+          ObjectDetection.objectAvoider(new Point(start.x + 0.25, start.y + 0.25));
+        }
+        turningAngle = 270;
+      }
+      turnTo(turningAngle);
+      LightLocalizer.localize();
+      start = odometer.getPoint();
+    }
+
 
     double angle = odometer.getXyt()[2];
 
@@ -123,7 +152,7 @@ public class Navigation {
 
       // Check for object
       if (!(readUsDistance() <= DETECTION_THRESHOLD)) {
-        if (angle >= 0 - 10 && angle <= 0 + 10) {
+        if (angle >= -10 && angle <= 10) {
           travelTo(new Point(start.x + 0.5, start.y + 0.5));
         } else if (angle >= 90 - 10 && angle <= 90 + 10) {
           travelTo(new Point(start.x + 0.5, start.y - 0.5));
@@ -134,7 +163,7 @@ public class Navigation {
         }
 
       } else {
-        if (angle >= 0 - 10 && angle <= 0 + 10) {
+        if (angle >= -10 && angle <= 10) {
           travelTo(new Point(start.x - 0.5, start.y + 0.5));
         } else if (angle >= 90 - 10 && angle <= 90 + 10) {
           travelTo(new Point(start.x + 0.5, start.y + 0.5));
@@ -147,14 +176,12 @@ public class Navigation {
       usMotor.rotate(90, false);
       Driver.moveStraightFor(2);
     } else {
-
       double xOff = destination.x - 0.5;
       angle = odometer.getXyt()[2];
       if (angle <= 360 && angle >= 180) {
         xOff = destination.x + 0.5;
       }
-
-      if (!verifyThreshold(start.x, xOff)) {
+      if (verifyThreshold(start.x, xOff)) {
         travelTo(new Point(xOff, start.y));
       } else {
         Point p = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
@@ -186,7 +213,7 @@ public class Navigation {
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
       double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, szg.ll.y + 1));
       Navigation.turnTo(angle);
-      ObjectDetection.OutobjectAvoider(new Point(ll.x + 2, ll.y + 1));
+      ObjectDetection.objectAvoider(new Point(ll.x + 2, ll.y + 1));
     }
     LightLocalizer.robotBeep(3);
   }
@@ -203,7 +230,7 @@ public class Navigation {
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     double angle = Navigation.getDestinationAngle(current, ramp);
     Navigation.turnTo(angle);
-    ObjectDetection.OutobjectAvoider(ramp);
+    ObjectDetection.objectAvoider(ramp);
     // localize to a corner
     LightLocalizer.localize();
     // LightLocalizer.localize((rr.right.x), (rr.right.y - 1)*TILE_SIZE, odometer.getXyt()[2]);
@@ -262,7 +289,7 @@ public class Navigation {
     // Initial position (where the block is)
     double x = odometer.getXyt()[0];
     double y = odometer.getXyt()[1];
-    
+
     // Decide to travel x or y first
     // Robot falls in between the bins position
     // travel along y first
@@ -334,15 +361,13 @@ public class Navigation {
 
   /**
    * Pushes a box from a starting point to an end point
-   * 
-   * @param start where the box is currently located
-   * @param end where the box should be pushed to
+   *
    */
   public static void pushTo() {
 
     RampEdge ramp;
 
-    double turningAngle = 0;
+    double turningAngle;
 
     double endX;
     double endY;
@@ -372,7 +397,7 @@ public class Navigation {
     } else if (ramp.left.y < ramp.right.y) {
       endX = ramp.right.x + 0.5;
       endY = ramp.left.y + 0.5;
-      maxY = ramp.left.y;
+      maxY = ramp.right.y;
       rampCase = 3;
     } else {
       endX = ramp.right.x - 0.5;
@@ -380,8 +405,6 @@ public class Navigation {
       maxY = ramp.left.y;
       rampCase = 4;
     }
-
-    System.out.println(endY);
 
     // Initial position (where the block is)
     double x = odometer.getXyt()[0];
@@ -397,12 +420,11 @@ public class Navigation {
     // Robot falls in between the bins position
     // travel along y first
 
-    //Get the current position of the robot
-
+    // Get the current position of the robot
     double rampMin = Math.min(ramp.left.y, ramp.right.y);
     if (maxY >= cur.y && rampMin <= cur.y) {
-      if (cur.y < endY) {
-        travelTo(new Point(cur.x, cur.y + 0.5));
+      if (cur.y >= endY) {
+        ObjectDetection.objectAvoider(new Point(cur.x , cur.y + 1.5));
         turningAngle = 180;
       } else {
         travelTo(new Point(cur.x, cur.y - 0.5));
@@ -411,16 +433,16 @@ public class Navigation {
     } else {
       if (cur.x < endX) {
         if (odometer.getPoint().y > cur.y) {
-          travelTo(new Point(cur.x - 0.5, cur.y - 0.5));
+          ObjectDetection.objectAvoider(new Point(cur.x - 1, cur.y - 0.5));
         } else {
-          travelTo(new Point(cur.x - 0.5, cur.y + 0.5));
+          ObjectDetection.objectAvoider(new Point(cur.x - 1, cur.y + 0.5));
         }
         turningAngle = 90;
       } else {
         if (odometer.getPoint().y > cur.y) {
-          travelTo(new Point(cur.x + 0.5, cur.y - 0.5));
+          ObjectDetection.objectAvoider(new Point(cur.x + 1, cur.y - 0.5));
         } else {
-          travelTo(new Point(cur.x + 0.5, cur.y + 0.5));
+          ObjectDetection.objectAvoider(new Point(cur.x + 1, cur.y + 0.5));
         }
         turningAngle = 270;
       }
@@ -430,7 +452,7 @@ public class Navigation {
 
     // Turn to and check for object
     // Keep calling travel method while the robot has not reached its destination
-    while (!verifyThreshold(cur.x, endX) || !verifyThreshold(cur.y, endY)) {
+    while (verifyThreshold(cur.x, endX) || verifyThreshold(cur.y, endY)) {
       pushWithObjDetect(new Point(endX, endY), ramp, rampCase);
       cur = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     }
@@ -438,7 +460,7 @@ public class Navigation {
   }
 
   private static boolean verifyThreshold(double cur, double end) {
-    return cur <= end + 0.5 && cur >= end - 0.5;
+    return !(cur <= end + 0.5) || !(cur >= end - 0.5);
   }
 
   /**
