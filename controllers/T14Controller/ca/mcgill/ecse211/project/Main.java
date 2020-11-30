@@ -46,20 +46,19 @@ public class Main {
     new Thread(odometer).start();
 
     // //Start the stopwatch thread
-     new Thread(timer).start();
-    
-    STARTING_COLOR = "red"; 
-    //localize
+    new Thread(timer).start();
+
+    // localize
     UltrasonicLocalizer.localize();
     LightLocalizer.startLocalize();
     LightLocalizer.robotBeep(3);
-    //travel to island
+    // travel to island
     Navigation.travelAcrossTunnel();
     LightLocalizer.robotBeep(3);
-    //get to searc zone and dump blocks in bins
-    Navigation.travelToSearchZone();     
+    // get to searc zone and dump blocks in bins
+    Navigation.travelToSearchZone();
     ObjectDetection.ZoneDetection();
-    //go back to initial position
+    // go back to initial position
     Navigation.travelBackAcrossTunnel();
     LightLocalizer.robotBeep(5);
   }

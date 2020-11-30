@@ -57,7 +57,7 @@ public class ObjectDetection {
       Integer objDist = readUsDistance();
 
       // Throw out objects over 2 tile distances away/ at the same angle
-      if (detectObjInPath(objDist, DETECTION_THRESHOLD / 2) && angle != prevAngle) {
+      if (detectObjInPath(objDist, DETECTION_THRESHOLD) && angle != prevAngle) {
         // Stop rotation and latch onto object, determine width
 
         usMotor.stop();
@@ -378,8 +378,8 @@ public class ObjectDetection {
       szll = szr.ll;
       szur = szr.ur;
     } else {
-      szll = szr.ll;
-      szur = szr.ur;
+      szll = szg.ll;
+      szur = szg.ur;
     }
 
     Point middleOfSZ = new Point((szll.x + szur.x) / 2, (szll.y + szur.y) / 2);

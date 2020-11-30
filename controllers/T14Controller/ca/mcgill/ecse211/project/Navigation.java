@@ -12,17 +12,19 @@ public class Navigation {
   /** Do not instantiate this class. */
   private Navigation() {}
 
-  /** Travels to the given destination. 
+  /**
+   * Travels to the given destination.
+   * 
    * @param destination Point location
-  */
+   */
   public static void travelTo(Point destination) {
     var xyt = odometer.getXyt();
     var currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
     var currentTheta = xyt[2];
     var destinationTheta = getDestinationAngle(currentLocation, destination);
-    //turn towards destination
+    // turn towards destination
     Driver.turnBy(minimalAngle(currentTheta, destinationTheta));
-    //travel towards destination point in straight trajectory
+    // travel towards destination point in straight trajectory
     Driver.moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
@@ -33,6 +35,8 @@ public class Navigation {
     Point up;
     Point current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
 
+    System.out.println(STARTING_COLOR);
+
     // Pick depending on starting color
     if (STARTING_COLOR.equals("red")) {
       ll = tnr.ll;
@@ -42,10 +46,13 @@ public class Navigation {
       up = tng.ur;
     }
 
+
+
     Point p1;
     Point p2;
     Point p3;
 
+    System.out.println(ll + " " + up);
 
     double angle = 0;
     // Travel to the tunnel based on the location of the island
@@ -78,7 +85,7 @@ public class Navigation {
     }
 
     turnTo(getDestinationAngle(current, p1));
-    ObjectDetection.objectAvoider(p1);
+    travelTo(p1);
     turnTo(angle);
     LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, angle);
     // find magnitude of length across grid that the robot will travel from initial point to dest.
@@ -142,7 +149,7 @@ public class Navigation {
 
 
     turnTo(getDestinationAngle(current, p1));
-    ObjectDetection.objectAvoider(p1);
+    travelTo(p1);
     turnTo(angle);
     LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, angle);
     // find magnitude of length across grid that the robot will travel from initial point to dest.
@@ -337,12 +344,12 @@ public class Navigation {
       }
     }
   }
- /* Method which prompts the robot to travel to its respective search zone once it has arrived onto the island*/
+  /* Method which prompts the robot to travel to its respective search zone once it has arrived onto the island */
 
   public static void travelToSearchZone() {
     Point ll;
     Point ur;
-    //determine coordinates
+    // determine coordinates
     if (STARTING_COLOR.equals("red")) {
       ll = szr.ll;
       ur = szr.ur;
@@ -353,15 +360,16 @@ public class Navigation {
     Point p1 = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     double curX = odometer.getXyt()[0] / TILE_SIZE;
     double curY = odometer.getXyt()[1] / TILE_SIZE;
-
-    //travel to search zone, avoid abstacles
+    
+    System.out.println(ll + " " + ur);
+    
+    // travel to search zone, avoid abstacles
     if (!((curX >= ll.x && curX <= ur.x) && (curY <= ur.y && curY >= ll.y))) {
       double angle = Navigation.getDestinationAngle(p1, new Point(ll.x + 2, ll.y + 1));
       Navigation.turnTo(angle);
-      System.out.println(ll);
       ObjectDetection.objectAvoider(new Point(ll.x + 2, ll.y + 1));
     }
-    
+
   }
 
   /**
@@ -486,7 +494,7 @@ public class Navigation {
       pushWithObjDetect(new Point(endX, endY), ramp, rampCase);
       cur = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     }
-    
+
     pushObjectOnRampAndReturn();
     Driver.stopMotors();
   }
@@ -507,7 +515,7 @@ public class Navigation {
    * (bottom of the ramp).
    */
   public static void pushObjectOnRampAndReturn() {
-    //pushes the robot up the appropriate length up the ramp in order to drop block in bin
+    // pushes the robot up the appropriate length up the ramp in order to drop block in bin
     Driver.moveStraightFor(1.1);
     LightLocalizer.rampEndDetect();
     // return to the bottom of the ramp
