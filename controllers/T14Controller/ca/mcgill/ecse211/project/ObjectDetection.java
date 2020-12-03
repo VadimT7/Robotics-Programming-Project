@@ -15,8 +15,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import ca.mcgill.ecse211.playingfield.Point;
 
-
-
+/**
+ * Allows the robot to detect objects, avoid them and determine the difference between obstacles.
+ */
 public class ObjectDetection {
 
   // initializations
@@ -91,7 +92,8 @@ public class ObjectDetection {
   }
 
   /**
-   * method which determines whether detected object is a block or not
+   * Determines whether detected object is a block or not
+   * @param objDist The ultrasonic sensor reading
    * @return is the object a block
    */
   public static boolean detectBlock(Integer objDist) {
@@ -132,9 +134,10 @@ public class ObjectDetection {
   }
 
   /**
-   * Method checks if an object has been detected within a 2 tile radius. This method throws out values if they
+   * Checks if an object has been detected within the threshold. This method throws out values if they
    * correspond to ramps, tunnels, bins
-   * 
+   * @param objDist The distance the ultrasonic sensor has read
+   * @param threshold Distance where the object is considered to be detected
    * @return if an object has been detected
    */
   public static boolean detectObjInPath(double objDist, double threshold) {
@@ -239,9 +242,11 @@ public class ObjectDetection {
 
 
   /**
+   * Checks if an object has been detected within a 2 tile radius. This method throws out values if they
+   * correspond to tunnels or walls
    * 
-   * @param objDist
-   * @param threshold
+   * @param objDist The distance the ultrasonic sensor has read
+   * @param threshold Distance where the object is considered to be detected
    * @return if an object that is not a wall has been detected
    */
   public static boolean detectWallOrObject(double objDist, double threshold) {
@@ -283,7 +288,7 @@ public class ObjectDetection {
     return true;
   }
 
-  /*
+  /**
    * Method which ensures that robot will not collide into obstacle throughout trajectory, will follow a following
    * algorithm and put back facing to original path once obstacle dealt with. This is specifically for avoidance outside
    * the search zone.
@@ -322,7 +327,7 @@ public class ObjectDetection {
       }
 
       // move straight
-      Driver.moveStraightFor(1.5);
+      Driver.moveStraightFor(5* TILE_SIZE);
       // repeat process to get to destination
       objectAvoider(destination);
     }
@@ -337,7 +342,7 @@ public class ObjectDetection {
       double destinationTheta = Navigation.getDestinationAngle(current, destination);
       Navigation.turnTo(destinationTheta);
       // move straight towards destination while this is still the case
-      while (!detectWallOrObject(readUsDistance(), DETECTION_THRESHOLD)) {
+      while (!detectWallOrObject(readUsDistance(), DETECTION_THRESHOLD/2)) {
         // Update the position
         current = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
         // record angle between current and destination points
@@ -352,15 +357,13 @@ public class ObjectDetection {
           Navigation.turnTo(90);
           break;
         }
-
-
       }
       // when while loop breaks because object is read, call method again.
       objectAvoider(destination);
     }
   }
 
-  /*
+  /**
    * Method urges robot to detect and measure the torque while pushing every block in its search zone, all the while
    * avoiding potential objects and obstacles that may be found in its respective search zone
    */
@@ -466,39 +469,19 @@ public class ObjectDetection {
 
   /**
    * 
-   * @return the angle and distance where the
+   * @return the map with where all the objects have been detected with respect to the robot
    */
   public static LinkedHashMap<Double, Integer> getAngleMap() {
     return angleMap;
   }
 
-  // Print values
+  /**
+   * Prints the values in the angleMap
+   */
   public static void printMap() {
     // sortMapByValue();
     for (Map.Entry<Double, Integer> x : angleMap.entrySet()) {
       System.out.println("Angle " + x.getKey() + " Distance " + x.getValue());
     }
-  }
-
-  // Sort the hashmap by its values
-  public static LinkedHashMap<Double, Integer> sortMapByValue() {
-    List<Map.Entry<Double, Integer>> list = new LinkedList<Map.Entry<Double, Integer>>(angleMap.entrySet());
-
-    Collections.sort(list, new Comparator<Map.Entry<Double, Integer>>() {
-
-      @Override
-      public int compare(Entry<Double, Integer> o1, Entry<Double, Integer> o2) {
-        return o1.getValue().compareTo(o2.getValue());
-      }
-    });
-
-    angleMap.clear();
-
-    for (Map.Entry<Double, Integer> x : list) {
-      angleMap.put(x.getKey(), x.getValue());
-    }
-
-    return angleMap;
-
   }
 }

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import ca.mcgill.ecse211.playingfield.Region;
 
 /**
- *
+ * Class that reads the ultrasonic sensor data and allows the robot to correct its heading towards 0 when near 2 walls. 
  */
 public class UltrasonicLocalizer {
 
@@ -119,9 +119,8 @@ public class UltrasonicLocalizer {
   }
 
   /**
-   * Returns the filtered distance between the US sensor and an obstacle in cm.
-   * 
    * @Author method taken from lab1
+   * @return the filtered distance between the US sensor and an obstacle in cm.
    */
   public static int readUsDistance() {
 

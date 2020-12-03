@@ -45,22 +45,26 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
+    STARTING_COLOR = "red";
+    odometer.setXyt(5*TILE_SIZE, 2*TILE_SIZE, 0);
+    ObjectDetection.objectAvoider(new Point(5,7));
+    
     // //Start the stopwatch thread
-    new Thread(timer).start();
-
-    // localize
-    UltrasonicLocalizer.localize();
-    LightLocalizer.startLocalize();
-    LightLocalizer.robotBeep(3);
-    // travel to island
-    Navigation.travelAcrossTunnel();
-    LightLocalizer.robotBeep(3);
-    // get to searc zone and dump blocks in bins
-    Navigation.travelToSearchZone();
-    ObjectDetection.ZoneDetection();
-    // go back to initial position
-    Navigation.travelBackAcrossTunnel();
-    LightLocalizer.robotBeep(5);
+//    new Thread(timer).start();
+//
+//    // localize
+//    UltrasonicLocalizer.localize();
+//    LightLocalizer.startLocalize();
+//    LightLocalizer.robotBeep(3);
+//    // travel to island
+//    Navigation.travelAcrossTunnel();
+//    LightLocalizer.robotBeep(3);
+//    // get to searc zone and dump blocks in bins
+//    Navigation.travelToSearchZone();
+//    ObjectDetection.ZoneDetection();
+//    // go back to initial position
+//    Navigation.travelBackAcrossTunnel();
+//    LightLocalizer.robotBeep(5);
   }
 
   /**

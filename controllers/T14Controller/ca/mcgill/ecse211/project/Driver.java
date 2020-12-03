@@ -2,6 +2,10 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 
+/**
+ * Helper class that allows the user to control the robot's movements.
+ *
+ */
 public class Driver {
 
   /**

@@ -7,7 +7,7 @@ import simlejos.hardware.ev3.LocalEV3;
 import simlejos.robotics.SampleProvider;
 
 /**
- * Light localization class (for 2nd part of trajectory)
+ * Light localization class allows the robot to correct its position.
  */
 public class LightLocalizer {
 
@@ -27,9 +27,12 @@ public class LightLocalizer {
   /* Color at the bottom of the ramp (in the box) */
   private static float rampEnd = 50;
 
-  /**
-   * performs localization with the steps seen in video tutorial+slides **\
-   */
+ /**
+  * performs localization on a grid point
+  * @param x coordinate to correct to
+  * @param y coordinate to correct to
+  * @param angle angle to correct to
+  */
   public static void localize(double x, double y, double angle) {
     /* initial readings of light sensor at very end of ultrasonic/beginning of light localization */
     // fetching values and storing them in empty arrays
@@ -283,7 +286,7 @@ public class LightLocalizer {
   /**   
    *  Allows the robot to emit sound (beeps)
    *    
-   * @param number of times the robot needs to beep 
+   * @param n number of times the robot needs to beep 
    */   
   public static void robotBeep(int n) { 
     for(int i = 0; i < n; i++) {    

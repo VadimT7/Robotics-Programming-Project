@@ -7,6 +7,10 @@ import java.util.Map.Entry;
 import ca.mcgill.ecse211.playingfield.Point;
 import ca.mcgill.ecse211.playingfield.RampEdge;
 
+/**
+ * Allows the robot to navigate to specific points and push blocks
+ *
+ */
 public class Navigation {
 
   /** Do not instantiate this class. */
@@ -64,9 +68,9 @@ public class Navigation {
         p3 = new Point(up.x + 1, ll.y + 0.5);
         angle = 180;
       } else {
-        p1 = new Point(up.x - 1, ll.y - 1);
-        p2 = new Point(up.x - 1, up.y - 0.5);
-        p3 = new Point(ll.x + 1, up.y - 0.5);
+        p1 = new Point(up.x + 1, ll.y - 1);
+        p2 = new Point(up.x + 1, up.y - 0.5);
+        p3 = new Point(ll.x - 1, up.y - 0.5);
       }
     } else {
       if (up.y == island.ll.y) {
@@ -83,6 +87,8 @@ public class Navigation {
         angle = 180;
       }
     }
+    
+    System.out.println(p1);
 
     turnTo(getDestinationAngle(current, p1));
     travelTo(p1);
@@ -147,10 +153,12 @@ public class Navigation {
       }
     }
 
-
+    
+    
     turnTo(getDestinationAngle(current, p1));
     travelTo(p1);
     turnTo(angle);
+    
     LightLocalizer.localize(p1.x * TILE_SIZE, p1.y * TILE_SIZE, angle);
     // find magnitude of length across grid that the robot will travel from initial point to dest.
     travelTo(p2);
@@ -344,8 +352,7 @@ public class Navigation {
       }
     }
   }
-  /* Method which prompts the robot to travel to its respective search zone once it has arrived onto the island */
-
+  /** Method which prompts the robot to travel to its respective search zone once it has arrived onto the island */
   public static void travelToSearchZone() {
     Point ll;
     Point ur;

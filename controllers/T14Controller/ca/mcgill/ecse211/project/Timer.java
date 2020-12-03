@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.project;
 //importing necessary libraries
 import static ca.mcgill.ecse211.project.Resources.*;
 
-/*
+/**
  * Class that ensures that simulation runs under given time constraints, and tracks the timeframe throughout which robot
  * conducts operations with respect of team's flowchart and each part of the robot's trajectory
  */
