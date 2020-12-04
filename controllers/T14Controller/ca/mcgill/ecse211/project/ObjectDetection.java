@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import ca.mcgill.ecse211.playingfield.Point;
 
+
 /**
  * Allows the robot to detect objects, avoid them and determine the difference between obstacles.
  */
@@ -483,5 +484,22 @@ public class ObjectDetection {
     for (Map.Entry<Double, Integer> x : angleMap.entrySet()) {
       System.out.println("Angle " + x.getKey() + " Distance " + x.getValue());
     }
+  }
+   /** 
+   * Simple method for calculating the mass of a block. 
+   * Mass equation is taken from the torque characterization test. 
+   */
+  public static void PrintmassOfBlock() {
+    Driver.forward();
+    // Skip the first half tile since the torque is inconsistent
+    sleepFor(30000);
+    System.out.println("starting to calculate torque");
+    double totaltorque=0;
+    for (int i=1 ; i < 100 ; i++) {
+      totaltorque += ((leftMotor.getTorque() + rightMotor.getTorque()) / 2);
+      sleepFor(200);
+    }
+    Driver.stopMotors();
+    System.out.println("The mass of the block is " + (totaltorque/100 + 0.0457)/0.1777 + " kg");
   }
 }
